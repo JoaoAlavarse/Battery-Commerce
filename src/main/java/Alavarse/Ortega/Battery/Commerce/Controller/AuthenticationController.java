@@ -32,7 +32,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
+    public ResponseEntity register(@RequestBody @Valid RegisterDTO data) throws Exception {
         return ResponseEntity.ok(this.service.register(data));
     }
 
