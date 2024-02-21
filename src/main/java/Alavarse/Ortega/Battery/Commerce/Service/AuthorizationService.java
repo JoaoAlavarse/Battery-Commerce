@@ -75,8 +75,21 @@ public class AuthorizationService implements UserDetailsService{
         return true;
     }
 
+    private boolean containNumbers (String password){
+        int count = 0;
+        for (char character : AuthConstants.NUMBERS.toCharArray()){
+            if (password.contains(String.valueOf(character))){
+                count++;
+            }
+            if (count >= 4){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void verifyPassword(String password) throws Exception {
-        if ( password.length() < 7 && !containSpecialCharacters(password)){
+        if ( password.length() < 7 && !containSpecialCharacters(password) && !containNumbers(password)){
             throw new Exception();
         }
     }
