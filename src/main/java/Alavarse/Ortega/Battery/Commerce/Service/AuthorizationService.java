@@ -5,6 +5,10 @@ import Alavarse.Ortega.Battery.Commerce.DTO.AuthenticationDTO;
 import Alavarse.Ortega.Battery.Commerce.DTO.LoginResponseDTO;
 import Alavarse.Ortega.Battery.Commerce.DTO.RegisterDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.UserEntity;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.DoesntContainNumbersException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.DoesntContainSpecialCharacterException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InvalidEmailException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InvalidPasswordSizeException;
 import Alavarse.Ortega.Battery.Commerce.Repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +48,7 @@ public class AuthorizationService implements UserDetailsService{
 
     }
 
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO data) throws Exception {
+    public ResponseEntity register(@RequestBody @Valid RegisterDTO data) throws RuntimeException {
         if (this.repository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
 
         verifyEmail(data.email());
@@ -58,40 +62,43 @@ public class AuthorizationService implements UserDetailsService{
         return ResponseEntity.ok().build();
     }
 
-    private void verifyEmail(String email) throws Exception {
+    private void verifyEmail(String email) throws InvalidEmailException {
         Pattern pattern = Pattern.compile(AuthConstants.EMAIL_REGEX);
         Matcher matcher = pattern.matcher(email);
         if (!matcher.matches()){
-            throw new Exception();
+            throw new InvalidEmailException();
         }
     }
 
-    private boolean containSpecialCharacters(String password) throws Exception {
+    private void containSpecialCharacters(String password) throws DoesntContainSpecialCharacterException {
         for (char character: AuthConstants.SPECIAL_CHARACTERS.toCharArray()) {
             if (!password.contains(String.valueOf(character))){
-               return false;
+               throw new DoesntContainSpecialCharacterException();
             }
         }
-        return true;
     }
 
-    private boolean containNumbers (String password){
+    private void containNumbers (String password) throws DoesntContainNumbersException{
         int count = 0;
         for (char character : AuthConstants.NUMBERS.toCharArray()){
             if (password.contains(String.valueOf(character))){
                 count++;
             }
-            if (count >= 4){
-                return true;
-            }
         }
-        return false;
+        if (count < 5){
+            throw new DoesntContainNumbersException();
+        }
     }
 
-    private void verifyPassword(String password) throws Exception {
-        if ( password.length() < 7 && !containSpecialCharacters(password) && !containNumbers(password)){
-            throw new Exception();
-        }
+    private void verifyPasswordSize(String password) throws InvalidPasswordSizeException{
+        if (password.length() < 12)
+            throw new InvalidPasswordSizeException();
+    }
+
+    private void verifyPassword(String password) throws RuntimeException {
+        containSpecialCharacters(password);
+        containNumbers(password);
+        verifyPasswordSize(password);
     }
 
 }
