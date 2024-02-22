@@ -32,6 +32,8 @@ public class AuthorizationService implements UserDetailsService{
     private UserRepository repository;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private UserService service;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -52,7 +54,8 @@ public class AuthorizationService implements UserDetailsService{
         if (this.repository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
 
         verifyEmail(data.email());
-        verifyPassword(data.password());
+        //verifyPassword(data.password());
+        this.service.verifyDocument(data.document());
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         UserEntity newUser = new UserEntity(data.email(), encryptedPassword, data.name(), data.document(), data.role());
@@ -70,10 +73,10 @@ public class AuthorizationService implements UserDetailsService{
         }
     }
 
-    private void containSpecialCharacters(String password) throws DoesntContainSpecialCharacterException {
-        for (char character: AuthConstants.SPECIAL_CHARACTERS.toCharArray()) {
-            if (!password.contains(String.valueOf(character))){
-               throw new DoesntContainSpecialCharacterException();
+    public static void containsSpecialCharacters(String password) {
+        for (char character : AuthConstants.SPECIAL_CHARACTERS.toCharArray()) {
+            if (!password.contains(String.valueOf(character))) {
+                throw new DoesntContainSpecialCharacterException();
             }
         }
     }
@@ -96,9 +99,9 @@ public class AuthorizationService implements UserDetailsService{
     }
 
     private void verifyPassword(String password) throws RuntimeException {
-        containSpecialCharacters(password);
         containNumbers(password);
         verifyPasswordSize(password);
+        containsSpecialCharacters(password);
     }
 
 }

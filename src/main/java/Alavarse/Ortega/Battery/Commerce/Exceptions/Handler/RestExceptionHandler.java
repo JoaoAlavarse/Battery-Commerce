@@ -4,6 +4,7 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.DoesntContainN
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.DoesntContainSpecialCharacterException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InvalidEmailException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InvalidPasswordSizeException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.ErrorWhileGettingUsersException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,6 +34,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidPasswordSizeException.class)
     private ResponseEntity<ExceptionHandlerMessage> invalidPasswordSize(InvalidPasswordSizeException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileGettingUsersException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorWhileGettingUsers(ErrorWhileGettingUsersException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }

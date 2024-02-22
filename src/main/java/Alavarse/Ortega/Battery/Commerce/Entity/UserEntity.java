@@ -1,11 +1,10 @@
 package Alavarse.Ortega.Battery.Commerce.Entity;
 
+import Alavarse.Ortega.Battery.Commerce.DTO.UpdateUserDTO;
 import Alavarse.Ortega.Battery.Commerce.Enum.UserRole;
+import Alavarse.Ortega.Battery.Commerce.Enum.UserStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +15,7 @@ import java.util.List;
 @Table(name = "users")
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "userId")
@@ -27,8 +27,8 @@ public class UserEntity implements UserDetails {
     private String password;
     private String name;
     private String document;
-    @Enumerated(EnumType.STRING)
     private UserRole role;
+    private UserStatus status;
 
     public UserEntity(String email, String password, String name, String document, UserRole role) {
         this.email = email;
@@ -36,6 +36,22 @@ public class UserEntity implements UserDetails {
         this.name = name;
         this.document = document;
         this.role = role;
+        this.status = UserStatus.ACTIVE;
+    }
+
+    public UserEntity(String email, String password, String name, String document, UserRole role, UserStatus status) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.document = document;
+        this.role = role;
+        this.status = status;
+    }
+
+    public UserEntity(UpdateUserDTO data) {
+        this.password = data.password();
+        this.name = data.name();
+        this.status = data.status();
     }
 
     @Override
@@ -66,6 +82,6 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.status == UserStatus.ACTIVE;
     }
 }

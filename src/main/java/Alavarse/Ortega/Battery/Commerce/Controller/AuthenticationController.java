@@ -7,6 +7,7 @@ import Alavarse.Ortega.Battery.Commerce.Repository.UserRepository;
 import Alavarse.Ortega.Battery.Commerce.Service.AuthorizationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data) throws Exception {
-        return ResponseEntity.ok(this.service.register(data));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.register(data));
     }
 
     @GetMapping
