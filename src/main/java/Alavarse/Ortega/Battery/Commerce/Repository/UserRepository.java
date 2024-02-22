@@ -14,8 +14,9 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<UserEntity, String> {
     UserDetails findByEmail(String email);
 
-    @Query(value = "SELECT u FROM UserEntity u WHERE u.role = ?1 AND u.status = 'ACTIVE'", nativeQuery = true)
-    List<UserEntity> findAllByRoleAndActive(String role);
-    @Query(value = "SELECT u FROM UserEntity u WHERE u.status = 'ACTIVE'", nativeQuery = true)
+    @Query(value = "SELECT * FROM users u WHERE u.role = :role AND u.status = 'ACTIVE'", nativeQuery = true)
+    List<UserEntity> findAllByRoleAndActive(@Param("role") String role);
+
+    @Query(value = "SELECT * FROM users u WHERE u.status = 'ACTIVE'", nativeQuery = true)
     List<UserEntity> findAllActiveUsers();
 }

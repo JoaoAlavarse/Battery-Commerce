@@ -12,6 +12,7 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InvalidPasswor
 import Alavarse.Ortega.Battery.Commerce.Repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,7 +55,7 @@ public class AuthorizationService implements UserDetailsService{
         if (this.repository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
 
         verifyEmail(data.email());
-        //verifyPassword(data.password());
+        verifyPassword(data.password());
         this.service.verifyDocument(data.document());
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
@@ -62,7 +63,7 @@ public class AuthorizationService implements UserDetailsService{
 
         this.repository.save(newUser);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     private void verifyEmail(String email) throws InvalidEmailException {
@@ -73,22 +74,31 @@ public class AuthorizationService implements UserDetailsService{
         }
     }
 
-    public static void containsSpecialCharacters(String password) {
+    public static void containsSpecialCharacters(String password) throws DoesntContainSpecialCharacterException {
+        boolean containsSpecialCharacter = false;
+
         for (char character : AuthConstants.SPECIAL_CHARACTERS.toCharArray()) {
-            if (!password.contains(String.valueOf(character))) {
-                throw new DoesntContainSpecialCharacterException();
+            if (password.contains(String.valueOf(character))) {
+                containsSpecialCharacter = true;
+                break;
             }
+        }
+
+        if (!containsSpecialCharacter) {
+            throw new DoesntContainSpecialCharacterException();
         }
     }
 
     private void containNumbers (String password) throws DoesntContainNumbersException{
         int count = 0;
-        for (char character : AuthConstants.NUMBERS.toCharArray()){
-            if (password.contains(String.valueOf(character))){
+
+        for (char character : password.toCharArray()) {
+            if (Character.isDigit(character)) {
                 count++;
             }
         }
-        if (count < 5){
+
+        if (count < 5) {
             throw new DoesntContainNumbersException();
         }
     }

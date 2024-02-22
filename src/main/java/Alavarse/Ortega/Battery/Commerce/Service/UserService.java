@@ -39,11 +39,11 @@ public class UserService {
     }
 
     public List<UserEntity> findByRole(String role) throws ErrorWhileGettingUsersException{
-        try {
+       try {
             return repository.findAllByRoleAndActive(role);
-        } catch (Exception e){
-            throw new ErrorWhileGettingUsersException();
-        }
+       } catch (Exception e){
+           throw new ErrorWhileGettingUsersException();
+       }
     }
 
     public UserEntity updateUser(String id, UpdateUserDTO data){
@@ -104,7 +104,8 @@ public class UserService {
     }
 
     private void verifyDocumentSize(String document) throws InvalidDocumentSizeException{
-        if (document.length() != 11)
+        if (document.length() != 11) {
             throw new InvalidDocumentSizeException();
+        }
     }
 }

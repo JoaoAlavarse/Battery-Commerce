@@ -34,7 +34,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data) throws Exception {
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.register(data));
+        return ResponseEntity.ok().body(this.service.register(data));
     }
 
     @GetMapping

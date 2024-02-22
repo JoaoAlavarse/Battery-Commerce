@@ -27,7 +27,9 @@ public class UserEntity implements UserDetails {
     private String password;
     private String name;
     private String document;
+    @Enumerated(EnumType.STRING)
     private UserRole role;
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     public UserEntity(String email, String password, String name, String document, UserRole role) {
@@ -82,6 +84,6 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.status == UserStatus.ACTIVE;
+        return true;
     }
 }
