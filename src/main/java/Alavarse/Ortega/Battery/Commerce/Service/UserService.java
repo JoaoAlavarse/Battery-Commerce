@@ -1,6 +1,5 @@
 package Alavarse.Ortega.Battery.Commerce.Service;
 
-import Alavarse.Ortega.Battery.Commerce.DTO.RegisterDTO;
 import Alavarse.Ortega.Battery.Commerce.DTO.UpdateUserDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enum.UserStatus;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
