@@ -3,6 +3,7 @@ package Alavarse.Ortega.Battery.Commerce.Entity;
 import Alavarse.Ortega.Battery.Commerce.DTO.UpdateUserDTO;
 import Alavarse.Ortega.Battery.Commerce.Enum.UserRole;
 import Alavarse.Ortega.Battery.Commerce.Enum.UserStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,6 +32,10 @@ public class UserEntity implements UserDetails {
     private UserRole role;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<AddressEntity> address;
 
     public UserEntity(String email, String password, String name, String document, UserRole role) {
         this.email = email;
