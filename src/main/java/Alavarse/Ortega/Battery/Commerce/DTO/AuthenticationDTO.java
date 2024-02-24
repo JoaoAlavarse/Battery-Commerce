@@ -1,4 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.DTO;
 
-public record AuthenticationDTO(String email, String password) {
+import jakarta.validation.constraints.NotBlank;
+
+public record AuthenticationDTO(@NotBlank String email, @NotBlank String password) {
 }
