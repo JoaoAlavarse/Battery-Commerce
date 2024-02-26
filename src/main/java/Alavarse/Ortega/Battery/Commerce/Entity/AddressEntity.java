@@ -3,6 +3,10 @@ package Alavarse.Ortega.Battery.Commerce.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.Constraint;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -17,11 +21,17 @@ public class AddressEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String addressId;
+    @Column(nullable = false)
     private String address;
+    @Column(nullable = false)
     private String number;
+    @Column(nullable = false)
     private String complement;
+    @Column(nullable = false)
     private String city;
+    @Column(nullable = false)
     private String state;
+    @Column(nullable = false)
     private String CEP;
 
     @ManyToOne(fetch = FetchType.EAGER)

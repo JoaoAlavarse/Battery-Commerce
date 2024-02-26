@@ -24,12 +24,18 @@ public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String userId;
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false, unique = true)
     private String document;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
