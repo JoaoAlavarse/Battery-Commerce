@@ -24,4 +24,9 @@ public class AddressController {
     public ResponseEntity<List<AddressEntity>> getAll(){
         return ResponseEntity.ok().body(service.getAll());
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<AddressEntity>> getByUser(@PathVariable String userId){
+        return ResponseEntity.ok().body(service.getByUser(userId));
+    }
 }

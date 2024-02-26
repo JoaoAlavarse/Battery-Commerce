@@ -25,13 +25,22 @@ public class AddressService {
         if (optionalUser.isEmpty()){
             throw new ErrorWhileGettingUsersException();
         }
-        UserEntity newUser = optionalUser.get();
-        AddressEntity address = new AddressEntity(data.address(), data.number(), data.complement(), data.city(), data.state(), data.CEP(), newUser);
+        UserEntity foundUser = optionalUser.get();
+        AddressEntity address = new AddressEntity(data.address(), data.number(), data.complement(), data.city(), data.state(), data.CEP(), foundUser);
         repository.save(address);
         return address;
     }
 
     public List<AddressEntity> getAll(){
         return repository.findAll();
+    }
+
+    public List<AddressEntity> getByUser(String userId){
+        Optional<UserEntity> optionalUser = userService.findById(userId);
+        if (optionalUser.isEmpty()){
+            throw new ErrorWhileGettingUsersException();
+        }
+        UserEntity foundUser = optionalUser.get();
+        return repository.findByUser(foundUser);
     }
 }
