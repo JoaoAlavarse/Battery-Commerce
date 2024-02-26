@@ -1,5 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Exceptions.Handler;
 
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.AddressNotFoundException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.ErrorWhileGettingUsersException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.InvalidDocumentException;
@@ -44,13 +45,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(InvalidDocumentException.class)
-    private ResponseEntity<ExceptionHandlerMessage> errorWhileGettingUsers(InvalidDocumentException exception){
+    private ResponseEntity<ExceptionHandlerMessage> invalidDocument(InvalidDocumentException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
     @ExceptionHandler(InvalidDocumentSizeException.class)
-    private ResponseEntity<ExceptionHandlerMessage> errorWhileGettingUsers(InvalidDocumentSizeException exception){
+    private ResponseEntity<ExceptionHandlerMessage> invalidDocumentSize(InvalidDocumentSizeException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
@@ -65,5 +66,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<ExceptionHandlerMessage> documentAlredyExists(DocumentAlredyExistsException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
+
+    @ExceptionHandler(AddressNotFoundException.class)
+    private ResponseEntity<ExceptionHandlerMessage> addressNotFound(AddressNotFoundException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(handlerMessage);
     }
 }
