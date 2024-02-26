@@ -1,8 +1,10 @@
 package Alavarse.Ortega.Battery.Commerce.Service;
 
 import Alavarse.Ortega.Battery.Commerce.DTO.AddressDTO;
+import Alavarse.Ortega.Battery.Commerce.DTO.UpdateAddressDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.AddressEntity;
 import Alavarse.Ortega.Battery.Commerce.Entity.UserEntity;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.AddressNotFoundException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.ErrorWhileGettingUsersException;
 import Alavarse.Ortega.Battery.Commerce.Repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +23,8 @@ public class AddressService {
 
 
     public AddressEntity create(AddressDTO data){
-        Optional<UserEntity> optionalUser = userService.findById(data.userId());
-        if (optionalUser.isEmpty()){
-            throw new ErrorWhileGettingUsersException();
-        }
-        UserEntity foundUser = optionalUser.get();
-        AddressEntity address = new AddressEntity(data.address(), data.number(), data.complement(), data.city(), data.state(), data.CEP(), foundUser);
+        UserEntity foundUser = verifyUser(data.userId());
+        AddressEntity address = new AddressEntity(data, foundUser);
         repository.save(address);
         return address;
     }
@@ -36,11 +34,30 @@ public class AddressService {
     }
 
     public List<AddressEntity> getByUser(String userId){
+        UserEntity foundUser = verifyUser(userId);
+        return repository.findByUser(foundUser);
+    }
+
+    public AddressEntity update(UpdateAddressDTO data, String addressId){
+        Optional<AddressEntity> foundAddress = repository.findById(addressId);
+        if (foundAddress.isEmpty()){
+            throw new AddressNotFoundException();
+        }
+        AddressEntity updatedAddress = foundAddress.get();
+        updatedAddress.setAddress(data.address());
+        updatedAddress.setCity(data.city());
+        updatedAddress.setCEP(data.CEP());
+        updatedAddress.setState(data.state());
+        updatedAddress.setComplement(data.complement());
+        updatedAddress.setNumber(data.number());
+        return repository.save(updatedAddress);
+    }
+
+    public UserEntity verifyUser(String userId){
         Optional<UserEntity> optionalUser = userService.findById(userId);
         if (optionalUser.isEmpty()){
             throw new ErrorWhileGettingUsersException();
         }
-        UserEntity foundUser = optionalUser.get();
-        return repository.findByUser(foundUser);
+        return optionalUser.get();
     }
 }
