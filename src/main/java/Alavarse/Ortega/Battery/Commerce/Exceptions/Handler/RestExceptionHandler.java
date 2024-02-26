@@ -1,9 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Exceptions.Handler;
 
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.DoesntContainNumbersException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.DoesntContainSpecialCharacterException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InvalidEmailException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InvalidPasswordSizeException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.ErrorWhileGettingUsersException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.InvalidDocumentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.InvalidDocumentSizeException;
@@ -56,5 +53,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<ExceptionHandlerMessage> errorWhileGettingUsers(InvalidDocumentSizeException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+    @ExceptionHandler(EmailAlredyExistsException.class)
+    private ResponseEntity<ExceptionHandlerMessage> emailAlredyExists(EmailAlredyExistsException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
+
+    @ExceptionHandler(DocumentAlredyExistsException.class)
+    private ResponseEntity<ExceptionHandlerMessage> documentAlredyExists(DocumentAlredyExistsException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
 }
