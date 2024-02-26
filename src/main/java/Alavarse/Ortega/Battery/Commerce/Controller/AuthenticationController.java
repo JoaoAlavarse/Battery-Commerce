@@ -1,6 +1,7 @@
 package Alavarse.Ortega.Battery.Commerce.Controller;
 
 import Alavarse.Ortega.Battery.Commerce.DTO.AuthenticationDTO;
+import Alavarse.Ortega.Battery.Commerce.DTO.LoginResponseDTO;
 import Alavarse.Ortega.Battery.Commerce.DTO.RegisterDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Repository.UserRepository;
@@ -27,14 +28,14 @@ public class AuthenticationController {
     private UserRepository repository;
 
     @PostMapping("/login")
-    public ResponseEntity login (@RequestBody @Valid AuthenticationDTO data){
+    public ResponseEntity<LoginResponseDTO> login (@RequestBody @Valid AuthenticationDTO data){
         return ResponseEntity.ok(this.service.login(data, authenticationManager));
 
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO data) throws Exception {
-        return ResponseEntity.ok().body(this.service.register(data));
+    public ResponseEntity<UserEntity> register(@RequestBody @Valid RegisterDTO data) throws Exception {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.register(data));
     }
 
     @GetMapping

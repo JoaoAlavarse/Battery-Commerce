@@ -5,10 +5,7 @@ import Alavarse.Ortega.Battery.Commerce.DTO.AuthenticationDTO;
 import Alavarse.Ortega.Battery.Commerce.DTO.LoginResponseDTO;
 import Alavarse.Ortega.Battery.Commerce.DTO.RegisterDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.UserEntity;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.DoesntContainNumbersException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.DoesntContainSpecialCharacterException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InvalidEmailException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InvalidPasswordSizeException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,18 +38,23 @@ public class AuthorizationService implements UserDetailsService{
         return repository.findByEmail(username);
     }
 
-    public ResponseEntity login (@RequestBody @Valid AuthenticationDTO data, AuthenticationManager authenticationManager){
+    public LoginResponseDTO login (@RequestBody @Valid AuthenticationDTO data, AuthenticationManager authenticationManager){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var auth = authenticationManager.authenticate(usernamePassword);
 
         var token = tokenService.generateToken((UserEntity) auth.getPrincipal());
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return new LoginResponseDTO(token);
 
     }
 
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO data) throws RuntimeException {
-        if (this.repository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
+    public UserEntity register(@RequestBody @Valid RegisterDTO data) throws RuntimeException {
+        if (this.repository.findByEmail(data.email()) != null){
+            throw new EmailAlredyExistsException();
+        }
+        if (this.repository.findByDocument(data.document()) != null){
+            throw new DocumentAlredyExistsException();
+        }
 
         verifyEmail(data.email());
         verifyPassword(data.password());
@@ -61,9 +63,7 @@ public class AuthorizationService implements UserDetailsService{
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         UserEntity newUser = new UserEntity(data.email(), encryptedPassword, data.name(), data.document(), data.role());
 
-        this.repository.save(newUser);
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return this.repository.save(newUser);
     }
 
     private void verifyEmail(String email) throws InvalidEmailException {
