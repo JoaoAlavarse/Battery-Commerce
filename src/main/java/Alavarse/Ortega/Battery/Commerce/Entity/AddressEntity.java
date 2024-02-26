@@ -1,5 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Entity;
 
+import Alavarse.Ortega.Battery.Commerce.DTO.AddressDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -45,6 +46,16 @@ public class AddressEntity {
         this.city = city;
         this.state = state;
         this.CEP = CEP;
+        this.user = user;
+    }
+
+    public AddressEntity(AddressDTO data, UserEntity user) {
+        this.address = data.address();
+        this.number = data.number();
+        this.complement = data.complement();
+        this.city = data.city();
+        this.state = data.state();
+        this.CEP = data.CEP();
         this.user = user;
     }
 }
