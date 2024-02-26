@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
 
     @Query(value = "SELECT * FROM users u WHERE u.status = 'ACTIVE'", nativeQuery = true)
     List<UserEntity> findAllActiveUsers();
+
+    UserEntity findByDocument(String document);
 }
