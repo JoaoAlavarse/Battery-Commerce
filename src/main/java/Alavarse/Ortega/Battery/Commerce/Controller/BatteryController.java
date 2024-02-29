@@ -4,10 +4,12 @@ import Alavarse.Ortega.Battery.Commerce.DTO.BatteryDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.BatteryEntity;
 import Alavarse.Ortega.Battery.Commerce.Service.BatteryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.util.List;
 
@@ -51,5 +53,10 @@ public class BatteryController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<BatteryEntity> technicalDelete(@PathVariable String id){
         return ResponseEntity.ok().body(service.technicalDelete(id));
+    }
+
+    @GetMapping(value = "/{id}/images")
+    public ResponseEntity<StreamingResponseBody> getImages(@PathVariable String id){
+        return service.getImages(id);
     }
 }
