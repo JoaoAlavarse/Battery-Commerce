@@ -20,7 +20,6 @@ public class UserService {
     private UserRepository repository;
 
     public List<UserEntity> findAll() throws ErrorWhileGettingUsersException{
-        Sort sort = Sort.by(Sort.Order.asc("name"));
         try {
             return repository.findAllActiveUsers();
         } catch (Exception e){
