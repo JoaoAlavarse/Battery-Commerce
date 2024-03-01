@@ -31,9 +31,6 @@ public class BatteryEntity {
     @Enumerated(EnumType.STRING)
     private BatteryStatus status;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "battery", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<ImageEntity> images;
 
     public BatteryEntity(String name, String description, BigDecimal value, Integer quantity) {
         this.name = name;

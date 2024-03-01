@@ -2,20 +2,13 @@ package Alavarse.Ortega.Battery.Commerce.Service;
 
 import Alavarse.Ortega.Battery.Commerce.DTO.BatteryDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.BatteryEntity;
-import Alavarse.Ortega.Battery.Commerce.Entity.ImageEntity;
 import Alavarse.Ortega.Battery.Commerce.Enum.BatteryStatus;
 import Alavarse.Ortega.Battery.Commerce.Repository.BatteryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
-import java.net.http.HttpHeaders;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,22 +46,7 @@ public class BatteryService {
         return repository.save(battery);
     }
 
-    public void addImages(String id, List<MultipartFile> images){
-        BatteryEntity battery = repository.findById(id).orElseThrow(RuntimeException::new);
 
-        for (MultipartFile image : images){
-            try {
-                ImageEntity imageEntity = new ImageEntity();
-                imageEntity.setBytes(image.getBytes());
-                imageEntity.setBattery(battery);
-
-                battery.getImages().add(imageEntity);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-         repository.save(battery);
-    }
 
     public BatteryEntity update(String id, BatteryDTO data){
         BatteryEntity battery = repository.findById(id).orElseThrow(RuntimeException::new);
@@ -85,15 +63,5 @@ public class BatteryService {
         return repository.save(battery);
     }
 
-    public ResponseEntity<StreamingResponseBody> getImages(String id){
-        BatteryEntity battery = repository.findById(id).orElseThrow(RuntimeException::new);
 
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(outputStream -> {
-            for (ImageEntity image : battery.getImages()){
-                outputStream.write(image.getBytes());
-            }
-            outputStream.flush();
-        });
-
-    }
 }
