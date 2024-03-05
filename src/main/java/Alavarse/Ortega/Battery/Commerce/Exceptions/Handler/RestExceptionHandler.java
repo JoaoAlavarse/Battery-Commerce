@@ -1,10 +1,9 @@
 package Alavarse.Ortega.Battery.Commerce.Exceptions.Handler;
 
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.AddressNotFoundException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.ErrorWhileSavingAddressException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.ErrorWhileGettingUsersException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.InvalidDocumentException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.InvalidDocumentSizeException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -40,8 +39,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ErrorWhileGettingUsersException.class)
     private ResponseEntity<ExceptionHandlerMessage> errorWhileGettingUsers(ErrorWhileGettingUsersException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }
 
     @ExceptionHandler(InvalidDocumentException.class)
@@ -68,9 +67,27 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
 
+    @ExceptionHandler(ErrorWhileSavingUserException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorSavingUser(ErrorWhileSavingUserException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    private ResponseEntity<ExceptionHandlerMessage> userNotFound(UserNotFoundException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(handlerMessage);
+    }
+
     @ExceptionHandler(AddressNotFoundException.class)
     private ResponseEntity<ExceptionHandlerMessage> addressNotFound(AddressNotFoundException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_FOUND, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileSavingAddressException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorSavingAddress(ErrorWhileSavingAddressException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }
 }

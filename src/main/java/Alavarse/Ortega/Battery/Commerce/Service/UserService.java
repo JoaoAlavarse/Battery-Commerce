@@ -1,11 +1,10 @@
 package Alavarse.Ortega.Battery.Commerce.Service;
 
 import Alavarse.Ortega.Battery.Commerce.DTO.UpdateUserDTO;
+import Alavarse.Ortega.Battery.Commerce.Entity.PromotionEntity;
 import Alavarse.Ortega.Battery.Commerce.Entity.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enum.UserStatus;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.ErrorWhileGettingUsersException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.InvalidDocumentException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.InvalidDocumentSizeException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -27,12 +26,8 @@ public class UserService {
         }
     }
 
-    public Optional<UserEntity> findById(String id){
-        try {
-            return repository.findById(id);
-        } catch (Exception e){
-            throw new ErrorWhileGettingUsersException();
-        }
+    public UserEntity findById(String id){
+            return repository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     public List<UserEntity> findByRole(String role) throws ErrorWhileGettingUsersException{
@@ -45,31 +40,23 @@ public class UserService {
 
     public UserEntity updateUser(String id, UpdateUserDTO data){
         try {
-            Optional<UserEntity> user = repository.findById(id);
-            if (user.isPresent()){
-                UserEntity updatedUser = user.get();
-                updatedUser.setName(data.name());
-                updatedUser.setPassword(data.password());
-                updatedUser.setStatus(data.status());
-                return repository.save(updatedUser);
-            }
-            throw new ErrorWhileGettingUsersException();
+            UserEntity user = repository.findById(id).orElseThrow(UserNotFoundException::new);
+            user.setName(data.name());
+            user.setPassword(data.password());
+            user.setStatus(data.status());
+            return repository.save(user);
         } catch (Exception e){
-            throw new ErrorWhileGettingUsersException();
+            throw new ErrorWhileSavingUserException();
         }
     }
 
-    public UserEntity technicalDelete(String id) throws ErrorWhileGettingUsersException{
+    public UserEntity technicalDelete(String id) throws ErrorWhileSavingUserException{
         try {
-            Optional<UserEntity> user = repository.findById(id);
-            if (user.isPresent()){
-                UserEntity newUser = user.get();
-                newUser.setStatus(UserStatus.INACTIVE);
-                return repository.save(newUser);
-            }
-            throw new ErrorWhileGettingUsersException();
+            UserEntity user = repository.findById(id).orElseThrow(UserNotFoundException::new);
+            user.setStatus(UserStatus.INACTIVE);
+            return repository.save(user);
         } catch (Exception e){
-            throw new ErrorWhileGettingUsersException();
+            throw new ErrorWhileSavingUserException();
         }
     }
 
@@ -105,4 +92,6 @@ public class UserService {
             throw new InvalidDocumentSizeException();
         }
     }
+
+
 }

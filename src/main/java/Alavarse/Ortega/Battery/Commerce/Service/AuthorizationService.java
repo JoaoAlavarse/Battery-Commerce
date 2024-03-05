@@ -6,6 +6,7 @@ import Alavarse.Ortega.Battery.Commerce.DTO.LoginResponseDTO;
 import Alavarse.Ortega.Battery.Commerce.DTO.RegisterDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.ErrorWhileSavingUserException;
 import Alavarse.Ortega.Battery.Commerce.Repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class AuthorizationService implements UserDetailsService{
         if (this.repository.findByEmail(data.email()) != null){
             throw new EmailAlredyExistsException();
         }
-        if (this.repository.findByDocument(data.document()) != null){
+        if (this.repository.findByDocument(data.document()).isPresent()){
             throw new DocumentAlredyExistsException();
         }
 
@@ -60,10 +61,14 @@ public class AuthorizationService implements UserDetailsService{
         verifyPassword(data.password());
         this.service.verifyDocument(data.document());
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        UserEntity newUser = new UserEntity(data.email(), encryptedPassword, data.name(), data.document(), data.role());
+        try {
+            String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
+            UserEntity newUser = new UserEntity(data.email(), encryptedPassword, data.name(), data.document(), data.role());
 
-        return this.repository.save(newUser);
+            return this.repository.save(newUser);
+        } catch (Exception e){
+            throw new ErrorWhileSavingUserException();
+        }
     }
 
     private void verifyEmail(String email) throws InvalidEmailException {

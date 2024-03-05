@@ -3,16 +3,14 @@ package Alavarse.Ortega.Battery.Commerce.Service;
 import Alavarse.Ortega.Battery.Commerce.DTO.AddressDTO;
 import Alavarse.Ortega.Battery.Commerce.DTO.UpdateAddressDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.AddressEntity;
-import Alavarse.Ortega.Battery.Commerce.Entity.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.AddressNotFoundException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.ErrorWhileGettingUsersException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.ErrorWhileGettingAddressException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.ErrorWhileSavingAddressException;
 import Alavarse.Ortega.Battery.Commerce.Repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AddressService {
@@ -21,43 +19,42 @@ public class AddressService {
     @Autowired
     private UserService userService;
 
-
     public AddressEntity create(AddressDTO data){
-        UserEntity foundUser = verifyUser(data.userId());
-        AddressEntity address = new AddressEntity(data, foundUser);
-        repository.save(address);
-        return address;
+        try {
+            return repository.save(new AddressEntity(data, userService.findById(data.userId())));
+        } catch (Exception e){
+            throw new ErrorWhileSavingAddressException();
+        }
     }
 
     public List<AddressEntity> getAll(){
-        return repository.findAll();
+        try {
+            return repository.findAll();
+        } catch (Exception e){
+            throw new ErrorWhileGettingAddressException();
+        }
     }
 
     public List<AddressEntity> getByUser(String userId){
-        UserEntity foundUser = verifyUser(userId);
-        return repository.findByUser(foundUser);
+        try {
+            return repository.findByUser(userService.findById(userId));
+        } catch (Exception e){
+            throw new ErrorWhileGettingAddressException();
+        }
     }
 
     public AddressEntity update(UpdateAddressDTO data, String addressId){
-        Optional<AddressEntity> foundAddress = repository.findById(addressId);
-        if (foundAddress.isEmpty()){
-            throw new AddressNotFoundException();
+        try {
+            AddressEntity foundAddress = repository.findById(addressId).orElseThrow(AddressNotFoundException::new);
+            foundAddress.setAddress(data.address());
+            foundAddress.setCity(data.city());
+            foundAddress.setCEP(data.CEP());
+            foundAddress.setState(data.state());
+            foundAddress.setComplement(data.complement());
+            foundAddress.setNumber(data.number());
+            return repository.save(foundAddress);
+        } catch (Exception e){
+            throw new ErrorWhileSavingAddressException();
         }
-        AddressEntity updatedAddress = foundAddress.get();
-        updatedAddress.setAddress(data.address());
-        updatedAddress.setCity(data.city());
-        updatedAddress.setCEP(data.CEP());
-        updatedAddress.setState(data.state());
-        updatedAddress.setComplement(data.complement());
-        updatedAddress.setNumber(data.number());
-        return repository.save(updatedAddress);
-    }
-
-    public UserEntity verifyUser(String userId){
-        Optional<UserEntity> optionalUser = userService.findById(userId);
-        if (optionalUser.isEmpty()){
-            throw new ErrorWhileGettingUsersException();
-        }
-        return optionalUser.get();
     }
 }

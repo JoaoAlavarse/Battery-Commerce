@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Optional<UserEntity>> getById(@PathVariable String id){
+    public ResponseEntity<UserEntity> getById(@PathVariable String id){
         return ResponseEntity.ok().body(this.service.findById(id));
     }
 
