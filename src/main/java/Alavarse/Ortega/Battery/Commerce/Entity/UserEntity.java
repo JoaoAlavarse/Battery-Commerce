@@ -11,7 +11,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Table(name = "users")
 @Entity
@@ -42,6 +44,15 @@ public class UserEntity implements UserDetails {
     @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<AddressEntity> address;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "user_promotions",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "promotion_id")
+    )
+    private Set<PromotionEntity> usedPromotions = new HashSet<>();
 
     public UserEntity(String email, String password, String name, String document, UserRole role) {
         this.email = email;
