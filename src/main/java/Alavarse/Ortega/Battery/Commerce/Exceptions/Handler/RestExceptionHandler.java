@@ -1,11 +1,9 @@
 package Alavarse.Ortega.Battery.Commerce.Exceptions.Handler;
 
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.AddressNotFoundException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.ErrorWhileSavingAddressException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.BatteryNotFoundException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileGettingBatteryException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileSavingBatteryException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.*;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,14 +56,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
-    @ExceptionHandler(EmailAlredyExistsException.class)
-    private ResponseEntity<ExceptionHandlerMessage> emailAlredyExists(EmailAlredyExistsException exception){
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    private ResponseEntity<ExceptionHandlerMessage> emailAlreadyExists(EmailAlreadyExistsException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
 
-    @ExceptionHandler(DocumentAlredyExistsException.class)
-    private ResponseEntity<ExceptionHandlerMessage> documentAlredyExists(DocumentAlredyExistsException exception){
+    @ExceptionHandler(DocumentAlreadyExistsException.class)
+    private ResponseEntity<ExceptionHandlerMessage> documentAlreadyExists(DocumentAlreadyExistsException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
@@ -110,6 +108,36 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<ExceptionHandlerMessage> errorWhileSavingBattery(ErrorWhileSavingBatteryException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileGettingPromotionException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorWhileGettingPromotion(ErrorWhileGettingPromotionException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileSavingPromotionException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorWhileSavingPromotion(ErrorWhileSavingPromotionException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(InvalidPromotionException.class)
+    private ResponseEntity<ExceptionHandlerMessage> invalidPromotion(InvalidPromotionException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+    @ExceptionHandler(PromotionAlreadyBeenUsedException.class)
+    private ResponseEntity<ExceptionHandlerMessage> promotionAlreadyBeenUsed(PromotionAlreadyBeenUsedException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
+
+    @ExceptionHandler(PromotionNotFoundException.class)
+    private ResponseEntity<ExceptionHandlerMessage> promotionAlreadyBeenUsed(PromotionNotFoundException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(handlerMessage);
     }
 
 }

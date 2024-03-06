@@ -55,7 +55,7 @@ public class PromotionService {
     public BigDecimal getDiscountValue(String code, BigDecimal totalValue, String userId){
         PromotionEntity promotion = repository.findByCode(code).orElseThrow(PromotionNotFoundException::new);
         if (hasPromotionBeenUsed(userId, code)){
-            throw new PromotionAlredyBeenUsedException();
+            throw new PromotionAlreadyBeenUsedException();
         }
         if (promotion.getStatus().equals(PromotionStatus.EXPIRED) || promotion.getStatus().equals(PromotionStatus.INACTIVE)){
             throw new InvalidPromotionException();
