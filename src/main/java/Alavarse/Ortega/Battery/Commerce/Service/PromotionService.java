@@ -4,8 +4,8 @@ import Alavarse.Ortega.Battery.Commerce.DTO.PromotionDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.PromotionEntity;
 import Alavarse.Ortega.Battery.Commerce.Entity.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enum.PromotionStatus;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repository.PromotionRepository;
-import org.hibernate.jpa.boot.spi.Bootstrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,19 +21,27 @@ public class PromotionService {
     private UserService userService;
 
     public PromotionEntity getByCode(String code){
-        return repository.findByCode(code).orElseThrow(RuntimeException::new);
+        return repository.findByCode(code).orElseThrow(PromotionNotFoundException::new);
     }
 
     public PromotionEntity getById(String id){
-        return repository.findById(id).orElseThrow(RuntimeException::new);
+        return repository.findById(id).orElseThrow(PromotionNotFoundException::new);
     }
 
     public List<PromotionEntity> getAll(){
-        return repository.findAllActive();
+        try {
+            return repository.findAllActive();
+        } catch (Exception e){
+            throw new ErrorWhileGettingPromotionException();
+        }
     }
 
     public PromotionEntity create(PromotionDTO data){
-        return repository.save(new PromotionEntity(data.expirationDate(), data.percentage(), data.code()));
+        try {
+            return repository.save(new PromotionEntity(data.expirationDate(), data.percentage(), data.code()));
+        } catch (Exception e){
+            throw new ErrorWhileSavingPromotionException();
+        }
     }
 
     public void autoExpire(){
@@ -45,29 +53,36 @@ public class PromotionService {
     }
 
     public BigDecimal getDiscountValue(String code, BigDecimal totalValue, String userId){
-        PromotionEntity promotion = repository.findByCode(code).orElseThrow(RuntimeException::new);
+        PromotionEntity promotion = repository.findByCode(code).orElseThrow(PromotionNotFoundException::new);
         if (hasPromotionBeenUsed(userId, code)){
-            throw new RuntimeException();
+            throw new PromotionAlredyBeenUsedException();
         }
         if (promotion.getStatus().equals(PromotionStatus.EXPIRED) || promotion.getStatus().equals(PromotionStatus.INACTIVE)){
-            throw new RuntimeException();
+            throw new InvalidPromotionException();
         }
-        BigDecimal percentage = BigDecimal.valueOf(promotion.getPercentage());
-        BigDecimal multiplier = percentage.divide(BigDecimal.valueOf(100));
-        BigDecimal discountAmount = totalValue.multiply(multiplier);
-        return totalValue.subtract(discountAmount);
+        try {
+            BigDecimal percentage = BigDecimal.valueOf(promotion.getPercentage());
+            BigDecimal multiplier = percentage.divide(BigDecimal.valueOf(100));
+            BigDecimal discountAmount = totalValue.multiply(multiplier);
+            return totalValue.subtract(discountAmount);
+        } catch (Exception e){
+            throw new ErrorWhileSavingPromotionException();
+        }
     }
 
     public PromotionEntity technicalDelete(String code){
-        PromotionEntity promotion = repository.findByCode(code).orElseThrow(RuntimeException::new);
-        promotion.setStatus(PromotionStatus.INACTIVE);
-        return repository.save(promotion);
+        try {
+            PromotionEntity promotion = repository.findByCode(code).orElseThrow(PromotionNotFoundException::new);
+            promotion.setStatus(PromotionStatus.INACTIVE);
+            return repository.save(promotion);
+        } catch (Exception e){
+            throw new ErrorWhileSavingPromotionException();
+        }
     }
 
     public boolean hasPromotionBeenUsed(String userId, String promotionCode){
         UserEntity user = userService.findById(userId);
         PromotionEntity promotion = getByCode(promotionCode);
-
         return user.getUsedPromotions().contains(promotion);
     }
 
