@@ -3,6 +3,9 @@ package Alavarse.Ortega.Battery.Commerce.Exceptions.Handler;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.AddressNotFoundException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.ErrorWhileSavingAddressException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.BatteryNotFoundException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileGettingBatteryException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileSavingBatteryException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -90,4 +93,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }
+
+    @ExceptionHandler(BatteryNotFoundException.class)
+    private ResponseEntity<ExceptionHandlerMessage> batteryNotFound(BatteryNotFoundException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileGettingBatteryException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorWhileGettingBattery(ErrorWhileGettingBatteryException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileSavingUserException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorWhileSavingBattery(ErrorWhileSavingBatteryException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
 }

@@ -3,15 +3,15 @@ package Alavarse.Ortega.Battery.Commerce.Service;
 import Alavarse.Ortega.Battery.Commerce.DTO.BatteryDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.BatteryEntity;
 import Alavarse.Ortega.Battery.Commerce.Enum.BatteryStatus;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.BatteryNotFoundException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileGettingBatteryException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileSavingBatteryException;
 import Alavarse.Ortega.Battery.Commerce.Repository.BatteryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class BatteryService {
@@ -20,48 +20,56 @@ public class BatteryService {
 
     public BatteryEntity create(BatteryDTO data){
         try {
-        return repository.save(new BatteryEntity(data.name(), data.description(), data.value(), data.quantity()));
-
+            return repository.save(new BatteryEntity(data.name(), data.description(), data.value(), data.quantity()));
         } catch (Exception e){
-            e.printStackTrace();
+            throw new ErrorWhileSavingBatteryException();
         }
-        return null;
     }
 
     public List<BatteryEntity> getAllActive(){
-        return repository.findAllActive();
+        try {
+            return repository.findAllActive();
+        } catch (Exception e){
+            throw new ErrorWhileGettingBatteryException();
+        }
     }
 
     public BatteryEntity getById(String id){
-        return repository.findById(id).orElseThrow(RuntimeException::new);
+        return repository.findById(id).orElseThrow(BatteryNotFoundException::new);
     }
 
     public BatteryEntity technicalDelete(String id){
-        Optional<BatteryEntity> optional = repository.findById(id);
-        if (optional.isEmpty()){
-            throw new RuntimeException();
+        try {
+            BatteryEntity battery = repository.findById(id).orElseThrow(BatteryNotFoundException::new);
+            battery.setStatus(BatteryStatus.INACTIVE);
+            return repository.save(battery);
+        } catch (Exception e){
+            throw new ErrorWhileSavingBatteryException();
         }
-        BatteryEntity battery = optional.get();
-        battery.setStatus(BatteryStatus.INACTIVE);
-        return repository.save(battery);
     }
 
 
 
     public BatteryEntity update(String id, BatteryDTO data){
-        BatteryEntity battery = repository.findById(id).orElseThrow(RuntimeException::new);
-        battery.setName(data.name());
-        battery.setDescription(data.description());
-        battery.setStatus(data.status());
-        battery.setValue(data.value());
-        return repository.save(battery);
+        try {
+            BatteryEntity battery = repository.findById(id).orElseThrow(BatteryNotFoundException::new);
+            battery.setName(data.name());
+            battery.setDescription(data.description());
+            battery.setStatus(data.status());
+            battery.setValue(data.value());
+            return repository.save(battery);
+        } catch (Exception e){
+            throw new ErrorWhileSavingBatteryException();
+        }
     }
 
     public BatteryEntity updateQuantity (String id, Integer quantity){
-        BatteryEntity battery = repository.findById(id).orElseThrow(RuntimeException::new);
-        battery.setQuantity(battery.getQuantity() + quantity);
-        return repository.save(battery);
+        try {
+            BatteryEntity battery = repository.findById(id).orElseThrow(BatteryNotFoundException::new);
+            battery.setQuantity(battery.getQuantity() - quantity);
+            return repository.save(battery);
+        } catch (Exception e){
+            throw new ErrorWhileSavingBatteryException();
+        }
     }
-
-
 }
