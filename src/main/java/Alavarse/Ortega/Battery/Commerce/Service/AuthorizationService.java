@@ -10,8 +10,6 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.ErrorWhileSavi
 import Alavarse.Ortega.Battery.Commerce.Repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,10 +49,10 @@ public class AuthorizationService implements UserDetailsService{
 
     public UserEntity register(@RequestBody @Valid RegisterDTO data) throws RuntimeException {
         if (this.repository.findByEmail(data.email()) != null){
-            throw new EmailAlredyExistsException();
+            throw new EmailAlreadyExistsException();
         }
         if (this.repository.findByDocument(data.document()).isPresent()){
-            throw new DocumentAlredyExistsException();
+            throw new DocumentAlreadyExistsException();
         }
 
         verifyEmail(data.email());
