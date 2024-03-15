@@ -6,6 +6,7 @@ import Alavarse.Ortega.Battery.Commerce.Enum.UserStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,6 +45,9 @@ public class UserEntity implements UserDetails {
     @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<AddressEntity> address;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<CartEntity> carts;
 
     @JsonIgnore
     @ManyToMany

@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "battery")
@@ -30,6 +32,9 @@ public class BatteryEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private BatteryStatus status;
+
+    @ManyToMany(mappedBy = "batteries")
+    private Set<CartEntity> carts = new HashSet<>();
 
 
     public BatteryEntity(String name, String description, BigDecimal value, Integer quantity) {

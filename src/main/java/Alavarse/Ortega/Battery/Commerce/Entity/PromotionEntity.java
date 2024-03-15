@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -43,6 +44,10 @@ public class PromotionEntity {
     @JsonIgnore
     @ManyToMany(mappedBy = "usedPromotions")
     private Set<UserEntity> users = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY)
+    private List<CartEntity> carts;
 
     public PromotionEntity(LocalDate expirationDate, Integer percentage, String code) {
         this.expirationDate = expirationDate;
