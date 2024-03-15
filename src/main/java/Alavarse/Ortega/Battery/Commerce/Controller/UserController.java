@@ -40,4 +40,9 @@ public class UserController {
     public ResponseEntity<UserEntity> technicalDelete(@PathVariable String id){
         return ResponseEntity.ok().body(this.service.technicalDelete(id));
     }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserEntity> turnIntoAdmin(@PathVariable String id){
+        return ResponseEntity.ok().body(this.service.turnIntoAdmin(id));
+    }
 }

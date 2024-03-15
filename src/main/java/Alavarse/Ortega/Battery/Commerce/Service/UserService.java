@@ -3,6 +3,7 @@ package Alavarse.Ortega.Battery.Commerce.Service;
 import Alavarse.Ortega.Battery.Commerce.DTO.UpdateUserDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.PromotionEntity;
 import Alavarse.Ortega.Battery.Commerce.Entity.UserEntity;
+import Alavarse.Ortega.Battery.Commerce.Enum.UserRole;
 import Alavarse.Ortega.Battery.Commerce.Enum.UserStatus;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repository.UserRepository;
@@ -44,6 +45,16 @@ public class UserService {
             user.setName(data.name());
             user.setPassword(data.password());
             user.setStatus(data.status());
+            return repository.save(user);
+        } catch (Exception e){
+            throw new ErrorWhileSavingUserException();
+        }
+    }
+
+    public UserEntity turnIntoAdmin(String id){
+        try {
+            UserEntity user = repository.findById(id).orElseThrow(UserNotFoundException::new);
+            user.setRole(UserRole.ADMIN);
             return repository.save(user);
         } catch (Exception e){
             throw new ErrorWhileSavingUserException();
