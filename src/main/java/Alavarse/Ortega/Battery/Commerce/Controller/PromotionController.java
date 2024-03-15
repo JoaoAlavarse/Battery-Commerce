@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -39,6 +40,11 @@ public class PromotionController {
     @GetMapping
     public ResponseEntity<List<PromotionEntity>> getAll(){
         return ResponseEntity.ok().body(service.getAll());
+    }
+
+    @PostMapping("/{code}/total")
+    public ResponseEntity<BigDecimal> getTotalValue(@PathVariable String code, @RequestBody String userId, @RequestBody BigDecimal totalValue){
+        return ResponseEntity.ok().body(service.getDiscountValue(code, totalValue, userId));
     }
 
 }
