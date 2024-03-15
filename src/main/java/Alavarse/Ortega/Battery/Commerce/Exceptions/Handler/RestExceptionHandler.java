@@ -68,12 +68,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
 
-    @ExceptionHandler(ErrorWhileSavingUserException.class)
-    private ResponseEntity<ExceptionHandlerMessage> errorSavingUser(ErrorWhileSavingUserException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
-    }
-
     @ExceptionHandler(UserNotFoundException.class)
     private ResponseEntity<ExceptionHandlerMessage> userNotFound(UserNotFoundException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_FOUND, exception.getMessage());
