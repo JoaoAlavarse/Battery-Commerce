@@ -86,4 +86,10 @@ public class PromotionService {
         return user.getUsedPromotions().contains(promotion);
     }
 
+    public boolean setPromotionUsed(String userId, String promotionCode){
+        UserEntity user = userService.findById(userId);
+        PromotionEntity promotion = getByCode(promotionCode);
+        return user.getUsedPromotions().add(promotion);
+    }
+
 }
