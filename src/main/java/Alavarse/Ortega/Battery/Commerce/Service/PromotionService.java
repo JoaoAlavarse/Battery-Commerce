@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -40,6 +41,9 @@ public class PromotionService {
     public PromotionEntity create(PromotionDTO data){
         if (repository.findByCode(data.code()).isPresent()){
             throw new PromotionAlreadyExists();
+        }
+        if (LocalDate.now().isBefore(data.expirationDate())){
+            throw new InvalidExpirationDateException();
         }
         try {
             return repository.save(new PromotionEntity(data.expirationDate(), data.percentage(), data.code()));
@@ -96,4 +100,13 @@ public class PromotionService {
         return user.getUsedPromotions().add(promotion);
     }
 
+    public PromotionEntity reactivePromotion(String code, LocalDate date){
+        PromotionEntity promotion = this.getByCode(code);
+        if (date.isBefore(promotion.getExpirationDate())){
+            throw new InvalidExpirationDateException();
+        }
+        promotion.setExpirationDate(date);
+        promotion.setStatus(PromotionStatus.ACTIVE);
+        return repository.save(promotion);
+    }
 }

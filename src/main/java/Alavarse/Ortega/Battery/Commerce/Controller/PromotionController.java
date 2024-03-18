@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -46,6 +47,11 @@ public class PromotionController {
     @PostMapping("/{code}/total")
     public ResponseEntity<BigDecimal> getTotalValue(@PathVariable String code, @RequestBody DiscountDTO data){
         return ResponseEntity.ok().body(service.getDiscountValue(code, data));
+    }
+
+    @PostMapping("/{code}/reactive")
+    public ResponseEntity<PromotionEntity> reactivePromotion(@PathVariable String code, @RequestBody LocalDate date){
+        return ResponseEntity.ok().body(service.reactivePromotion(code, date));
     }
 
 }
