@@ -9,6 +9,7 @@ import Alavarse.Ortega.Battery.Commerce.Enum.UserRole;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.ErrorWhileSavingUserException;
 import Alavarse.Ortega.Battery.Commerce.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,6 +33,8 @@ public class AuthorizationService implements UserDetailsService{
     private TokenService tokenService;
     @Autowired
     private UserService service;
+    @Autowired
+    private CartService cartService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -64,7 +67,9 @@ public class AuthorizationService implements UserDetailsService{
             String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
             UserEntity newUser = new UserEntity(data.email(), encryptedPassword, data.name(), data.document(), UserRole.USER);
 
-            return this.repository.save(newUser);
+            UserEntity user = this.repository.save(newUser);
+            cartService.create(user.getUserId());
+            return user;
         } catch (Exception e){
             throw new ErrorWhileSavingUserException();
         }

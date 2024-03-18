@@ -37,9 +37,4 @@ public class AuthenticationController {
     public ResponseEntity<UserEntity> register(@RequestBody @Valid RegisterDTO data) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.service.register(data));
     }
-
-    @GetMapping
-    public List<UserEntity> teste(){
-        return  repository.findAll();
-    }
 }

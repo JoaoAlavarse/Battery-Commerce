@@ -1,6 +1,7 @@
 package Alavarse.Ortega.Battery.Commerce.Entity;
 
 import Alavarse.Ortega.Battery.Commerce.Enum.PromotionStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,10 +26,12 @@ public class PromotionEntity {
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate expirationDate;
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate startDate;
 
     @Column(nullable = false)

@@ -1,5 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Service;
 
+import Alavarse.Ortega.Battery.Commerce.DTO.DiscountDTO;
 import Alavarse.Ortega.Battery.Commerce.DTO.PromotionDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.PromotionEntity;
 import Alavarse.Ortega.Battery.Commerce.Entity.UserEntity;
@@ -37,6 +38,9 @@ public class PromotionService {
     }
 
     public PromotionEntity create(PromotionDTO data){
+        if (repository.findByCode(data.code()).isPresent()){
+            throw new PromotionAlreadyExists();
+        }
         try {
             return repository.save(new PromotionEntity(data.expirationDate(), data.percentage(), data.code()));
         } catch (Exception e){
@@ -52,9 +56,9 @@ public class PromotionService {
         });
     }
 
-    public BigDecimal getDiscountValue(String code, BigDecimal totalValue, String userId){
+    public BigDecimal getDiscountValue(String code, DiscountDTO data){
         PromotionEntity promotion = repository.findByCode(code).orElseThrow(PromotionNotFoundException::new);
-        if (hasPromotionBeenUsed(userId, code)){
+        if (hasPromotionBeenUsed(data.userId(), code)){
             throw new PromotionAlreadyBeenUsedException();
         }
         if (promotion.getStatus().equals(PromotionStatus.EXPIRED) || promotion.getStatus().equals(PromotionStatus.INACTIVE)){
@@ -63,8 +67,8 @@ public class PromotionService {
         try {
             BigDecimal percentage = BigDecimal.valueOf(promotion.getPercentage());
             BigDecimal multiplier = percentage.divide(BigDecimal.valueOf(100));
-            BigDecimal discountAmount = totalValue.multiply(multiplier);
-            return totalValue.subtract(discountAmount);
+            BigDecimal discountAmount = data.totalValue().multiply(multiplier);
+            return data.totalValue().subtract(discountAmount);
         } catch (Exception e){
             throw new ErrorWhileSavingPromotionException();
         }

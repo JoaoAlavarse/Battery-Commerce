@@ -134,4 +134,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(handlerMessage);
     }
 
+    @ExceptionHandler(PromotionAlreadyExists.class)
+    private ResponseEntity<ExceptionHandlerMessage> promotionAlreadyExists(PromotionAlreadyExists exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
+
 }

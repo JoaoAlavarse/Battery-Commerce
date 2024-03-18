@@ -66,7 +66,7 @@ public class BatteryService {
     public BatteryEntity updateQuantity (String id, Integer quantity){
         try {
             BatteryEntity battery = repository.findById(id).orElseThrow(BatteryNotFoundException::new);
-            battery.setQuantity(battery.getQuantity() - quantity);
+            battery.setQuantity(quantity);
             return repository.save(battery);
         } catch (Exception e){
             throw new ErrorWhileSavingBatteryException();

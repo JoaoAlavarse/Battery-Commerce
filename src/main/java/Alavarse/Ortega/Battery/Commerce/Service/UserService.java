@@ -9,6 +9,7 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,8 +43,9 @@ public class UserService {
     public UserEntity updateUser(String id, UpdateUserDTO data){
         try {
             UserEntity user = repository.findById(id).orElseThrow(UserNotFoundException::new);
+            String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
             user.setName(data.name());
-            user.setPassword(data.password());
+            user.setPassword(encryptedPassword);
             user.setStatus(data.status());
             return repository.save(user);
         } catch (Exception e){

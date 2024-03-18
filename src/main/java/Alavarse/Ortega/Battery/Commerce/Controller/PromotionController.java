@@ -1,5 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Controller;
 
+import Alavarse.Ortega.Battery.Commerce.DTO.DiscountDTO;
 import Alavarse.Ortega.Battery.Commerce.DTO.PromotionDTO;
 import Alavarse.Ortega.Battery.Commerce.Entity.PromotionEntity;
 import Alavarse.Ortega.Battery.Commerce.Service.PromotionService;
@@ -43,8 +44,8 @@ public class PromotionController {
     }
 
     @PostMapping("/{code}/total")
-    public ResponseEntity<BigDecimal> getTotalValue(@PathVariable String code, @RequestBody String userId, @RequestBody BigDecimal totalValue){
-        return ResponseEntity.ok().body(service.getDiscountValue(code, totalValue, userId));
+    public ResponseEntity<BigDecimal> getTotalValue(@PathVariable String code, @RequestBody DiscountDTO data){
+        return ResponseEntity.ok().body(service.getDiscountValue(code, data));
     }
 
 }

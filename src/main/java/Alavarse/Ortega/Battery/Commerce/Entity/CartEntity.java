@@ -1,11 +1,14 @@
 package Alavarse.Ortega.Battery.Commerce.Entity;
 
 import Alavarse.Ortega.Battery.Commerce.Enum.CartStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,13 +26,15 @@ public class CartEntity {
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate creationDate;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private CartStatus status;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
@@ -45,9 +50,11 @@ public class CartEntity {
     )
     private Set<BatteryEntity> batteries = new HashSet<>();
 
+
     public CartEntity(UserEntity user) {
         this.creationDate = LocalDate.now();
         this.user = user;
+        this.status = CartStatus.OPENED;
     }
 
     public CartEntity(PromotionEntity promotion, Set<BatteryEntity> batteries) {

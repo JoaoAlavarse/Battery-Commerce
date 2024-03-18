@@ -27,6 +27,14 @@ public class AddressService {
         }
     }
 
+    public AddressEntity getById(String id){
+        try {
+            return repository.findById(id).orElseThrow(AddressNotFoundException::new);
+        } catch (Exception e){
+            throw new ErrorWhileGettingAddressException();
+        }
+    }
+
     public List<AddressEntity> getAll(){
         try {
             return repository.findAll();

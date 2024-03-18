@@ -33,6 +33,7 @@ public class BatteryEntity {
     @Enumerated(EnumType.STRING)
     private BatteryStatus status;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "batteries")
     private Set<CartEntity> carts = new HashSet<>();
 
