@@ -1,7 +1,7 @@
 package Alavarse.Ortega.Battery.Commerce.Infrastructure.Security;
 
-import Alavarse.Ortega.Battery.Commerce.Repository.UserRepository;
-import Alavarse.Ortega.Battery.Commerce.Service.TokenService;
+import Alavarse.Ortega.Battery.Commerce.Repositories.UserRepository;
+import Alavarse.Ortega.Battery.Commerce.Services.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
