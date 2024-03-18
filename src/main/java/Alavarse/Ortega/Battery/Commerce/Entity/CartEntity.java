@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -33,6 +34,9 @@ public class CartEntity {
     @Enumerated(EnumType.STRING)
     private CartStatus status;
 
+    @Column(nullable = false)
+    private BigDecimal totalValue;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -55,6 +59,7 @@ public class CartEntity {
         this.creationDate = LocalDate.now();
         this.user = user;
         this.status = CartStatus.OPENED;
+        this.totalValue = BigDecimal.valueOf(0.00);
     }
 
     public CartEntity(PromotionEntity promotion, Set<BatteryEntity> batteries) {
