@@ -4,12 +4,14 @@ import Alavarse.Ortega.Battery.Commerce.DTOs.DiscountDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.BatteryEntity;
 import Alavarse.Ortega.Battery.Commerce.Entities.CartEntity;
 import Alavarse.Ortega.Battery.Commerce.Entities.PromotionEntity;
+import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.CartStatus;
 import Alavarse.Ortega.Battery.Commerce.Repositories.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,9 +46,14 @@ public class CartService {
 
     public void autoCancel(){
         List<CartEntity> list = this.getAll();
+        List<UserEntity> userList = new ArrayList<>();
         list.forEach(cartEntity -> {
             cartEntity.setStatus(CartStatus.CANCELLED);
+            userList.add(cartEntity.getUser());
             repository.save(cartEntity);
+        });
+        userList.forEach(userEntity -> {
+            this.create(userEntity.getUserId());
         });
     }
 
