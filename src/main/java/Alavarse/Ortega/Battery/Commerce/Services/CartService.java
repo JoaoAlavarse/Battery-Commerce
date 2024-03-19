@@ -39,7 +39,7 @@ public class CartService {
     public List<CartEntity> getAll(){
         List<CartEntity> list = repository.findAll();
         list.forEach(cart -> {
-            this.getTotalValue(cart.getCartId());
+            cart.setTotalValue(this.getTotalValue(cart.getCartId()));
         });
         return list;
     }
@@ -59,18 +59,20 @@ public class CartService {
 
     public CartEntity addBatteries(String id, String batteryId){
         CartEntity cart = this.getById(id);
-        BatteryEntity battery = batteryService.getById(id);
+        BatteryEntity battery = batteryService.getById(batteryId);
         if (cart.getBatteries().contains(battery)){
             throw new RuntimeException();
         }
         cart.getBatteries().add(battery);
+        cart.setTotalValue(this.getTotalValue(id));
         return repository.save(cart);
     }
 
     public CartEntity removeBatteries(String id, String batteryId){
         CartEntity cart = this.getById(id);
-        BatteryEntity battery = batteryService.getById(id);
+        BatteryEntity battery = batteryService.getById(batteryId);
         cart.getBatteries().remove(battery);
+        cart.setTotalValue(this.getTotalValue(id));
         return repository.save(cart);
     }
 
@@ -89,10 +91,10 @@ public class CartService {
 
     public BigDecimal getTotalValue(String id){
         BigDecimal batteryValues = BigDecimal.ZERO;
-        CartEntity cart = this.getById(id);
-        cart.getBatteries().forEach(battery -> {
-            batteryValues.add(battery.getValue());
-        });
+        CartEntity cart = repository.findById(id).orElseThrow(RuntimeException::new);;
+        for (BatteryEntity battery : cart.getBatteries()) {
+            batteryValues = batteryValues.add(battery.getValue());
+        }
         cart.setTotalValue(batteryValues);
         if (cart.getPromotion() == null){
             repository.save(cart);
@@ -103,6 +105,7 @@ public class CartService {
         repository.save(cart);
         return cart.getTotalValue();
     }
+
 
     public CartEntity removePromotion(String id){
         CartEntity cart = this.getById(id);
