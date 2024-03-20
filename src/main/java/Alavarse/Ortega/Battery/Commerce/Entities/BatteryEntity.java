@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,8 +35,8 @@ public class BatteryEntity {
     private BatteryStatus status;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "batteries")
-    private Set<CartEntity> carts = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "battery")
+    private List<CartBatteryEntity> carts = new ArrayList<>();
 
 
     public BatteryEntity(String name, String description, BigDecimal value, Integer quantity) {

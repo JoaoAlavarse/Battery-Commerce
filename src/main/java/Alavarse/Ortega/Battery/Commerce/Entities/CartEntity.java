@@ -45,13 +45,8 @@ public class CartEntity {
     @JoinColumn(name = "promotion_id")
     private PromotionEntity promotion;
 
-    @ManyToMany
-    @JoinTable(
-            name = "cart_batteries",
-            joinColumns = @JoinColumn(name = "cart_id"),
-            inverseJoinColumns = @JoinColumn(name = "battery_id")
-    )
-    private Set<BatteryEntity> batteries = new HashSet<>();
+    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)
+    private Set<CartBatteryEntity> batteries = new HashSet<>();
 
 
     public CartEntity(UserEntity user) {
@@ -61,12 +56,12 @@ public class CartEntity {
         this.totalValue = BigDecimal.ZERO;
     }
 
-    public CartEntity(PromotionEntity promotion, Set<BatteryEntity> batteries) {
+    public CartEntity(PromotionEntity promotion, Set<CartBatteryEntity> batteries) {
         this.promotion = promotion;
         this.batteries = batteries;
     }
 
-    public CartEntity(Set<BatteryEntity> batteries) {
+    public CartEntity(Set<CartBatteryEntity> batteries) {
         this.batteries = batteries;
     }
 }

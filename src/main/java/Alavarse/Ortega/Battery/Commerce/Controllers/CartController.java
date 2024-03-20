@@ -39,9 +39,9 @@ public class CartController {
         return ResponseEntity.ok().body(this.service.removePromotion(id));
     }
 
-    @PutMapping("/{id}/battery/{batteryId}")
-    public ResponseEntity<CartEntity> addBattery(@PathVariable String id, @PathVariable String batteryId){
-        return ResponseEntity.ok().body(this.service.addBatteries(id, batteryId));
+    @PutMapping("/{id}/battery/{batteryId}/quantity/{quantity}")
+    public ResponseEntity<CartEntity> addBattery(@PathVariable String id, @PathVariable String batteryId, @PathVariable int quantity){
+        return ResponseEntity.ok().body(this.service.addBatteries(id, batteryId, quantity));
     }
 
     @PutMapping("/{id}/promotion/{promotionCode}")

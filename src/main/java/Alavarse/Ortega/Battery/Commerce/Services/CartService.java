@@ -1,11 +1,9 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
 import Alavarse.Ortega.Battery.Commerce.DTOs.DiscountDTO;
-import Alavarse.Ortega.Battery.Commerce.Entities.BatteryEntity;
-import Alavarse.Ortega.Battery.Commerce.Entities.CartEntity;
-import Alavarse.Ortega.Battery.Commerce.Entities.PromotionEntity;
-import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
+import Alavarse.Ortega.Battery.Commerce.Entities.*;
 import Alavarse.Ortega.Battery.Commerce.Enums.CartStatus;
+import Alavarse.Ortega.Battery.Commerce.Repositories.CartBatteryRepository;
 import Alavarse.Ortega.Battery.Commerce.Repositories.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +22,8 @@ public class CartService {
     private BatteryService batteryService;
     @Autowired
     private PromotionService promotionService;
+    @Autowired
+    private CartBatteryRepository cartBatteryRepository;
 
     public CartEntity create(String userId){
         return repository.save(new CartEntity(userService.findById(userId)));
@@ -57,13 +57,22 @@ public class CartService {
         });
     }
 
-    public CartEntity addBatteries(String id, String batteryId){
+    public CartEntity addBatteries(String id, String batteryId, int quantity){
         CartEntity cart = this.getById(id);
         BatteryEntity battery = batteryService.getById(batteryId);
-        if (cart.getBatteries().contains(battery)){
-            throw new RuntimeException();
+
+        if (battery.getQuantity() < quantity){
+            throw new RuntimeException("numero bateria");
         }
-        cart.getBatteries().add(battery);
+
+        boolean exists = cart.getBatteries().stream().anyMatch(cartBatteryEntity -> cartBatteryEntity.getBattery().getBatteryId().equals(batteryId));
+        if (exists){
+            throw new RuntimeException("Ja tem");
+        }
+
+        CartBatteryEntity cartBatteryEntity = new CartBatteryEntity(quantity, battery, cart);
+        cartBatteryRepository.save(cartBatteryEntity);
+        cart.getBatteries().add(cartBatteryEntity);
         cart.setTotalValue(this.getTotalValue(id));
         return repository.save(cart);
     }
@@ -71,7 +80,20 @@ public class CartService {
     public CartEntity removeBatteries(String id, String batteryId){
         CartEntity cart = this.getById(id);
         BatteryEntity battery = batteryService.getById(batteryId);
-        cart.getBatteries().remove(battery);
+
+        CartBatteryEntity cartBatteryToRemove = null;
+        for (CartBatteryEntity cartBattery : cart.getBatteries()) {
+            if (cartBattery.getBattery().getBatteryId().equals(batteryId)) {
+                cartBatteryToRemove = cartBattery;
+                break;
+            }
+        }
+
+        if (cartBatteryToRemove != null) {
+            cart.getBatteries().remove(cartBatteryToRemove);
+        }
+
+        cartBatteryRepository.delete(cartBatteryToRemove);
         cart.setTotalValue(this.getTotalValue(id));
         return repository.save(cart);
     }
@@ -92,9 +114,8 @@ public class CartService {
     public BigDecimal getTotalValue(String id){
         BigDecimal batteryValues = BigDecimal.ZERO;
         CartEntity cart = repository.findById(id).orElseThrow(RuntimeException::new);;
-        for (BatteryEntity battery : cart.getBatteries()) {
-            batteryValues = batteryValues.add(battery.getValue());
-        }
+        for (CartBatteryEntity cartBattery : cart.getBatteries()) {
+            batteryValues = batteryValues.add(cartBattery.getBattery().getValue().multiply(BigDecimal.valueOf(cartBattery.getQuantity())));        }
         cart.setTotalValue(batteryValues);
         if (cart.getPromotion() == null){
             repository.save(cart);
