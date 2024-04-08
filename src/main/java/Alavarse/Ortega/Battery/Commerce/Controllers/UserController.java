@@ -5,6 +5,7 @@ import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,11 @@ public class UserController {
     @GetMapping("/role/{role}")
     public ResponseEntity<List<UserEntity>> getByRole(@PathVariable String role){
         return ResponseEntity.ok().body(this.service.findByRole(role));
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserDetails> getByEmail(@PathVariable String email){
+        return ResponseEntity.ok().body(this.service.getByEmail(email));
     }
 
     @GetMapping(value = "/{id}")

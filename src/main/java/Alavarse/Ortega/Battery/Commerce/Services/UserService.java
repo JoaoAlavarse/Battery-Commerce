@@ -7,6 +7,7 @@ import Alavarse.Ortega.Battery.Commerce.Enums.UserStatus;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,14 @@ public class UserService {
             return repository.findAllActiveUsers();
         } catch (Exception e){
             throw new ErrorWhileGettingUsersException();
+        }
+    }
+
+    public UserDetails getByEmail(String email){
+        try {
+            return repository.findByEmail(email);
+        } catch (Exception e){
+            throw new UserNotFoundException();
         }
     }
 
