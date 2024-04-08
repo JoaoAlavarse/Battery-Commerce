@@ -3,6 +3,7 @@ package Alavarse.Ortega.Battery.Commerce.Services;
 import Alavarse.Ortega.Battery.Commerce.DTOs.DiscountDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.*;
 import Alavarse.Ortega.Battery.Commerce.Enums.CartStatus;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.CartExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.CartBatteryRepository;
 import Alavarse.Ortega.Battery.Commerce.Repositories.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,35 +27,49 @@ public class CartService {
     private CartBatteryRepository cartBatteryRepository;
 
     public CartEntity create(String userId){
-        return repository.save(new CartEntity(userService.findById(userId)));
+        try {
+            return repository.save(new CartEntity(userService.findById(userId)));
+        } catch (Exception e){
+            throw new ErrorWhileSavingCartException();
+        }
     }
 
     public CartEntity getById(String id){
-        CartEntity cart = repository.findById(id).orElseThrow(RuntimeException::new);
-        BigDecimal newValue = this.getTotalValue(cart.getCartId());
-        cart.setTotalValue(newValue);
-        return repository.save(cart);
+        CartEntity cart = repository.findById(id).orElseThrow(CartNotFoundException::new);
+        try {
+            BigDecimal newValue = this.getTotalValue(cart.getCartId());
+            cart.setTotalValue(newValue);
+            return repository.save(cart);
+        } catch (Exception e){
+            throw new ErrorWhileSavingCartException();
+        }
     }
 
     public List<CartEntity> getAll(){
-        List<CartEntity> list = repository.findAll();
-        list.forEach(cart -> {
-            cart.setTotalValue(this.getTotalValue(cart.getCartId()));
-        });
-        return list;
+        try {
+            List<CartEntity> list = repository.findAll();
+            list.forEach(cart -> {
+                cart.setTotalValue(this.getTotalValue(cart.getCartId()));
+            });
+            return list;
+        } catch (Exception e){
+            throw new ErrorWhileGettingCartException();
+        }
     }
 
     public void autoCancel(){
-        List<CartEntity> list = this.getAll();
         List<UserEntity> userList = new ArrayList<>();
-        list.forEach(cartEntity -> {
-            cartEntity.setStatus(CartStatus.CANCELLED);
+        for (CartEntity cartEntity : repository.findByTwoDaysOfExistence()){
+            if (cartEntity.getBatteries().isEmpty()){
+                this.create(cartEntity.getUser().getUserId());
+                repository.delete(cartEntity);
+                continue;
+            }
             userList.add(cartEntity.getUser());
+            cartEntity.setStatus(CartStatus.CANCELLED);
             repository.save(cartEntity);
-        });
-        userList.forEach(userEntity -> {
-            this.create(userEntity.getUserId());
-        });
+        }
+        userList.forEach(userEntity -> this.create(userEntity.getUserId()));
     }
 
     public CartEntity addBatteries(String id, String batteryId, int quantity){
@@ -62,40 +77,44 @@ public class CartService {
         BatteryEntity battery = batteryService.getById(batteryId);
 
         if (battery.getQuantity() < quantity){
-            throw new RuntimeException("numero bateria");
+            throw new InsufficientBatteriesToAddException();
         }
 
         boolean exists = cart.getBatteries().stream().anyMatch(cartBatteryEntity -> cartBatteryEntity.getBattery().getBatteryId().equals(batteryId));
         if (exists){
-            throw new RuntimeException("Ja tem");
+            throw new BatteryAlreadyExistsInException();
         }
 
-        CartBatteryEntity cartBatteryEntity = new CartBatteryEntity(quantity, battery, cart);
-        cartBatteryRepository.save(cartBatteryEntity);
-        cart.getBatteries().add(cartBatteryEntity);
-        cart.setTotalValue(this.getTotalValue(id));
-        return repository.save(cart);
+        try {
+            CartBatteryEntity cartBatteryEntity = new CartBatteryEntity(quantity, battery, cart);
+            cartBatteryRepository.save(cartBatteryEntity);
+            cart.getBatteries().add(cartBatteryEntity);
+            cart.setTotalValue(this.getTotalValue(id));
+            return repository.save(cart);
+        } catch (Exception e){
+            throw new ErrorWhileSavingCartException();
+        }
     }
 
     public CartEntity removeBatteries(String id, String batteryId){
         CartEntity cart = this.getById(id);
         BatteryEntity battery = batteryService.getById(batteryId);
 
-        CartBatteryEntity cartBatteryToRemove = null;
         for (CartBatteryEntity cartBattery : cart.getBatteries()) {
             if (cartBattery.getBattery().getBatteryId().equals(batteryId)) {
-                cartBatteryToRemove = cartBattery;
+                cart.getBatteries().remove(cartBattery);
+                cartBatteryRepository.delete(cartBattery);
                 break;
             }
+            throw new BatteryDoenstExistsInException();
         }
 
-        if (cartBatteryToRemove != null) {
-            cart.getBatteries().remove(cartBatteryToRemove);
-        }
-
-        cartBatteryRepository.delete(cartBatteryToRemove);
         cart.setTotalValue(this.getTotalValue(id));
-        return repository.save(cart);
+        try {
+            return repository.save(cart);
+        } catch (Exception e){
+            throw new ErrorWhileSavingCartException();
+        }
     }
 
     public CartEntity closeCart(String id){
@@ -105,41 +124,59 @@ public class CartService {
     }
 
     public CartEntity getByUser(String userId){
-        CartEntity cart = repository.findByUser(userService.findById(userId));
-        BigDecimal newValue = this.getTotalValue(cart.getCartId());
-        cart.setTotalValue(newValue);
-        return repository.save(cart);
+        try {
+            CartEntity cart = repository.findByUser(userService.findById(userId));
+            BigDecimal newValue = this.getTotalValue(cart.getCartId());
+            cart.setTotalValue(newValue);
+            return repository.save(cart);
+        } catch (Exception e){
+            throw new ErrorWhileGettingCartException();
+        }
     }
 
     public BigDecimal getTotalValue(String id){
-        BigDecimal batteryValues = BigDecimal.ZERO;
-        CartEntity cart = repository.findById(id).orElseThrow(RuntimeException::new);;
-        for (CartBatteryEntity cartBattery : cart.getBatteries()) {
-            batteryValues = batteryValues.add(cartBattery.getBattery().getValue().multiply(BigDecimal.valueOf(cartBattery.getQuantity())));        }
-        cart.setTotalValue(batteryValues);
-        if (cart.getPromotion() == null){
+        try {
+            BigDecimal batteryValues = BigDecimal.ZERO;
+            CartEntity cart = repository.findById(id).orElseThrow(CartNotFoundException::new);
+            ;
+            for (CartBatteryEntity cartBattery : cart.getBatteries()) {
+                batteryValues = batteryValues.add(cartBattery.getBattery().getValue().multiply(BigDecimal.valueOf(cartBattery.getQuantity())));
+            }
+            cart.setTotalValue(batteryValues);
+            if (cart.getPromotion() == null) {
+                repository.save(cart);
+                return cart.getTotalValue();
+            }
+            BigDecimal promotionValue = promotionService.getDiscountValue(cart.getPromotion().getCode(), new DiscountDTO(cart.getUser().getUserId(), cart.getTotalValue()));
+            cart.setTotalValue(promotionValue);
             repository.save(cart);
             return cart.getTotalValue();
+        } catch (Exception e){
+            throw new ErrorWhileCalculatingCartTotalValueException();
         }
-        BigDecimal promotionValue = promotionService.getDiscountValue(cart.getPromotion().getCode(), new DiscountDTO(cart.getUser().getUserId(), cart.getTotalValue()));
-        cart.setTotalValue(promotionValue);
-        repository.save(cart);
-        return cart.getTotalValue();
     }
 
 
     public CartEntity removePromotion(String id){
-        CartEntity cart = this.getById(id);
-        cart.setPromotion(null);
-        this.getTotalValue(cart.getCartId());
-        return repository.save(cart);
+        try {
+            CartEntity cart = this.getById(id);
+            cart.setPromotion(null);
+            this.getTotalValue(cart.getCartId());
+            return repository.save(cart);
+        } catch (Exception e){
+            throw new ErrorWhileRemovingPromotionException();
+        }
     }
 
     public CartEntity addPromotion(String id, String promotionCode){
-        CartEntity cart = this.getById(id);
-        PromotionEntity promotion = promotionService.getByCode(promotionCode);
-        cart.setPromotion(promotion);
-        this.getTotalValue(id);
-        return repository.save(cart);
+        try {
+            CartEntity cart = this.getById(id);
+            PromotionEntity promotion = promotionService.getByCode(promotionCode);
+            cart.setPromotion(promotion);
+            this.getTotalValue(id);
+            return repository.save(cart);
+        } catch (Exception e){
+            throw new ErrorWhileAddingPromotionException();
+        }
     }
 }
