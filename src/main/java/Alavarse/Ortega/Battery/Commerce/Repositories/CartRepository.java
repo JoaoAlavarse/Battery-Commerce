@@ -8,8 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface CartRepository extends JpaRepository<CartEntity, String> {
-    @Query(value = "SELECT * FROM cart c WHERE p.creation_date < CURRENT_DATE - INTERVAL '2 days'", nativeQuery = true)
+    @Query(value = "SELECT * FROM cart c WHERE p.creation_date < CURRENT_DATE - INTERVAL '2 days' AND c.status = 'OPENED'", nativeQuery = true)
     List<CartEntity> findByTwoDaysOfExistence();
 
+    @Query(value = "SELECT * FROM cart c WHERE c.status = 'OPENED'")
     CartEntity findByUser(UserEntity user);
 }
