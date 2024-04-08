@@ -10,4 +10,10 @@ import org.springframework.http.HttpStatus;
 public class ExceptionHandlerMessage {
     private HttpStatus status;
     private String message;
+    private String field;
+
+    public ExceptionHandlerMessage(HttpStatus status, String message) {
+        this.status = status;
+        this.message = message;
+    }
 }
