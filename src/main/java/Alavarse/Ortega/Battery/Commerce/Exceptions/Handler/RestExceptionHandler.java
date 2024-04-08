@@ -3,6 +3,7 @@ package Alavarse.Ortega.Battery.Commerce.Exceptions.Handler;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.*;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.CartExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import org.springframework.http.HttpStatus;
@@ -11,30 +12,32 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.security.auth.login.FailedLoginException;
+
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidEmailException.class)
     private ResponseEntity<ExceptionHandlerMessage> invalidEmail(InvalidEmailException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "email");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
     @ExceptionHandler(DoesntContainSpecialCharacterException.class)
     private ResponseEntity<ExceptionHandlerMessage> doesntContainSpecialCharacter(DoesntContainSpecialCharacterException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "senha");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
     @ExceptionHandler(DoesntContainNumbersException.class)
     private ResponseEntity<ExceptionHandlerMessage> doesntContainNumbers(DoesntContainNumbersException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "senha");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
     @ExceptionHandler(InvalidPasswordSizeException.class)
     private ResponseEntity<ExceptionHandlerMessage> invalidPasswordSize(InvalidPasswordSizeException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "senha");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
@@ -46,25 +49,25 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidDocumentException.class)
     private ResponseEntity<ExceptionHandlerMessage> invalidDocument(InvalidDocumentException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "documento");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
     @ExceptionHandler(InvalidDocumentSizeException.class)
     private ResponseEntity<ExceptionHandlerMessage> invalidDocumentSize(InvalidDocumentSizeException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "documento");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     private ResponseEntity<ExceptionHandlerMessage> emailAlreadyExists(EmailAlreadyExistsException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage(), "email");
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
 
     @ExceptionHandler(DocumentAlreadyExistsException.class)
     private ResponseEntity<ExceptionHandlerMessage> documentAlreadyExists(DocumentAlreadyExistsException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage(), "documento");
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
 
@@ -144,6 +147,66 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<ExceptionHandlerMessage> invalidDate(InvalidExpirationDateException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
+
+    @ExceptionHandler(LoginFailedException.class)
+    private ResponseEntity<ExceptionHandlerMessage> failedLogin(LoginFailedException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.FORBIDDEN, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(handlerMessage);
+    }
+
+    @ExceptionHandler(CartNotFoundException.class)
+    private ResponseEntity<ExceptionHandlerMessage> cartNotFound(CartNotFoundException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(handlerMessage);
+    }
+
+    @ExceptionHandler(BatteryAlreadyExistsInException.class)
+    private ResponseEntity<ExceptionHandlerMessage> batteryAlreadyExistsIn(BatteryAlreadyExistsInException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+    @ExceptionHandler(BatteryDoenstExistsInException.class)
+    private ResponseEntity<ExceptionHandlerMessage> batteryDoesntExistsIn(BatteryDoenstExistsInException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileAddingPromotionException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorWhileAddingPromotion(ErrorWhileAddingPromotionException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileRemovingPromotionException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorWhileRemovingPromotion(ErrorWhileRemovingPromotionException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileCalculatingCartTotalValueException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorWhileCalculatingCartTotalValue(ErrorWhileCalculatingCartTotalValueException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileGettingCartException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorWhileGettingCart(ErrorWhileGettingCartException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileSavingCartException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorWhileSavingCart(ErrorWhileSavingCartException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(InsufficientBatteriesToAddException.class)
+    private ResponseEntity<ExceptionHandlerMessage> insufficientBatteriesToAdd(InsufficientBatteriesToAddException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
 }
