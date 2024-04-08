@@ -41,13 +41,17 @@ public class AuthorizationService implements UserDetailsService{
     }
 
     public LoginResponseDTO login (@RequestBody @Valid AuthenticationDTO data, AuthenticationManager authenticationManager){
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
-        var auth = authenticationManager.authenticate(usernamePassword);
+        try {
+            var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
+            var auth = authenticationManager.authenticate(usernamePassword);
 
-        var token = tokenService.generateToken((UserEntity) auth.getPrincipal());
+            var token = tokenService.generateToken((UserEntity) auth.getPrincipal());
 
-        return new LoginResponseDTO(token);
 
+            return new LoginResponseDTO(token);
+        } catch (Exception e){
+            throw new LoginFailedException();
+        }
     }
 
     public UserEntity register(@RequestBody @Valid RegisterDTO data) throws RuntimeException {
@@ -106,7 +110,7 @@ public class AuthorizationService implements UserDetailsService{
             }
         }
 
-        if (count < 5) {
+        if (count < 1) {
             throw new DoesntContainNumbersException();
         }
     }
