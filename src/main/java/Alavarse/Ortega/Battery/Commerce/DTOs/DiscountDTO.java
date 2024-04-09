@@ -1,9 +1,11 @@
 package Alavarse.Ortega.Battery.Commerce.DTOs;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 
-public record DiscountDTO(@NotNull @NotEmpty String userId, @NotNull @NotEmpty BigDecimal totalValue) {
+public record DiscountDTO(
+        @NotBlank String userId,
+        @NotBlank BigDecimal totalValue
+) {
 }

@@ -8,14 +8,13 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.security.auth.login.FailedLoginException;
 
 @ControllerAdvice
-public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+public class RestExceptionHandler  {
 
     @ExceptionHandler(InvalidEmailException.class)
     private ResponseEntity<ExceptionHandlerMessage> invalidEmail(InvalidEmailException exception){
@@ -25,19 +24,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DoesntContainSpecialCharacterException.class)
     private ResponseEntity<ExceptionHandlerMessage> doesntContainSpecialCharacter(DoesntContainSpecialCharacterException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "senha");
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "password");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
     @ExceptionHandler(DoesntContainNumbersException.class)
     private ResponseEntity<ExceptionHandlerMessage> doesntContainNumbers(DoesntContainNumbersException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "senha");
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "password");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
     @ExceptionHandler(InvalidPasswordSizeException.class)
     private ResponseEntity<ExceptionHandlerMessage> invalidPasswordSize(InvalidPasswordSizeException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "senha");
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "password");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
@@ -49,13 +48,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidDocumentException.class)
     private ResponseEntity<ExceptionHandlerMessage> invalidDocument(InvalidDocumentException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "documento");
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "document");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
     @ExceptionHandler(InvalidDocumentSizeException.class)
     private ResponseEntity<ExceptionHandlerMessage> invalidDocumentSize(InvalidDocumentSizeException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "documento");
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "document");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
@@ -67,7 +66,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DocumentAlreadyExistsException.class)
     private ResponseEntity<ExceptionHandlerMessage> documentAlreadyExists(DocumentAlreadyExistsException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage(), "documento");
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage(), "document");
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
 
@@ -208,4 +207,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private ResponseEntity<ExceptionHandlerMessage> handleMethodArgumentNotValid(MethodArgumentNotValidException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, "Campo obrigatório", exception.getBindingResult().getFieldError().getField());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
 }
