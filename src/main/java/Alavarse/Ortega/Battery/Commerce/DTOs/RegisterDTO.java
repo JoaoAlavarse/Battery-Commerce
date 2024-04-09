@@ -7,6 +7,7 @@ public record RegisterDTO(
         @NotBlank String email,
         @NotBlank String password,
         @NotBlank String name,
-        @NotBlank String document
+        @NotBlank String document,
+        @NotBlank String confirmPassword
 ){
 }

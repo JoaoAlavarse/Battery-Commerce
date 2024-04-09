@@ -215,4 +215,10 @@ public class RestExceptionHandler  {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
+    @ExceptionHandler(InconsistentPasswordsException.class)
+    private ResponseEntity<ExceptionHandlerMessage> inconsistentPasswords(InconsistentPasswordsException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "confirmPassword");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
 }

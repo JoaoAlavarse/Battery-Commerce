@@ -63,7 +63,7 @@ public class AuthorizationService implements UserDetailsService{
         }
 
         verifyEmail(data.email());
-        verifyPassword(data.password());
+        verifyPassword(data.password(), data.confirmPassword());
         this.service.verifyDocument(data.document());
 
         try {
@@ -120,10 +120,16 @@ public class AuthorizationService implements UserDetailsService{
             throw new InvalidPasswordSizeException();
     }
 
-    private void verifyPassword(String password) throws RuntimeException {
+    private void verifyPassword(String password, String confirmPassword) throws RuntimeException {
         containNumbers(password);
         verifyPasswordSize(password);
         containsSpecialCharacters(password);
+        verifyConfirmPassword(confirmPassword, password);
+    }
+
+    private void verifyConfirmPassword(String confirmPassword, String password){
+        if (!password.equals(confirmPassword))
+            throw new InconsistentPasswordsException();
     }
 
 }
