@@ -2,7 +2,7 @@ package Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions;
 
 public class DocumentAlreadyExistsException extends RuntimeException {
     public DocumentAlreadyExistsException() {
-        super("CPF ja cadastrado");
+        super("CPF já cadastrado");
     }
 
     public DocumentAlreadyExistsException(String message) {

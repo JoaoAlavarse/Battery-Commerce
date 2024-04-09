@@ -2,7 +2,7 @@ package Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions;
 
 public class InvalidDocumentException extends RuntimeException{
     public InvalidDocumentException() {
-        super("CPF invalido");
+        super("CPF inválido");
     }
 
     public InvalidDocumentException(String message) {

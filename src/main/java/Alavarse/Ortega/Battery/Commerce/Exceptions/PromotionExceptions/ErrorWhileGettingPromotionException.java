@@ -7,7 +7,5 @@ public class ErrorWhileGettingPromotionException extends RuntimeException{
 
     public ErrorWhileGettingPromotionException() {
         super("Erro ao salvar promoção");
-
-
     }
 }

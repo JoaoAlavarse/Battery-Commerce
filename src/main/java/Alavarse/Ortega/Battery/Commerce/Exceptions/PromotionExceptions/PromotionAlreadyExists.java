@@ -2,7 +2,7 @@ package Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions;
 
 public class PromotionAlreadyExists extends RuntimeException {
     public PromotionAlreadyExists() {
-        super("Promocao ja existente");
+        super("Promoção já existente");
     }
 
     public PromotionAlreadyExists(String message) {
