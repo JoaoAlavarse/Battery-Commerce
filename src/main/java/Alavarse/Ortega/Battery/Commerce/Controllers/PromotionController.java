@@ -4,13 +4,13 @@ import Alavarse.Ortega.Battery.Commerce.DTOs.DiscountDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.PromotionDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.PromotionEntity;
 import Alavarse.Ortega.Battery.Commerce.Services.PromotionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -20,11 +20,11 @@ public class PromotionController {
     private PromotionService service;
 
     @PostMapping
-    public ResponseEntity<PromotionEntity> create(@RequestBody PromotionDTO data){
+    public ResponseEntity<PromotionEntity> create(@RequestBody @Valid PromotionDTO data){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(data));
     }
 
-    @DeleteMapping("/{code}/code")
+    @DeleteMapping("/{code}")
     public ResponseEntity<PromotionEntity> delete(@PathVariable String code){
         return ResponseEntity.ok().body(service.technicalDelete(code));
     }
@@ -45,13 +45,18 @@ public class PromotionController {
     }
 
     @PostMapping("/{code}/total")
-    public ResponseEntity<BigDecimal> getTotalValue(@PathVariable String code, @RequestBody DiscountDTO data){
+    public ResponseEntity<BigDecimal> getTotalValue(@PathVariable String code, @RequestBody @Valid DiscountDTO data){
         return ResponseEntity.ok().body(service.getDiscountValue(code, data));
     }
 
-    @PostMapping("/{code}/reactive")
-    public ResponseEntity<PromotionEntity> reactivePromotion(@PathVariable String code, @RequestBody LocalDate date){
-        return ResponseEntity.ok().body(service.reactivePromotion(code, date));
+    @PostMapping("/reactive/{code}")
+    public ResponseEntity<PromotionEntity> reactivePromotion(@PathVariable String code, @RequestBody @Valid PromotionDTO data){
+        return ResponseEntity.ok().body(service.reactivePromotion(code, data));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<PromotionEntity> patchUpdate(@PathVariable String id, @RequestBody PromotionDTO data){
+        return ResponseEntity.ok().body(service.patchUpdate(id, data));
     }
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = "promotionId")
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicUpdate
 public class PromotionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

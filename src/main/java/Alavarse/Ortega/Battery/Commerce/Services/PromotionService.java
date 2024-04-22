@@ -7,6 +7,7 @@ import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.PromotionStatus;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.PromotionRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class PromotionService {
 
     public List<PromotionEntity> getAll(){
         try {
-            return repository.findAllActive();
+            return repository.findAll();
         } catch (Exception e){
             throw new ErrorWhileGettingPromotionException();
         }
@@ -42,7 +43,7 @@ public class PromotionService {
         if (repository.findByCode(data.code()).isPresent()){
             throw new PromotionAlreadyExists();
         }
-        if (LocalDate.now().isBefore(data.expirationDate())){
+        if (LocalDate.now().isAfter(data.expirationDate())){
             throw new InvalidExpirationDateException();
         }
         try {
@@ -100,13 +101,37 @@ public class PromotionService {
         return user.getUsedPromotions().add(promotion);
     }
 
-    public PromotionEntity reactivePromotion(String code, LocalDate date){
-        PromotionEntity promotion = this.getByCode(code);
-        if (date.isBefore(promotion.getExpirationDate())){
-            throw new InvalidExpirationDateException();
+    public PromotionEntity reactivePromotion(String code, PromotionDTO data){
+        try {
+            PromotionEntity promotion = this.getByCode(code);
+            if (!promotion.getStatus().equals(PromotionStatus.INACTIVE)){
+                throw new ErrorWhileSavingPromotionException();
+            }
+            if (data.expirationDate().isBefore(promotion.getExpirationDate())) {
+                throw new InvalidExpirationDateException();
+            }
+            promotion.setExpirationDate(data.expirationDate());
+            promotion.setStatus(PromotionStatus.ACTIVE);
+            return repository.save(promotion);
+        } catch (Exception e){
+            throw new ErrorWhileSavingPromotionException();
         }
-        promotion.setExpirationDate(date);
-        promotion.setStatus(PromotionStatus.ACTIVE);
-        return repository.save(promotion);
+    }
+
+    public PromotionEntity patchUpdate(String id, PromotionDTO data){
+        try {
+            PromotionEntity promotion = this.getById(id);
+            if (promotion.getStatus().equals(PromotionStatus.INACTIVE)){
+                throw new ErrorWhileSavingPromotionException();
+            }
+            if (promotion.getExpirationDate().isAfter(data.expirationDate())){
+                throw new InvalidExpirationDateException();
+            }
+            BeanUtils.copyProperties(data, promotion, "promotionId");
+            promotion.setStatus(PromotionStatus.ACTIVE);
+            return repository.save(promotion);
+        } catch (Exception e){
+            throw new ErrorWhileSavingPromotionException();
+        }
     }
 }
