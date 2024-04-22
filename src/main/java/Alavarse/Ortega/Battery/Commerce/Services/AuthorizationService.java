@@ -11,6 +11,7 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.ErrorWhileSavi
 import Alavarse.Ortega.Battery.Commerce.Repositories.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -130,6 +131,14 @@ public class AuthorizationService implements UserDetailsService{
     private void verifyConfirmPassword(String confirmPassword, String password){
         if (!password.equals(confirmPassword))
             throw new InconsistentPasswordsException();
+    }
+
+    public HttpStatus verifyUserRole(String email){
+        UserEntity user = service.getByEmail(email);
+        if (!user.getRole().equals(UserRole.ADMIN)){
+            throw new UnauthorizedUserException();
+        }
+        return HttpStatus.OK;
     }
 
 }

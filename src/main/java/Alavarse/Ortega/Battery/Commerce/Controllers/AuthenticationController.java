@@ -35,4 +35,9 @@ public class AuthenticationController {
     public ResponseEntity<UserEntity> register(@RequestBody @Valid RegisterDTO data) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.service.register(data));
     }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<HttpStatus> verifyUserRole(@PathVariable @Valid String email){
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.verifyUserRole(email));
+    }
 }
