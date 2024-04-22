@@ -6,15 +6,33 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.CartExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import java.util.List;
 
 
 @ControllerAdvice
 public class RestExceptionHandler  {
+
+    private String extractFieldName(Exception exception) {
+
+        Throwable rootCause = exception.getCause();
+        if (rootCause instanceof Exception) {
+            MismatchedInputException mismatchedInputException = (MismatchedInputException) rootCause;
+            List<JsonMappingException.Reference> path = mismatchedInputException.getPath();
+            if (!path.isEmpty()) {
+                String fieldName = path.get(path.size() - 1).getFieldName();
+                return fieldName;
+            }
+        }
+        return "abc";
+    }
 
     @ExceptionHandler(InvalidEmailException.class)
     private ResponseEntity<ExceptionHandlerMessage> invalidEmail(InvalidEmailException exception){
@@ -76,6 +94,12 @@ public class RestExceptionHandler  {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(handlerMessage);
     }
 
+    @ExceptionHandler(ErrorWhileSavingUserException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorSavingUser(ErrorWhileSavingUserException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
     @ExceptionHandler(AddressNotFoundException.class)
     private ResponseEntity<ExceptionHandlerMessage> addressNotFound(AddressNotFoundException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_FOUND, exception.getMessage());
@@ -100,7 +124,7 @@ public class RestExceptionHandler  {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }
 
-    @ExceptionHandler(ErrorWhileSavingUserException.class)
+    @ExceptionHandler(ErrorWhileSavingBatteryException.class)
     private ResponseEntity<ExceptionHandlerMessage> errorWhileSavingBattery(ErrorWhileSavingBatteryException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
@@ -144,7 +168,7 @@ public class RestExceptionHandler  {
 
     @ExceptionHandler(InvalidExpirationDateException.class)
     private ResponseEntity<ExceptionHandlerMessage> invalidDate(InvalidExpirationDateException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage(), "expirationDate");
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
 
@@ -220,5 +244,20 @@ public class RestExceptionHandler  {
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "confirmPassword");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
+
+    @ExceptionHandler(UnauthorizedUserException.class)
+    private ResponseEntity<ExceptionHandlerMessage> unauthorizedUser(UnauthorizedUserException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.UNAUTHORIZED, exception.getMessage(), "confirmPassword");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(handlerMessage);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    private ResponseEntity<ExceptionHandlerMessage> typeMismatch(HttpMessageNotReadableException exception){
+        String fieldName = extractFieldName(exception);
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, "Tipo de dado inválido", fieldName);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+
 
 }
