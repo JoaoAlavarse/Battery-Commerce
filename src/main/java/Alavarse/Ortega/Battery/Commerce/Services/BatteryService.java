@@ -7,6 +7,7 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.BatteryNotF
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileGettingBatteryException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileSavingBatteryException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.BatteryRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,25 +48,21 @@ public class BatteryService {
         }
     }
 
-
-
-    public BatteryEntity update(String id, BatteryDTO data){
-        try {
-            BatteryEntity battery = repository.findById(id).orElseThrow(BatteryNotFoundException::new);
-            battery.setName(data.name());
-            battery.setDescription(data.description());
-            battery.setStatus(data.status());
-            battery.setValue(data.value());
-            return repository.save(battery);
-        } catch (Exception e){
-            throw new ErrorWhileSavingBatteryException();
-        }
-    }
-
     public BatteryEntity updateQuantity (String id, Integer quantity){
         try {
             BatteryEntity battery = repository.findById(id).orElseThrow(BatteryNotFoundException::new);
             battery.setQuantity(quantity);
+            return repository.save(battery);
+        } catch (Exception e) {
+            throw new ErrorWhileSavingBatteryException();
+        }
+    }
+
+    public BatteryEntity patchUpdate (String id, BatteryDTO data){
+        BatteryEntity battery = this.getById(id);
+        try {
+            BeanUtils.copyProperties(data, battery, "batteryId");
+            battery.setStatus(BatteryStatus.ACTIVE);
             return repository.save(battery);
         } catch (Exception e){
             throw new ErrorWhileSavingBatteryException();
