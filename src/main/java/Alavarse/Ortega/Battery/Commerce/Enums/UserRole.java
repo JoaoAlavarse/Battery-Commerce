@@ -1,8 +1,8 @@
 package Alavarse.Ortega.Battery.Commerce.Enums;
 
 public enum UserRole {
-    ADMIN("admin"),
-    USER("user");
+    ADMIN("ADMIN"),
+    USER("USER");
 
     private final String role;
 

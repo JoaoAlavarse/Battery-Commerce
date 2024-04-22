@@ -5,7 +5,6 @@ import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class UserController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<UserDetails> getByEmail(@PathVariable String email){
+    public ResponseEntity<UserEntity> getByEmail(@PathVariable String email){
         return ResponseEntity.ok().body(this.service.getByEmail(email));
     }
 
@@ -36,9 +35,9 @@ public class UserController {
         return ResponseEntity.ok().body(this.service.findAll());
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<UserEntity> update(@PathVariable String id, @RequestBody UpdateUserDTO data){
-        return ResponseEntity.ok().body(this.service.updateUser(id, data));
+    @PatchMapping(value = "/{id}")
+    public ResponseEntity<UserEntity> patchUpdate(@PathVariable String id, @RequestBody UpdateUserDTO data){
+        return ResponseEntity.ok().body(this.service.patchUpdate(id, data));
     }
 
     @DeleteMapping(value = "/{id}")
@@ -46,8 +45,8 @@ public class UserController {
         return ResponseEntity.ok().body(this.service.technicalDelete(id));
     }
 
-    @PutMapping(value = "/{id}/turnadmin")
-    public ResponseEntity<UserEntity> turnIntoAdmin(@PathVariable String id){
-        return ResponseEntity.ok().body(this.service.turnIntoAdmin(id));
+    @PutMapping(value = "/changeRole/{id}/{role}")
+    public ResponseEntity<UserEntity> changeRole(@PathVariable String id, @PathVariable String role){
+        return ResponseEntity.ok().body(this.service.changeRole(id, role));
     }
 }

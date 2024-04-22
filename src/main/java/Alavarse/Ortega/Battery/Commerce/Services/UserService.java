@@ -6,8 +6,8 @@ import Alavarse.Ortega.Battery.Commerce.Enums.UserRole;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserStatus;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class UserService {
         }
     }
 
-    public UserDetails getByEmail(String email){
+    public UserEntity getByEmail(String email){
         try {
             return repository.findByEmail(email);
         } catch (Exception e){
@@ -46,23 +46,26 @@ public class UserService {
        }
     }
 
-    public UserEntity updateUser(String id, UpdateUserDTO data){
-        try {
-            UserEntity user = repository.findById(id).orElseThrow(UserNotFoundException::new);
+    public UserEntity patchUpdate(String id, UpdateUserDTO data){
+        UserEntity user = this.findById(id);
+        try{
             String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-            user.setName(data.name());
+            BeanUtils.copyProperties(data, user, "userId");
             user.setPassword(encryptedPassword);
-            user.setStatus(data.status());
+            user.setStatus(UserStatus.ACTIVE);
             return repository.save(user);
         } catch (Exception e){
             throw new ErrorWhileSavingUserException();
         }
     }
 
-    public UserEntity turnIntoAdmin(String id){
+    public UserEntity changeRole(String id, String role){
         try {
-            UserEntity user = repository.findById(id).orElseThrow(UserNotFoundException::new);
-            user.setRole(UserRole.ADMIN);
+            UserEntity user = this.findById(id);
+            if (user.getRole().equals(UserRole.valueOf(role))){
+                throw new RuntimeException();
+            }
+            user.setRole(UserRole.valueOf(role));
             return repository.save(user);
         } catch (Exception e){
             throw new ErrorWhileSavingUserException();

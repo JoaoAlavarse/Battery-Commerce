@@ -28,6 +28,7 @@ public class UserEntity implements UserDetails {
     private String userId;
     @Column(nullable = false, unique = true)
     private String email;
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
@@ -45,6 +46,7 @@ public class UserEntity implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<AddressEntity> address;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<CartEntity> carts;
 
