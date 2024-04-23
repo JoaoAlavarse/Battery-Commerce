@@ -258,6 +258,11 @@ public class RestExceptionHandler  {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }
 
-
+    @ExceptionHandler(ErrorWhileChangingRolesException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorChangingRoles(ErrorWhileChangingRolesException exception){
+        String fieldName = extractFieldName(exception);
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage(), "role");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
 
 }

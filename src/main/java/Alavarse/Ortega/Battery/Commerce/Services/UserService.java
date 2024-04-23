@@ -60,11 +60,11 @@ public class UserService {
     }
 
     public UserEntity changeRole(String id, String role){
+        UserEntity user = this.findById(id);
+        if (user.getRole().equals(UserRole.valueOf(role))){
+            throw new ErrorWhileChangingRolesException();
+        }
         try {
-            UserEntity user = this.findById(id);
-            if (user.getRole().equals(UserRole.valueOf(role))){
-                throw new RuntimeException();
-            }
             user.setRole(UserRole.valueOf(role));
             return repository.save(user);
         } catch (Exception e){
