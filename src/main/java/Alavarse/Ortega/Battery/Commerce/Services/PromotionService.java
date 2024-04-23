@@ -101,15 +101,17 @@ public class PromotionService {
         return user.getUsedPromotions().add(promotion);
     }
 
-    public PromotionEntity reactivePromotion(String code, PromotionDTO data){
+    public PromotionEntity reactivePromotion(String id, PromotionDTO data){
         try {
-            PromotionEntity promotion = this.getByCode(code);
+            PromotionEntity promotion = this.getById(id);
             if (!promotion.getStatus().equals(PromotionStatus.INACTIVE)){
                 throw new ErrorWhileSavingPromotionException();
             }
             if (data.expirationDate().isBefore(promotion.getExpirationDate())) {
                 throw new InvalidExpirationDateException();
             }
+            promotion.setPercentage(data.percentage());
+            promotion.setCode(data.code());
             promotion.setExpirationDate(data.expirationDate());
             promotion.setStatus(PromotionStatus.ACTIVE);
             return repository.save(promotion);
@@ -119,14 +121,14 @@ public class PromotionService {
     }
 
     public PromotionEntity patchUpdate(String id, PromotionDTO data){
+        PromotionEntity promotion = this.getById(id);
+        if (promotion.getStatus().equals(PromotionStatus.INACTIVE)){
+            throw new ErrorWhileSavingPromotionException();
+        }
+        if (promotion.getExpirationDate().isAfter(data.expirationDate())){
+            throw new InvalidExpirationDateException();
+        }
         try {
-            PromotionEntity promotion = this.getById(id);
-            if (promotion.getStatus().equals(PromotionStatus.INACTIVE)){
-                throw new ErrorWhileSavingPromotionException();
-            }
-            if (promotion.getExpirationDate().isAfter(data.expirationDate())){
-                throw new InvalidExpirationDateException();
-            }
             BeanUtils.copyProperties(data, promotion, "promotionId");
             promotion.setStatus(PromotionStatus.ACTIVE);
             return repository.save(promotion);

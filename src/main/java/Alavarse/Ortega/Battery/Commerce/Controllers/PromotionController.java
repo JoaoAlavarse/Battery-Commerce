@@ -49,9 +49,9 @@ public class PromotionController {
         return ResponseEntity.ok().body(service.getDiscountValue(code, data));
     }
 
-    @PostMapping("/reactive/{code}")
-    public ResponseEntity<PromotionEntity> reactivePromotion(@PathVariable String code, @RequestBody @Valid PromotionDTO data){
-        return ResponseEntity.ok().body(service.reactivePromotion(code, data));
+    @PostMapping("/reactive/{id}")
+    public ResponseEntity<PromotionEntity> reactivePromotion(@PathVariable String id, @RequestBody @Valid PromotionDTO data){
+        return ResponseEntity.ok().body(service.reactivePromotion(id, data));
     }
 
     @PatchMapping("/{id}")
