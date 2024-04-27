@@ -27,9 +27,10 @@ public class PromotionEntity {
     private String promotionId;
 
     @Column(nullable = false)
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate expirationDate;
+    private String code;
+
+    @Column(nullable = false)
+    private Integer percentage;
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -37,10 +38,9 @@ public class PromotionEntity {
     private LocalDate startDate;
 
     @Column(nullable = false)
-    private Integer percentage;
-
-    @Column(nullable = false)
-    private String code;
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate expirationDate;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
