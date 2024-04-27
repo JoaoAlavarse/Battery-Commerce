@@ -3,6 +3,7 @@ package Alavarse.Ortega.Battery.Commerce.Controllers;
 import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateUserDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +47,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/changeRole/{id}/{role}")
-    public ResponseEntity<UserEntity> changeRole(@PathVariable String id, @PathVariable String role){
-        return ResponseEntity.ok().body(this.service.changeRole(id, role));
+    public ResponseEntity<UserEntity> changeRole(@PathVariable String id, @PathVariable String role, @RequestBody @Valid String loggedUserId){
+        return ResponseEntity.ok().body(this.service.changeRole(id, role, loggedUserId));
     }
 }

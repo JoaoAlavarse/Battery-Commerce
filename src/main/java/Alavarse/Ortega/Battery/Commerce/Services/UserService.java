@@ -59,8 +59,12 @@ public class UserService {
         }
     }
 
-    public UserEntity changeRole(String id, String role){
+    public UserEntity changeRole(String id, String role, String loggedUserId){
         UserEntity user = this.findById(id);
+        UserEntity loggedUser = this.findById(loggedUserId);
+        if (user.equals(loggedUser)){
+            throw new SameUserRoleChangeException();
+        }
         if (user.getRole().equals(UserRole.valueOf(role))){
             throw new ErrorWhileChangingRolesException();
         }

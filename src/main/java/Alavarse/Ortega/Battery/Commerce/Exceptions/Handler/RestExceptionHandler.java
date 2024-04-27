@@ -265,4 +265,10 @@ public class RestExceptionHandler  {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
 
+    @ExceptionHandler(SameUserRoleChangeException.class)
+    private ResponseEntity<ExceptionHandlerMessage> sameUserRoleChange(SameUserRoleChangeException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage(), "role");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
+
 }
