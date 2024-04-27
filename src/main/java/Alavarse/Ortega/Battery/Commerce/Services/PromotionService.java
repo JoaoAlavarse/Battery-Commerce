@@ -79,9 +79,9 @@ public class PromotionService {
         }
     }
 
-    public PromotionEntity technicalDelete(String code){
+    public PromotionEntity technicalDelete(String id){
+            PromotionEntity promotion = this.getById(id);
         try {
-            PromotionEntity promotion = repository.findByCode(code).orElseThrow(PromotionNotFoundException::new);
             promotion.setStatus(PromotionStatus.INACTIVE);
             return repository.save(promotion);
         } catch (Exception e){

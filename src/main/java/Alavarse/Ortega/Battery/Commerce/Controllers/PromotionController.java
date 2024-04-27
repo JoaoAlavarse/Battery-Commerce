@@ -25,8 +25,8 @@ public class PromotionController {
     }
 
     @DeleteMapping("/{code}")
-    public ResponseEntity<PromotionEntity> delete(@PathVariable String code){
-        return ResponseEntity.ok().body(service.technicalDelete(code));
+    public ResponseEntity<PromotionEntity> delete(@PathVariable String id){
+        return ResponseEntity.ok().body(service.technicalDelete(id));
     }
 
     @GetMapping("/{code}/code")
