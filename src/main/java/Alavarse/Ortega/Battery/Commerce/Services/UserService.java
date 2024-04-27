@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -87,6 +89,17 @@ public class UserService {
     }
 
     public void verifyDocument(String document) throws InvalidDocumentException{
+        document = document.replaceAll("[^0-9]", "");
+
+        ArrayList<String> invalidDocuments = new ArrayList<>(Arrays.asList("11111111111", "22222222222",
+                "33333333333", "44444444444", "55555555555",
+                "66666666666", "77777777777", "88888888888",
+                "99999999999", "00000000000"));
+
+        if (invalidDocuments.contains(document)){
+            throw new InvalidDocumentException();
+        }
+
         verifyDocumentSize(document);
         int sum = 0;
         for (int i = 0; i < 9; i++) {
@@ -114,7 +127,7 @@ public class UserService {
     }
 
     private void verifyDocumentSize(String document) throws InvalidDocumentSizeException{
-        if (document.length() != 11) {
+        if (document.length() != 14) {
             throw new InvalidDocumentSizeException();
         }
     }

@@ -24,7 +24,7 @@ public class PromotionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(data));
     }
 
-    @DeleteMapping("/{code}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<PromotionEntity> delete(@PathVariable String id){
         return ResponseEntity.ok().body(service.technicalDelete(id));
     }
