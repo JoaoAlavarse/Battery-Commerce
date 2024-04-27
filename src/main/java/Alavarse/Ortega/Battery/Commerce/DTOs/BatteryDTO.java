@@ -12,6 +12,7 @@ public record BatteryDTO(
         @NotBlank String description,
         @NotNull @Min(0) BigDecimal value,
         @NotNull Integer quantity,
+        @NotBlank String code,
         BatteryStatus status
 ) {
 }

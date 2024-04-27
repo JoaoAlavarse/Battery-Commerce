@@ -6,6 +6,7 @@ import Alavarse.Ortega.Battery.Commerce.Enums.BatteryStatus;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.BatteryNotFoundException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileGettingBatteryException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileSavingBatteryException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.CartExceptions.BatteryAlreadyExistsInException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.BatteryRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,24 @@ public class BatteryService {
     private BatteryRepository repository;
 
     public BatteryEntity create(BatteryDTO data){
+        if (repository.findByCode(data.code()).isPresent()){
+            throw new BatteryAlreadyExistsInException();
+        }
         try {
-            return repository.save(new BatteryEntity(data.name(), data.description(), data.value(), data.quantity()));
+            return repository.save(new BatteryEntity(data.name(), data.description(), data.value(), data.quantity(), data.code()));
+        } catch (Exception e){
+            throw new ErrorWhileSavingBatteryException();
+        }
+    }
+
+    public BatteryEntity reactiveBattery(String id){
+        BatteryEntity battery = this.getById(id);
+        if (!battery.getStatus().equals(BatteryStatus.INACTIVE)){
+            throw new ErrorWhileSavingBatteryException();
+        }
+        try {
+            battery.setStatus(BatteryStatus.ACTIVE);
+            return repository.save(battery);
         } catch (Exception e){
             throw new ErrorWhileSavingBatteryException();
         }
@@ -28,7 +45,7 @@ public class BatteryService {
 
     public List<BatteryEntity> getAllActive(){
         try {
-            return repository.findAllActive();
+            return repository.findAll();
         } catch (Exception e){
             throw new ErrorWhileGettingBatteryException();
         }

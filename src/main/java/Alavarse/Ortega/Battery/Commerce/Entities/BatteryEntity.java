@@ -33,25 +33,29 @@ public class BatteryEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private BatteryStatus status;
+    @Column(nullable = false)
+    private String code;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "battery")
     private List<CartBatteryEntity> carts = new ArrayList<>();
 
 
-    public BatteryEntity(String name, String description, BigDecimal value, Integer quantity) {
+    public BatteryEntity(String name, String description, BigDecimal value, Integer quantity, String code) {
         this.name = name;
         this.description = description;
         this.value = value;
         this.quantity = quantity;
         this.status = BatteryStatus.ACTIVE;
+        this.code = code;
     }
 
-    public BatteryEntity(String name, String description, BigDecimal value, Integer quantity, BatteryStatus status) {
+    public BatteryEntity(String name, String description, BigDecimal value, Integer quantity, BatteryStatus status, String code) {
         this.name = name;
         this.description = description;
         this.value = value;
         this.quantity = quantity;
         this.status = status;
+        this.code = code;
     }
 }

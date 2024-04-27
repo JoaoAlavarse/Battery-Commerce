@@ -48,4 +48,9 @@ public class BatteryController {
         return ResponseEntity.ok().body(service.patchUpdate(id, data));
     }
 
+    @PutMapping("/reactive/{id}")
+    public ResponseEntity<BatteryEntity> reactiveBattery(@PathVariable String id){
+        return ResponseEntity.ok().body(service.reactiveBattery(id));
+    }
+
 }
