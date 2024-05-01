@@ -3,10 +3,10 @@ package Alavarse.Ortega.Battery.Commerce.Services;
 import Alavarse.Ortega.Battery.Commerce.DTOs.BatteryDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.BatteryEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.BatteryStatus;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.BatteryAlreadyExistsException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.BatteryNotFoundException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileGettingBatteryException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileSavingBatteryException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.CartExceptions.BatteryAlreadyExistsInException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.BatteryRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class BatteryService {
 
     public BatteryEntity create(BatteryDTO data){
         if (repository.findByCode(data.code()).isPresent()){
-            throw new BatteryAlreadyExistsInException();
+            throw new BatteryAlreadyExistsException();
         }
         try {
             return repository.save(new BatteryEntity(data.name(), data.description(), data.value(), data.quantity(), data.code()));

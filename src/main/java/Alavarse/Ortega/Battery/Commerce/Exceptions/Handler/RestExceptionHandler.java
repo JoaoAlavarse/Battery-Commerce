@@ -271,4 +271,11 @@ public class RestExceptionHandler  {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
 
+    @ExceptionHandler(BatteryAlreadyExistsException.class)
+    private ResponseEntity<ExceptionHandlerMessage> batteryAlreadyExistsException(BatteryAlreadyExistsException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage(), "code");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
+
+
 }
