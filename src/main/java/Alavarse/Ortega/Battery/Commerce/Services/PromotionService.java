@@ -110,8 +110,6 @@ public class PromotionService {
             if (data.expirationDate().isBefore(promotion.getExpirationDate())) {
                 throw new InvalidExpirationDateException();
             }
-            promotion.setPercentage(data.percentage());
-            promotion.setCode(data.code());
             promotion.setExpirationDate(data.expirationDate());
             promotion.setStatus(PromotionStatus.ACTIVE);
             return repository.save(promotion);
