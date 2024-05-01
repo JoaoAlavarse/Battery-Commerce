@@ -65,11 +65,11 @@ public class AuthorizationService implements UserDetailsService{
 
         verifyEmail(data.email());
         verifyPassword(data.password(), data.confirmPassword());
-        this.service.verifyDocument(data.document());
+        String verifiedDocument = this.service.verifyDocument(data.document());
 
         try {
             String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-            UserEntity newUser = new UserEntity(data.email(), encryptedPassword, data.name(), data.document(), UserRole.USER);
+            UserEntity newUser = new UserEntity(data.email(), encryptedPassword, data.name(), verifiedDocument, UserRole.USER);
 
             UserEntity user = this.repository.save(newUser);
             cartService.create(user.getUserId());

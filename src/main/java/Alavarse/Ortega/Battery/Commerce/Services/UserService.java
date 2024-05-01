@@ -88,7 +88,7 @@ public class UserService {
         }
     }
 
-    public void verifyDocument(String document) throws InvalidDocumentException{
+    public String verifyDocument(String document) throws InvalidDocumentException{
         document = document.replaceAll("[^0-9]", "");
 
         ArrayList<String> invalidDocuments = new ArrayList<>(Arrays.asList("11111111111", "22222222222",
@@ -124,6 +124,8 @@ public class UserService {
         if (secondDigit != Character.getNumericValue(document.charAt(10))){
             throw new InvalidDocumentException();
         }
+
+        return document;
     }
 
     private void verifyDocumentSize(String document) throws InvalidDocumentSizeException{
