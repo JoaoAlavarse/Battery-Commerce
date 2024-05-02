@@ -46,8 +46,8 @@ public class UserController {
         return ResponseEntity.ok().body(this.service.technicalDelete(id));
     }
 
-    @PutMapping(value = "/changeRole/{id}/{role}")
-    public ResponseEntity<UserEntity> changeRole(@PathVariable String id, @PathVariable String role, @RequestBody @Valid String loggedUserId){
+    @PutMapping(value = "/changeRole/{id}/{role}/{loggedUserId}")
+    public ResponseEntity<UserEntity> changeRole(@PathVariable String id, @PathVariable String role, @PathVariable String loggedUserId){
         return ResponseEntity.ok().body(this.service.changeRole(id, role, loggedUserId));
     }
 }
