@@ -123,7 +123,7 @@ public class PromotionService {
         if (promotion.getStatus().equals(PromotionStatus.INACTIVE)){
             throw new ErrorWhileSavingPromotionException();
         }
-        if (promotion.getExpirationDate().isAfter(data.expirationDate())){
+        if (data.expirationDate().isBefore(promotion.getExpirationDate())){
             throw new InvalidExpirationDateException();
         }
         try {

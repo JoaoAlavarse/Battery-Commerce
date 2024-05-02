@@ -50,7 +50,7 @@ public class PromotionController {
     }
 
     @PutMapping("/reactive/{id}")
-    public ResponseEntity<PromotionEntity> reactivePromotion(@PathVariable String id, @RequestBody @Valid PromotionDTO data){
+    public ResponseEntity<PromotionEntity> reactivePromotion(@PathVariable String id, @RequestBody PromotionDTO data){
         return ResponseEntity.ok().body(service.reactivePromotion(id, data));
     }
 
