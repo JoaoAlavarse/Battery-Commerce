@@ -44,7 +44,7 @@ public class BatteryController {
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<BatteryEntity> patchUpdate(@PathVariable String id, @RequestBody BatteryDTO data){
+    public ResponseEntity<BatteryEntity> patchUpdate(@PathVariable String id, @RequestBody @Valid BatteryDTO data){
         return ResponseEntity.ok().body(service.patchUpdate(id, data));
     }
 

@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<UserEntity> patchUpdate(@PathVariable String id, @RequestBody UpdateUserDTO data){
+    public ResponseEntity<UserEntity> patchUpdate(@PathVariable String id, @RequestBody @Valid UpdateUserDTO data){
         return ResponseEntity.ok().body(this.service.patchUpdate(id, data));
     }
 

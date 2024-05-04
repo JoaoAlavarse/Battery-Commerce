@@ -89,6 +89,7 @@ public class UserService {
     }
 
     public String verifyDocument(String document) throws InvalidDocumentException{
+        verifyDocumentSize(document);
         document = document.replaceAll("[^0-9]", "");
 
         ArrayList<String> invalidDocuments = new ArrayList<>(Arrays.asList("11111111111", "22222222222",
@@ -100,7 +101,7 @@ public class UserService {
             throw new InvalidDocumentException();
         }
 
-        verifyDocumentSize(document);
+
         int sum = 0;
         for (int i = 0; i < 9; i++) {
             sum += Character.getNumericValue(document.charAt(i)) * (10 - i);
