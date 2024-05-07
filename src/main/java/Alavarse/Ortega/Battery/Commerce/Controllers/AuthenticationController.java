@@ -3,6 +3,7 @@ package Alavarse.Ortega.Battery.Commerce.Controllers;
 import Alavarse.Ortega.Battery.Commerce.DTOs.AuthenticationDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.LoginResponseDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.RegisterDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.VerifyRegisterDataDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Repositories.UserRepository;
 import Alavarse.Ortega.Battery.Commerce.Services.AuthorizationService;
@@ -39,5 +40,10 @@ public class AuthenticationController {
     @GetMapping("/{email}")
     public ResponseEntity<HttpStatus> verifyUserRole(@PathVariable @Valid String email){
         return ResponseEntity.status(HttpStatus.OK).body(this.service.verifyUserRole(email));
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<HttpStatus> verifyData(@RequestBody @Valid VerifyRegisterDataDTO data){
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.verifyData(data));
     }
 }

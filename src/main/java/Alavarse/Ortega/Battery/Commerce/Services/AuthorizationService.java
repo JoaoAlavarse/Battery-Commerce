@@ -4,6 +4,7 @@ import Alavarse.Ortega.Battery.Commerce.Constants.AuthConstants;
 import Alavarse.Ortega.Battery.Commerce.DTOs.AuthenticationDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.LoginResponseDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.RegisterDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.VerifyRegisterDataDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserRole;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
@@ -138,6 +139,12 @@ public class AuthorizationService implements UserDetailsService{
         if (!user.getRole().equals(UserRole.ADMIN)){
             throw new UnauthorizedUserException();
         }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus verifyData(VerifyRegisterDataDTO data){
+        verifyEmail(data.email());
+        this.service.verifyDocument(data.document());
         return HttpStatus.OK;
     }
 
