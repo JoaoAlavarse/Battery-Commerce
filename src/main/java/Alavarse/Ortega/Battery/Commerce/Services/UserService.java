@@ -4,6 +4,7 @@ import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateUserDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserRole;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserStatus;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.DocumentAlreadyExistsException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -91,6 +92,10 @@ public class UserService {
     public String verifyDocument(String document) throws InvalidDocumentException{
         verifyDocumentSize(document);
         document = document.replaceAll("[^0-9]", "");
+
+        if (this.repository.findByDocument(document).isPresent()){
+            throw new DocumentAlreadyExistsException();
+        }
 
         ArrayList<String> invalidDocuments = new ArrayList<>(Arrays.asList("11111111111", "22222222222",
                 "33333333333", "44444444444", "55555555555",

@@ -57,12 +57,7 @@ public class AuthorizationService implements UserDetailsService{
     }
 
     public UserEntity register(@RequestBody @Valid RegisterDTO data) throws RuntimeException {
-        if (this.repository.findByEmail(data.email()) != null){
-            throw new EmailAlreadyExistsException();
-        }
-        if (this.repository.findByDocument(data.document()).isPresent()){
-            throw new DocumentAlreadyExistsException();
-        }
+
 
         verifyEmail(data.email());
         verifyPassword(data.password(), data.confirmPassword());
@@ -85,6 +80,9 @@ public class AuthorizationService implements UserDetailsService{
         Matcher matcher = pattern.matcher(email);
         if (!matcher.matches()){
             throw new InvalidEmailException();
+        }
+        if (this.repository.findByEmail(email) != null){
+            throw new EmailAlreadyExistsException();
         }
     }
 
