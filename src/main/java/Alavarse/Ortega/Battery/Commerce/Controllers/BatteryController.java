@@ -17,10 +17,13 @@ public class BatteryController {
     @Autowired
     private BatteryService service;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<BatteryEntity>> getAll(){
-        return ResponseEntity.ok().body(service.getAllActive());
+        return ResponseEntity.ok().body(service.getAll());
     }
+
+    @GetMapping()
+    public ResponseEntity<List<BatteryEntity>> getAllActive() { return ResponseEntity.ok().body(service.getAllActive()); }
 
     @PutMapping(value = "/{id}/quantity")
     public ResponseEntity<BatteryEntity> updateQuantity(@PathVariable String id, @RequestBody @Valid Integer quantity){

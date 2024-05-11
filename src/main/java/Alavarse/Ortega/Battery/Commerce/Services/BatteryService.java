@@ -43,9 +43,17 @@ public class BatteryService {
         }
     }
 
-    public List<BatteryEntity> getAllActive(){
+    public List<BatteryEntity> getAll(){
         try {
             return repository.findAll();
+        } catch (Exception e){
+            throw new ErrorWhileGettingBatteryException();
+        }
+    }
+
+    public List<BatteryEntity> getAllActive(){
+        try{
+            return repository.findAllActive();
         } catch (Exception e){
             throw new ErrorWhileGettingBatteryException();
         }
