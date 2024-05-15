@@ -5,10 +5,7 @@ import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateUserDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserRole;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserStatus;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.DocumentAlreadyExistsException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.EmailAlreadyExistsException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InconsistentPasswordsException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InvalidEmailException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -93,12 +90,12 @@ public class UserService {
     }
 
     public UserEntity technicalDelete(String id, String password) throws ErrorWhileSavingUserException{
+        UserEntity user = repository.findById(id).orElseThrow(UserNotFoundException::new);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if (!passwordEncoder.matches(password, user.getPassword())){
+            throw new InvalidPasswordException();
+        }
         try {
-            UserEntity user = repository.findById(id).orElseThrow(UserNotFoundException::new);
-            String encryptedPassword = new BCryptPasswordEncoder().encode(password);
-            if (!encryptedPassword.equals(user.getPassword())){
-                throw new InconsistentPasswordsException();
-            }
             user.setStatus(UserStatus.INACTIVE);
             return repository.save(user);
         } catch (Exception e){

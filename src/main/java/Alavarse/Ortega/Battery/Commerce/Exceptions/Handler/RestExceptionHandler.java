@@ -277,5 +277,11 @@ public class RestExceptionHandler  {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
 
+    @ExceptionHandler(InvalidPasswordException.class)
+    private ResponseEntity<ExceptionHandlerMessage> invalidPassword(InvalidPasswordException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
+
 
 }

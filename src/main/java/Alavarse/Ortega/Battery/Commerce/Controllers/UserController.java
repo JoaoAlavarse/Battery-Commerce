@@ -42,9 +42,9 @@ public class UserController {
         return ResponseEntity.ok().body(this.service.patchUpdate(id, data));
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<UserEntity> technicalDelete(@PathVariable String id, @RequestBody @Valid PasswordDTO data){
-        return ResponseEntity.ok().body(this.service.technicalDelete(id, data.password()));
+    @DeleteMapping(value = "/{id}/{password}")
+    public ResponseEntity<UserEntity> technicalDelete(@PathVariable String id, @PathVariable String password){
+        return ResponseEntity.ok().body(this.service.technicalDelete(id, password));
     }
 
     @PutMapping(value = "/changeRole/{id}/{role}/{loggedUserId}")
