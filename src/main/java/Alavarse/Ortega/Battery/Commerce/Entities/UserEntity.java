@@ -78,9 +78,8 @@ public class UserEntity implements UserDetails {
     }
 
     public UserEntity(UpdateUserDTO data) {
-        this.password = data.password();
         this.name = data.name();
-        this.status = data.status();
+        this.email = data.email();
     }
 
     @Override

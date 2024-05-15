@@ -1,5 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Controllers;
 
+import Alavarse.Ortega.Battery.Commerce.DTOs.PasswordDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateUserDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Services.UserService;
@@ -42,8 +43,8 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<UserEntity> technicalDelete(@PathVariable String id){
-        return ResponseEntity.ok().body(this.service.technicalDelete(id));
+    public ResponseEntity<UserEntity> technicalDelete(@PathVariable String id, @RequestBody @Valid PasswordDTO data){
+        return ResponseEntity.ok().body(this.service.technicalDelete(id, data.password()));
     }
 
     @PutMapping(value = "/changeRole/{id}/{role}/{loggedUserId}")

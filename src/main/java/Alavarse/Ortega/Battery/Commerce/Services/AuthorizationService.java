@@ -57,9 +57,11 @@ public class AuthorizationService implements UserDetailsService{
     }
 
     public UserEntity register(@RequestBody @Valid RegisterDTO data) throws RuntimeException {
+        if (this.repository.findByEmail(data.email()) != null){
+            throw new EmailAlreadyExistsException();
+        }
 
-
-        verifyEmail(data.email());
+        this.service.verifyEmail(data.email());
         verifyPassword(data.password(), data.confirmPassword());
         String verifiedDocument = this.service.verifyDocument(data.document());
 
@@ -75,16 +77,7 @@ public class AuthorizationService implements UserDetailsService{
         }
     }
 
-    private void verifyEmail(String email) throws InvalidEmailException {
-        Pattern pattern = Pattern.compile(AuthConstants.EMAIL_REGEX);
-        Matcher matcher = pattern.matcher(email);
-        if (!matcher.matches()){
-            throw new InvalidEmailException();
-        }
-        if (this.repository.findByEmail(email) != null){
-            throw new EmailAlreadyExistsException();
-        }
-    }
+
 
     public static void containsSpecialCharacters(String password) throws DoesntContainSpecialCharacterException {
         boolean containsSpecialCharacter = false;
@@ -141,7 +134,7 @@ public class AuthorizationService implements UserDetailsService{
     }
 
     public HttpStatus verifyData(VerifyRegisterDataDTO data){
-        verifyEmail(data.email());
+        this.service.verifyEmail(data.email());
         this.service.verifyDocument(data.document());
         return HttpStatus.OK;
     }

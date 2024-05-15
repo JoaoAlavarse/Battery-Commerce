@@ -1,10 +1,14 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
+import Alavarse.Ortega.Battery.Commerce.Constants.AuthConstants;
 import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateUserDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserRole;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserStatus;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.DocumentAlreadyExistsException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.EmailAlreadyExistsException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InconsistentPasswordsException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.InvalidEmailException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -51,10 +57,9 @@ public class UserService {
 
     public UserEntity patchUpdate(String id, UpdateUserDTO data){
         UserEntity user = this.findById(id);
+        verifyEmail(data.email());
         try{
-            String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
             BeanUtils.copyProperties(data, user, "userId");
-            user.setPassword(encryptedPassword);
             user.setStatus(UserStatus.ACTIVE);
             return repository.save(user);
         } catch (Exception e){
@@ -79,9 +84,21 @@ public class UserService {
         }
     }
 
-    public UserEntity technicalDelete(String id) throws ErrorWhileSavingUserException{
+    public void verifyEmail(String email) throws InvalidEmailException {
+        Pattern pattern = Pattern.compile(AuthConstants.EMAIL_REGEX);
+        Matcher matcher = pattern.matcher(email);
+        if (!matcher.matches()){
+            throw new InvalidEmailException();
+        }
+    }
+
+    public UserEntity technicalDelete(String id, String password) throws ErrorWhileSavingUserException{
         try {
             UserEntity user = repository.findById(id).orElseThrow(UserNotFoundException::new);
+            String encryptedPassword = new BCryptPasswordEncoder().encode(password);
+            if (!encryptedPassword.equals(user.getPassword())){
+                throw new InconsistentPasswordsException();
+            }
             user.setStatus(UserStatus.INACTIVE);
             return repository.save(user);
         } catch (Exception e){
