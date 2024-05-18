@@ -124,8 +124,8 @@ public class CartService {
     }
 
     public CartEntity getByUser(String userId){
+        CartEntity cart = repository.findByUser(userId);
         try {
-            CartEntity cart = repository.findByUser(userService.findById(userId));
             BigDecimal newValue = this.getTotalValue(cart.getCartId());
             cart.setTotalValue(newValue);
             return repository.save(cart);
