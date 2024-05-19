@@ -6,7 +6,7 @@ public record AddressDTO(
         @NotBlank String address,
         @NotBlank String number,
         @NotBlank String neighborhood,
-        @NotBlank String complement,
+        String complement,
         @NotBlank String city,
         @NotBlank String state,
         @NotBlank String CEP,
