@@ -23,7 +23,7 @@ public class AddressEntity {
     private String number;
     @Column(nullable = false)
     private String neighborhood;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String complement;
     @Column(nullable = false)
     private String city;
