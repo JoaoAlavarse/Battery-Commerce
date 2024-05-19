@@ -58,6 +58,7 @@ public class AddressService {
             foundAddress.setCity(data.city());
             foundAddress.setCEP(data.CEP());
             foundAddress.setState(data.state());
+            foundAddress.setNeighborhood(data.neighborhood());
             foundAddress.setComplement(data.complement());
             foundAddress.setNumber(data.number());
             return repository.save(foundAddress);

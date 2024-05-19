@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 public record AddressDTO(
         @NotBlank String address,
         @NotBlank String number,
+        @NotBlank String neighborhood,
         @NotBlank String complement,
         @NotBlank String city,
         @NotBlank String state,
