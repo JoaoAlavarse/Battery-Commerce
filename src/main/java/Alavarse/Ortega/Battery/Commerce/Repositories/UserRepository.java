@@ -20,4 +20,14 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     List<UserEntity> findAllActiveUsers();
 
     Optional<UserEntity> findByDocument(String document);
+
+    @Query(value = "SELECT * FROM users u WHERE u.status = 'INACTIVE'", nativeQuery = true)
+    List<UserEntity> findAllInactive();
+
+
+    @Query(value = "SELECT * FROM users u WHERE u.role = 'ADMIN'", nativeQuery = true)
+    List<UserEntity> findAllAdmins();
+
+    @Query(value = "SELECT * FROM users u WHERE u.role = 'USER'", nativeQuery = true)
+    List<UserEntity> findAllUsers();
 }

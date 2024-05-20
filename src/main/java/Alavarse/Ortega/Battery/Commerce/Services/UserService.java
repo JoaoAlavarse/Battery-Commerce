@@ -64,6 +64,17 @@ public class UserService {
         }
     }
 
+    public List<UserEntity> getReportData(String report){
+        return switch (report) {
+            case "user-active" -> this.repository.findAllActiveUsers();
+            case "user-inactive" -> this.repository.findAllInactive();
+            case "user-user" -> this.repository.findAllUsers();
+            case "user-admin" -> this.repository.findAllAdmins();
+            case "user-clear" -> this.repository.findAll();
+            default -> throw new ErrorGettingUserReportData();
+        };
+    }
+
     public UserEntity changeRole(String id, String role, String loggedUserId){
         UserEntity user = this.findById(id);
         UserEntity loggedUser = this.findById(loggedUserId);

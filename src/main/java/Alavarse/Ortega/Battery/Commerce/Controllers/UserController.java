@@ -51,4 +51,9 @@ public class UserController {
     public ResponseEntity<UserEntity> changeRole(@PathVariable String id, @PathVariable String role, @PathVariable String loggedUserId){
         return ResponseEntity.ok().body(this.service.changeRole(id, role, loggedUserId));
     }
+
+    @GetMapping("/report/{report}")
+    public ResponseEntity<List<UserEntity>> getReportData(@PathVariable String report){
+        return ResponseEntity.ok().body(this.service.getReportData(report));
+    }
 }
