@@ -56,4 +56,9 @@ public class BatteryController {
         return ResponseEntity.ok().body(service.reactiveBattery(id));
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<List<BatteryEntity>> getByList(@RequestBody List<String> idList){
+        return  ResponseEntity.ok().body(service.getByList(idList));
+    }
+
 }
