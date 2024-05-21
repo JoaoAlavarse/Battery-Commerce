@@ -24,6 +24,11 @@ public class PromotionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(data));
     }
 
+    @GetMapping("/report/{report}")
+    public ResponseEntity<List<PromotionEntity>> getReportData(@PathVariable String report){
+        return ResponseEntity.ok().body(this.service.getReportData(report));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<PromotionEntity> delete(@PathVariable String id){
         return ResponseEntity.ok().body(service.technicalDelete(id));

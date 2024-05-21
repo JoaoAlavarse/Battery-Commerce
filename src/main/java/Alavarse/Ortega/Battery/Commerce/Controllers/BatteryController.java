@@ -60,8 +60,16 @@ public class BatteryController {
 
     @PostMapping(value = "/list")
     public ResponseEntity<List<BatteryEntity>> getByList(@RequestBody String[] idList){
+<<<<<<< HEAD
         System.out.println("VO NADA");
+=======
+>>>>>>> refs/remotes/origin/main
         return  ResponseEntity.ok().body(this.service.getByList(idList));
+    }
+
+    @GetMapping("/report/{report}")
+    public ResponseEntity<List<BatteryEntity>> getReportData(@PathVariable String report){
+        return ResponseEntity.ok().body(this.service.getReportData(report));
     }
 
 }

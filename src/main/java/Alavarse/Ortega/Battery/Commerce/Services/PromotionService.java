@@ -23,6 +23,24 @@ public class PromotionService {
     @Autowired
     private UserService userService;
 
+    public List<PromotionEntity> getReportData(String report) {
+        return switch (report) {
+            case "promotion-active" -> this.repository.findAllActive();
+            case "promotion-inactive" -> this.repository.findAllInactive();
+            case "promotion-expired" -> this.repository.findExpiredPromotions();
+            case "promotion-validity-1" -> this.repository.findByDate(1);
+            case "promotion-validity-3" -> this.repository.findByDate(3);
+            case "promotion-validity-6" -> this.repository.findByDate(6);
+            case "promotion-validity-over-6" -> this.repository.findByOverDate();
+            case "promotion-percentage-15" -> this.repository.findByPercentage(0, 15);
+            case "promotion-percentage-30" -> this.repository.findByPercentage(15, 30);
+            case "promotion-percentage-50" -> this.repository.findByPercentage(30, 50);
+            case "promotion-percentage-over-50" -> this.repository.findByPercentage(50, 100);
+            case "promotion-clear" -> this.repository.findAll();
+            default -> throw new RuntimeException("VO NADA");
+        };
+    }
+
     public PromotionEntity getByCode(String code){
         return repository.findByCode(code).orElseThrow(PromotionNotFoundException::new);
     }
