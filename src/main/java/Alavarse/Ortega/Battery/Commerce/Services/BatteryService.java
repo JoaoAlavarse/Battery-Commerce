@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -44,12 +45,14 @@ public class BatteryService {
         }
     }
 
-    public List<BatteryEntity> getByList(List<String> idList){
+    public List<BatteryEntity> getByList(String[] idList){
+        System.out.println("alo" + Arrays.toString(idList));
         try {
             List<BatteryEntity> data = new ArrayList<>();
-            idList.forEach(id -> {
+            for(String id : idList){
+                System.out.println(id);
                 data.add((this.getById(id)));
-            });
+            };
             return data;
         } catch (Exception e){
             throw new RuntimeException("NOSSA");
@@ -95,8 +98,24 @@ public class BatteryService {
             throw new ErrorWhileSavingBatteryException();
         }
     }
+    public List<BatteryEntity> getReportData(String report) {
+        return switch (report) {
+            case "battery-active" -> this.repository.findAllActive();
+            case "battery-inactive" -> this.repository.findAllInactive();
+            case "battery-value-100" -> this.repository.findByPrice(0, 100);
+            case "battery-value-250" -> this.repository.findByPrice(100, 250);
+            case "battery-value-500" -> this.repository.findByPrice(250, 500);
+            case "battery-value-over-500" -> this.repository.findByPrice(500, 10000);
+            case "battery-quantity-100" -> this.repository.findByQuantity(0, 100);
+            case "battery-quantity-250" -> this.repository.findByQuantity(100, 250);
+            case "battery-quantity-500" -> this.repository.findByQuantity(250, 500);
+            case "battery-quantity-over-500" -> this.repository.findByQuantity(500, 10000);
+            case "battery-clear" -> this.repository.findAll();
+            default -> throw new RuntimeException("VO NADA");
+        };
+    }
 
-    public BatteryEntity patchUpdate (String id, BatteryDTO data){
+        public BatteryEntity patchUpdate (String id, BatteryDTO data){
         BatteryEntity battery = this.getById(id);
         try {
             BeanUtils.copyProperties(data, battery, "batteryId");
