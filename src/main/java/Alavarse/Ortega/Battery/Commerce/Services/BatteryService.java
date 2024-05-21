@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -44,12 +45,14 @@ public class BatteryService {
         }
     }
 
-    public List<BatteryEntity> getByList(List<String> idList){
+    public List<BatteryEntity> getByList(String[] idList){
+        System.out.println("alo" + Arrays.toString(idList));
         try {
             List<BatteryEntity> data = new ArrayList<>();
-            idList.forEach(id -> {
+            for(String id : idList){
+                System.out.println(id);
                 data.add((this.getById(id)));
-            });
+            };
             return data;
         } catch (Exception e){
             throw new RuntimeException("NOSSA");

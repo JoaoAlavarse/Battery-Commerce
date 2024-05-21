@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -51,14 +53,15 @@ public class BatteryController {
         return ResponseEntity.ok().body(service.patchUpdate(id, data));
     }
 
-    @PutMapping("/reactive/{id}")
+    @PutMapping(value = "/reactive/{id}")
     public ResponseEntity<BatteryEntity> reactiveBattery(@PathVariable String id){
         return ResponseEntity.ok().body(service.reactiveBattery(id));
     }
 
-    @PostMapping("/list")
-    public ResponseEntity<List<BatteryEntity>> getByList(@RequestBody List<String> idList){
-        return  ResponseEntity.ok().body(service.getByList(idList));
+    @PostMapping(value = "/list")
+    public ResponseEntity<List<BatteryEntity>> getByList(@RequestBody String[] idList){
+        System.out.println("VO NADA");
+        return  ResponseEntity.ok().body(this.service.getByList(idList));
     }
 
 }
