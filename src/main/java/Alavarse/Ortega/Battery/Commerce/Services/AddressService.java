@@ -56,6 +56,15 @@ public class AddressService {
         }
     }
 
+    public void delete(String id){
+        AddressEntity address  =this.getById(id);
+        try{
+            this.repository.delete(address);
+        } catch (Exception e){
+            throw new ErrorWhileSavingAddressException();
+        }
+    }
+
     public AddressEntity patchUpdate(UpdateAddressDTO data, String addressId){
         try {
             AddressEntity foundAddress = this.getById(addressId);

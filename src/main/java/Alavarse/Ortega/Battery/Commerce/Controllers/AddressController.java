@@ -5,6 +5,7 @@ import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateAddressDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.AddressEntity;
 import Alavarse.Ortega.Battery.Commerce.Services.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,5 +39,11 @@ public class AddressController {
     @GetMapping("/{id}")
     public ResponseEntity<AddressEntity> getById(@PathVariable String id){
         return ResponseEntity.ok().body(service.getById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> delete(@PathVariable String id){
+        this.service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
