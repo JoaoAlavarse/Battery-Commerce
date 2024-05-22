@@ -4,6 +4,7 @@ import Alavarse.Ortega.Battery.Commerce.DTOs.AddressDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "address")
@@ -12,6 +13,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicUpdate
 @JsonIgnoreProperties({"user"})
 public class AddressEntity {
     @Id
@@ -31,12 +33,14 @@ public class AddressEntity {
     private String state;
     @Column(nullable = false)
     private String CEP;
+    @Column(nullable = false)
+    private Boolean principal;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    public AddressEntity(String address, String number, String neighborhood, String complement, String city, String state, String CEP, UserEntity user) {
+    public AddressEntity(String address, String number, String neighborhood, String complement, String city, String state, String CEP, Boolean principal, UserEntity user) {
         this.address = address;
         this.number = number;
         this.neighborhood = neighborhood;
@@ -44,6 +48,7 @@ public class AddressEntity {
         this.city = city;
         this.state = state;
         this.CEP = CEP;
+        this.principal = principal;
         this.user = user;
     }
 
@@ -55,6 +60,7 @@ public class AddressEntity {
         this.city = data.city();
         this.state = data.state();
         this.CEP = data.CEP();
+        this.principal = data.principal();
         this.user = user;
     }
 }

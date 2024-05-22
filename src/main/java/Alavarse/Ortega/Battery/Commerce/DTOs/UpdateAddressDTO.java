@@ -1,6 +1,7 @@
 package Alavarse.Ortega.Battery.Commerce.DTOs;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record UpdateAddressDTO(
         @NotBlank String address,
@@ -9,6 +10,7 @@ public record UpdateAddressDTO(
         String complement,
         @NotBlank String city,
         @NotBlank String state,
-        @NotBlank String CEP
+        @NotBlank String CEP,
+        @NotNull Boolean principal
 ) {
 }

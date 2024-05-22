@@ -6,7 +6,9 @@ import Alavarse.Ortega.Battery.Commerce.Entities.AddressEntity;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.AddressNotFoundException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.ErrorWhileGettingAddressException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.ErrorWhileSavingAddressException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.TooMuchAddressesException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.AddressRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,9 @@ public class AddressService {
     private UserService userService;
 
     public AddressEntity create(AddressDTO data){
+        if(repository.findAll().size() >= 3){
+            throw new TooMuchAddressesException();
+        }
         try {
             return repository.save(new AddressEntity(data, userService.findById(data.userId())));
         } catch (Exception e){
@@ -51,16 +56,10 @@ public class AddressService {
         }
     }
 
-    public AddressEntity update(UpdateAddressDTO data, String addressId){
+    public AddressEntity patchUpdate(UpdateAddressDTO data, String addressId){
         try {
-            AddressEntity foundAddress = repository.findById(addressId).orElseThrow(AddressNotFoundException::new);
-            foundAddress.setAddress(data.address());
-            foundAddress.setCity(data.city());
-            foundAddress.setCEP(data.CEP());
-            foundAddress.setState(data.state());
-            foundAddress.setNeighborhood(data.neighborhood());
-            foundAddress.setComplement(data.complement());
-            foundAddress.setNumber(data.number());
+            AddressEntity foundAddress = this.getById(addressId);
+            BeanUtils.copyProperties(data, foundAddress, "addressId");
             return repository.save(foundAddress);
         } catch (Exception e){
             throw new ErrorWhileSavingAddressException();

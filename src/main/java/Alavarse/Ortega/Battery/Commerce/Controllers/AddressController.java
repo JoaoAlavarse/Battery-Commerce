@@ -30,9 +30,9 @@ public class AddressController {
         return ResponseEntity.ok().body(service.getByUser(userId));
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<AddressEntity> update(@PathVariable String id, @RequestBody UpdateAddressDTO data){
-        return ResponseEntity.ok().body(service.update(data, id));
+        return ResponseEntity.ok().body(service.patchUpdate(data, id));
     }
 
     @GetMapping("/{id}")
