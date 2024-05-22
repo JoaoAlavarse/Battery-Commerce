@@ -289,4 +289,10 @@ public class RestExceptionHandler  {
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }
+
+    @ExceptionHandler(TooMuchAddressesException.class)
+    private ResponseEntity<ExceptionHandlerMessage> tooMuchAddresses(TooMuchAddressesException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
 }
