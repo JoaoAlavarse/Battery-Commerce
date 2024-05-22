@@ -28,6 +28,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/battery/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/battery/list").permitAll()
                         .requestMatchers(HttpMethod.GET, "/freight/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/promotion/**").permitAll()
                         .anyRequest().authenticated())

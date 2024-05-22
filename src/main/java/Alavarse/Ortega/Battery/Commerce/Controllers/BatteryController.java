@@ -60,6 +60,10 @@ public class BatteryController {
 
     @PostMapping(value = "/list")
     public ResponseEntity<List<BatteryEntity>> getByList(@RequestBody String[] idList){
+<<<<<<< HEAD
+        System.out.println("VO NADA");
+=======
+>>>>>>> refs/remotes/origin/main
         return  ResponseEntity.ok().body(this.service.getByList(idList));
     }
 
