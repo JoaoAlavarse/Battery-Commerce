@@ -34,13 +34,13 @@ public class AddressEntity {
     @Column(nullable = false)
     private String CEP;
     @Column(nullable = false)
-    private Boolean principal;
+    private Boolean main;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    public AddressEntity(String address, String number, String neighborhood, String complement, String city, String state, String CEP, Boolean principal, UserEntity user) {
+    public AddressEntity(String address, String number, String neighborhood, String complement, String city, String state, String CEP, Boolean main, UserEntity user) {
         this.address = address;
         this.number = number;
         this.neighborhood = neighborhood;
@@ -48,7 +48,7 @@ public class AddressEntity {
         this.city = city;
         this.state = state;
         this.CEP = CEP;
-        this.principal = principal;
+        this.main = main;
         this.user = user;
     }
 
@@ -60,7 +60,7 @@ public class AddressEntity {
         this.city = data.city();
         this.state = data.state();
         this.CEP = data.CEP();
-        this.principal = data.principal();
+        this.main = data.main();
         this.user = user;
     }
 }

@@ -22,8 +22,9 @@ public class AddressService {
     private UserService userService;
 
     public AddressEntity create(AddressDTO data){
-        if(repository.findAll().size() >= 3){
-            throw new TooMuchAddressesException();
+        verifyAddressesSize();
+        if (data.main()){
+            setAddressMainFalse();
         }
         try {
             return repository.save(new AddressEntity(data, userService.findById(data.userId())));
@@ -31,6 +32,29 @@ public class AddressService {
             throw new ErrorWhileSavingAddressException();
         }
     }
+
+    public AddressEntity setAddressMainTrue(String id){
+        AddressEntity address = this.getById(id);
+        setAddressMainFalse();
+        address.setMain(true);
+        return this.repository.save(address);
+    }
+
+    private void verifyAddressesSize(){
+        List<AddressEntity> list = this.getAll();
+        if (list.size() >= 3){
+            throw new TooMuchAddressesException();
+        }
+    }
+
+    private void setAddressMainFalse(){
+        List<AddressEntity> list = this.getAll();
+        list.forEach(addressEntity -> {
+            addressEntity.setMain(false);
+            repository.save(addressEntity);
+        });
+    }
+
 
     public AddressEntity getById(String id){
         try {

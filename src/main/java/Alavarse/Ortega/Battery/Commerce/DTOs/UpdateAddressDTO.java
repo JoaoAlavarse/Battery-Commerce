@@ -11,6 +11,6 @@ public record UpdateAddressDTO(
         @NotBlank String city,
         @NotBlank String state,
         @NotBlank String CEP,
-        @NotNull Boolean principal
+        @NotNull Boolean main
 ) {
 }

@@ -46,4 +46,9 @@ public class AddressController {
         this.service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/main/{id}")
+    public ResponseEntity<AddressEntity> setMainTrue(@PathVariable String id){
+        return ResponseEntity.ok().body(this.service.setAddressMainTrue(id));
+    }
 }
