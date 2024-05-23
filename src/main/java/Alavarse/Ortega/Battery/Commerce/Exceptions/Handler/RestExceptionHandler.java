@@ -296,9 +296,4 @@ public class RestExceptionHandler  {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
     }
 
-    @ExceptionHandler(AddressAlreadyExistsException.class)
-    private ResponseEntity<ExceptionHandlerMessage> addressAlreadyExists(AddressAlreadyExistsException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
-    }
 }

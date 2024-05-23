@@ -20,9 +20,6 @@ public class AddressService {
 
     public AddressEntity create(AddressDTO data){
         verifyAddressesSize();
-        if (repository.findByCEP(data.CEP()).isPresent()){
-            throw new AddressAlreadyExistsException();
-        }
         if (data.main()){
             setAddressMainFalse();
         }
