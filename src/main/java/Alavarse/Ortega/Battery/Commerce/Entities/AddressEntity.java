@@ -31,7 +31,7 @@ public class AddressEntity {
     private String city;
     @Column(nullable = false)
     private String state;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String CEP;
     @Column(nullable = false)
     private Boolean main;

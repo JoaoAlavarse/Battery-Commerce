@@ -3,10 +3,7 @@ package Alavarse.Ortega.Battery.Commerce.Services;
 import Alavarse.Ortega.Battery.Commerce.DTOs.AddressDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateAddressDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.AddressEntity;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.AddressNotFoundException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.ErrorWhileGettingAddressException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.ErrorWhileSavingAddressException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.TooMuchAddressesException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.AddressRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +20,9 @@ public class AddressService {
 
     public AddressEntity create(AddressDTO data){
         verifyAddressesSize();
+        if (repository.findByCEP(data.CEP()).isPresent()){
+            throw new AddressAlreadyExistsException();
+        }
         if (data.main()){
             setAddressMainFalse();
         }
