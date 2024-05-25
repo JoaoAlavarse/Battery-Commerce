@@ -4,6 +4,7 @@ import Alavarse.Ortega.Battery.Commerce.DTOs.AddressDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateAddressDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.AddressEntity;
 import Alavarse.Ortega.Battery.Commerce.Services.AddressService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class AddressController {
     @Autowired
     private AddressService service;
     @PostMapping
-    public ResponseEntity<AddressEntity> create(@RequestBody AddressDTO data){
+    public ResponseEntity<AddressEntity> create(@RequestBody @Valid AddressDTO data){
         return ResponseEntity.ok().body(service.create(data));
     }
 
@@ -32,7 +33,7 @@ public class AddressController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<AddressEntity> update(@PathVariable String id, @RequestBody UpdateAddressDTO data){
+    public ResponseEntity<AddressEntity> update(@PathVariable String id, @RequestBody @Valid UpdateAddressDTO data){
         return ResponseEntity.ok().body(service.patchUpdate(data, id));
     }
 

@@ -19,7 +19,7 @@ public class AddressService {
     private UserService userService;
 
     public AddressEntity create(AddressDTO data){
-        verifyAddressesSize();
+        verifyAddressesSize(data.userId());
         if (data.main()){
             setAddressMainFalse();
         }
@@ -37,8 +37,10 @@ public class AddressService {
         return this.repository.save(address);
     }
 
-    private void verifyAddressesSize(){
-        List<AddressEntity> list = this.getAll();
+    private void verifyAddressesSize(String id){
+        List<AddressEntity> list = this.getByUser(id);
+        System.out.println("Joao " + list.size());
+        System.out.println(list);
         if (list.size() >= 3){
             throw new TooMuchAddressesException();
         }
