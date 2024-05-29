@@ -4,6 +4,7 @@ import Alavarse.Ortega.Battery.Commerce.DTOs.CardDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.CardResponseDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateCardDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.CardEntity;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.CardExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class CardService {
             CardEntity newCard = repository.save(card);
             return new CardResponseDTO(makeCardNumberResponse(newCard.getCardNumber()));
         } catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+            throw new ErrorWhileSavingCardException();
         }
     }
 
@@ -45,33 +46,45 @@ public class CardService {
         return decryptedCardNumber.substring(decryptedCardNumber.length() - 4);
     }
 
-    public CardEntity setCardMainTrue(String id){
-        CardEntity card = this.repository.findById(id).orElseThrow(RuntimeException::new);
+    public void setCardMainTrue(String id){
+        CardEntity card = this.repository.findById(id).orElseThrow(ErrorWhileGettingCardException::new);
         setCardMainFalse(id);
-        card.setMain(true);
-        return repository.save(card);
+        try {
+            card.setMain(true);
+            repository.save(card);
+        } catch (Exception e){
+            throw new ErrorWhileSavingCardException();
+        }
     }
 
     private void setCardMainFalse(String id){
         List<CardEntity> list = this.repository.findByUser(this.userService.findById(id));
-        list.forEach(cardEntity -> {
-            cardEntity.setMain(false);
-            this.repository.save(cardEntity);
-        });
+        try {
+            list.forEach(cardEntity -> {
+                cardEntity.setMain(false);
+                this.repository.save(cardEntity);
+            });
+        } catch (Exception e){
+            throw new ErrorWhileSavingCardException();
+        }
     }
 
     private void verifyCardQuantity(String userId){
         if (this.repository.findByUser(this.userService.findById(userId)).size() >= 3){
-            throw new RuntimeException();
+            throw new TooManyCardsException();
         }
     }
 
     public List<CardResponseDTO> getAllByUser(String userId){
         List<CardResponseDTO> list = new ArrayList<>();
-        this.repository.findByUser(this.userService.findById(userId)).forEach(cardEntity -> {
-            list.add(new CardResponseDTO(this.makeCardNumberResponse(cardEntity.getCardNumber())));
-        });
-        return list;
+        try {
+            this.repository.findByUser(this.userService.findById(userId)).forEach(cardEntity -> {
+                list.add(new CardResponseDTO(this.makeCardNumberResponse(cardEntity.getCardNumber())));
+            });
+            return list;
+        } catch (Exception e){
+            throw new ErrorWhileGettingCardException();
+        }
     }
 
     public void updateCard(UpdateCardDTO data, String cardId){
@@ -82,7 +95,7 @@ public class CardService {
             card.setExpirationDate(this.encryptService.encrypt(data.expirationDate()));
             repository.save(card);
         } catch (Exception e){
-            throw new RuntimeException();
+            throw new ErrorWhileSavingCardException();
         }
     }
 
@@ -90,7 +103,7 @@ public class CardService {
         try{
             this.repository.deleteById(cardId);
         } catch (Exception e){
-            throw new RuntimeException();
+            throw new ErrorWhileSavingCardException();
         }
     }
 
@@ -111,13 +124,13 @@ public class CardService {
         }
 
         if (sum % 10 != 0){
-            throw new RuntimeException("aaa");
+            throw new InvalidCardNumberException();
         }
     }
 
     private void validateCardNumber(String cardNumber) {
         if (!cardNumber.matches("\\d+")) {
-            throw new RuntimeException("bbb");
+            throw new InvalidCardNumberFormatException();
         }
         validateLuhn(cardNumber);
     }
@@ -136,7 +149,7 @@ public class CardService {
         } else if (cardNumber.matches("^3(?:0[0-5]|[68]).*")) {
             return "Diners Club";
         } else {
-            throw new RuntimeException("ccc");
+            throw new UnknownCardFlagException();
         }
     }
 
@@ -146,7 +159,7 @@ public class CardService {
         Matcher matcher = pattern.matcher(date);
 
         if (!matcher.matches()) {
-            throw new RuntimeException("Data de expiração inválida");
+            throw new InvalidDateFormatException();
         }
 
         String[] parts = date.split("/");
@@ -158,7 +171,7 @@ public class CardService {
         LocalDate expiry = LocalDate.of(2000 + year, month, 1).plusMonths(1);
 
         if(expiry.isBefore(currentDate)){
-            throw new RuntimeException("Cartão expirado");
+            throw new ExpiredCardException();
         }
     }
 

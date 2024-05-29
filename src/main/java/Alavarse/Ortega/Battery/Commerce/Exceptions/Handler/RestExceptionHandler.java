@@ -3,6 +3,7 @@ package Alavarse.Ortega.Battery.Commerce.Exceptions.Handler;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.*;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.CardExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.CartExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.Freight.ErrorWhileGettingFreightException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
@@ -294,6 +295,54 @@ public class RestExceptionHandler  {
     private ResponseEntity<ExceptionHandlerMessage> tooMuchAddresses(TooMuchAddressesException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
+
+    @ExceptionHandler(TooManyCardsException.class)
+    private ResponseEntity<ExceptionHandlerMessage> tooMuchCards(TooManyCardsException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
+
+    @ExceptionHandler(UnknownCardFlagException.class)
+    private ResponseEntity<ExceptionHandlerMessage> unknownCardFlag(UnknownCardFlagException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "flag");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+    @ExceptionHandler(InvalidDateFormatException.class)
+    private ResponseEntity<ExceptionHandlerMessage> invalidDateFormat(InvalidDateFormatException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "expirationDate");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+    @ExceptionHandler(InvalidCardNumberFormatException.class)
+    private ResponseEntity<ExceptionHandlerMessage> invalidCardNumberFormat(InvalidCardNumberFormatException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "cardNumber");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+    @ExceptionHandler(InvalidCardNumberException.class)
+    private ResponseEntity<ExceptionHandlerMessage> invalidCardNumber(InvalidCardNumberException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "cardNumber");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ExpiredCardException.class)
+    private ResponseEntity<ExceptionHandlerMessage> expiredCard(ExpiredCardException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage(), "expirationDate");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileGettingCardException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorGettingCard(ErrorWhileGettingCardException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileSavingCardException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorSavingCard(ErrorWhileSavingCardException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }
 
 }
