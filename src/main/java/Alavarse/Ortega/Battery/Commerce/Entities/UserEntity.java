@@ -59,6 +59,10 @@ public class UserEntity implements UserDetails {
     )
     private Set<PromotionEntity> usedPromotions = new HashSet<>();
 
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<CardEntity> cards = new HashSet<>();
+
     public UserEntity(String email, String password, String name, String document, UserRole role) {
         this.email = email;
         this.password = password;
