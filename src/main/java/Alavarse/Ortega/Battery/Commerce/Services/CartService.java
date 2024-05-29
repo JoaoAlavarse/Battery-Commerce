@@ -96,6 +96,24 @@ public class CartService {
         }
     }
 
+    public CartEntity changeBatteryQuantity(String cartId, String cartBatteryEntityId, Integer quantity){
+        CartBatteryEntity cartBatteryEntity = cartBatteryRepository.findById(cartBatteryEntityId).orElseThrow(RuntimeException::new);
+        BatteryEntity battery = cartBatteryEntity.getBattery();
+
+        if (battery.getQuantity() < quantity) {
+            throw new RuntimeException();
+        }
+
+        cartBatteryEntity.setQuantity(quantity);
+        cartBatteryRepository.save(cartBatteryEntity);
+
+        CartEntity cart = cartBatteryEntity.getCart();
+        cart.setTotalValue(this.getTotalValue(cartId));
+
+        return repository.save(cart);
+    }
+
+
     public CartEntity removeBatteries(String id, String batteryId){
         CartEntity cart = this.getById(id);
         BatteryEntity battery = batteryService.getById(batteryId);

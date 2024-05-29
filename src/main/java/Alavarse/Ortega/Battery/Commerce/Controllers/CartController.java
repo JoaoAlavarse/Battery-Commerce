@@ -48,4 +48,9 @@ public class CartController {
     public ResponseEntity<CartEntity> addPromotion(@PathVariable String id, @PathVariable String promotionCode){
         return ResponseEntity.ok().body(this.service.addPromotion(id, promotionCode));
     }
+
+    @PutMapping("/quantity/{cartId}/{cartBatteryId}/{quantity}")
+    public ResponseEntity<CartEntity> changeBatteryQuantity(@PathVariable String cartId, @PathVariable String cartBatteryId, @PathVariable Integer quantity){
+        return ResponseEntity.ok().body(this.service.changeBatteryQuantity(cartId, cartBatteryId, quantity));
+    }
 }
