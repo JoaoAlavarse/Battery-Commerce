@@ -139,7 +139,6 @@ public class CartService {
         try {
             return repository.save(cart);
         } catch (Exception e) {
-            e.printStackTrace();
            throw new ErrorWhileSavingCartException();
         }
     }
