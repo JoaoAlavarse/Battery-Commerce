@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -114,24 +115,32 @@ public class CartService {
     }
 
 
-    public CartEntity removeBatteries(String id, String batteryId){
+    public CartEntity removeBatteries(String id, String batteryId) {
         CartEntity cart = this.getById(id);
-        BatteryEntity battery = batteryService.getById(batteryId);
+        boolean batteryFound = false;
 
-        for (CartBatteryEntity cartBattery : cart.getBatteries()) {
+        Iterator<CartBatteryEntity> iterator = cart.getBatteries().iterator();
+        while (iterator.hasNext()) {
+            CartBatteryEntity cartBattery = iterator.next();
             if (cartBattery.getBattery().getBatteryId().equals(batteryId)) {
-                cart.getBatteries().remove(cartBattery);
+                iterator.remove();
                 cartBatteryRepository.delete(cartBattery);
+                cart.getBatteries().remove(cartBattery);
+                batteryFound = true;
                 break;
             }
+        }
+
+        if (!batteryFound) {
             throw new BatteryDoenstExistsInException();
         }
 
         cart.setTotalValue(this.getTotalValue(id));
         try {
             return repository.save(cart);
-        } catch (Exception e){
-            throw new ErrorWhileSavingCartException();
+        } catch (Exception e) {
+            e.printStackTrace();
+           throw new ErrorWhileSavingCartException();
         }
     }
 
