@@ -1,6 +1,5 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.FreightRequestDTO;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.Freight.ErrorWhileGettingFreightException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -50,7 +49,6 @@ public class FreightService {
                 System.out.println(response.body());
                 responses.add(response.body());
 
-                // Parse the response to extract the defaultValue (default value)
                 float freightCost = parseFreightCost(response.body());
                 totalFreightCost += freightCost;
 
@@ -59,7 +57,6 @@ public class FreightService {
             }
         }
 
-        // Create a JSON response with the total freight cost and all responses
         String totalFreightCostJson = """
         {
             "totalFreightCost": %s,
@@ -85,11 +82,9 @@ public class FreightService {
     }
 
     private float parseFreightCost(String responseBody) {
-        // Assuming the response is a JSON array as provided in the example
-        // [{"provider":"Correios","contractValue":19.45,...}]
         try {
             org.json.JSONArray jsonArray = new org.json.JSONArray(responseBody);
-            org.json.JSONObject firstObject = jsonArray.getJSONObject(1); // Assuming SEDEX is always at index 1
+            org.json.JSONObject firstObject = jsonArray.getJSONObject(1);
             return firstObject.getFloat("defaultValue");
         } catch (Exception e) {
             throw new ErrorWhileGettingFreightException();
