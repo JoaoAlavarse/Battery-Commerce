@@ -14,8 +14,10 @@ import java.net.http.HttpResponse;
 @Service
 public class FreightService {
     private static final String URI = "https://api.site.pagseguro.uol.com.br/ps-website-bff/v1/shipment/simulate";
-    public ResponseEntity<String> getFreightInfo(String cep){
+    private static final float DEFAULT_WEIGHT = 2.4f;
 
+    public ResponseEntity<String> getFreightInfo(String cep, int quantity){
+        float weight = DEFAULT_WEIGHT * quantity;
         String json = """
         {
             "postalSender": "87200000",
@@ -23,10 +25,10 @@ public class FreightService {
             "length": "30",
             "height": "30",
             "width": "30",
-            "weight": "2",
+            "weight": "%s",
             "productValue": 200
         }
-        """.formatted(cep);
+        """.formatted(cep, weight);
 
         HttpClient client = HttpClient.newHttpClient();
 

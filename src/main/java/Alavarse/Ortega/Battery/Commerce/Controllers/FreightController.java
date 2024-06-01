@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 public class FreightController {
     @Autowired
     private FreightService service;
-    @GetMapping("/{cep}")
-    public ResponseEntity<String> getFreightInfo(@PathVariable @Valid String cep){
-        return this.service.getFreightInfo(cep);
+    @GetMapping("/{cep}/{quantity}")
+    public ResponseEntity<String> getFreightInfo(@PathVariable @Valid String cep, @PathVariable int quantity){
+        return this.service.getFreightInfo(cep, quantity);
     }
 }
