@@ -84,10 +84,20 @@ public class FreightService {
     private float parseFreightCost(String responseBody) {
         try {
             org.json.JSONArray jsonArray = new org.json.JSONArray(responseBody);
-            org.json.JSONObject firstObject = jsonArray.getJSONObject(1);
-            return firstObject.getFloat("defaultValue");
+            org.json.JSONObject jsonObject;
+
+            if (jsonArray.length() > 1) {
+                jsonObject = jsonArray.getJSONObject(1);
+            } else if (jsonArray.length() > 0) {
+                jsonObject = jsonArray.getJSONObject(0);
+            } else {
+                throw new ErrorWhileGettingFreightException(); // ou outro tratamento apropriado
+            }
+
+            return jsonObject.getFloat("defaultValue");
         } catch (Exception e) {
             throw new ErrorWhileGettingFreightException();
         }
     }
+
 }
