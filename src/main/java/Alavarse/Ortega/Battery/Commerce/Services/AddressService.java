@@ -32,7 +32,7 @@ public class AddressService {
 
     public AddressEntity setAddressMainTrue(String id){
         AddressEntity address = this.getById(id);
-        setAddressMainFalse(id);
+        setAddressMainFalse(address.getUser().getUserId());
         address.setMain(true);
         return this.repository.save(address);
     }
@@ -44,8 +44,8 @@ public class AddressService {
         }
     }
 
-    private void setAddressMainFalse(String id){
-        List<AddressEntity> list = this.getByUser(id);
+    private void setAddressMainFalse(String userId){
+        List<AddressEntity> list = this.getByUser(userId);
         list.forEach(addressEntity -> {
             addressEntity.setMain(false);
             repository.save(addressEntity);

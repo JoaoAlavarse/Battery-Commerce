@@ -48,7 +48,7 @@ public class CardService {
 
     public void setCardMainTrue(String id){
         CardEntity card = this.repository.findById(id).orElseThrow(ErrorWhileGettingCardException::new);
-        setCardMainFalse(id);
+        setCardMainFalse(card.getUser().getUserId());
         try {
             card.setMain(true);
             repository.save(card);
