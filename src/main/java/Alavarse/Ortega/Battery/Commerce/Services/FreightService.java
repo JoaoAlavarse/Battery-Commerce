@@ -22,22 +22,23 @@ public class FreightService {
         float totalWeight = DEFAULT_WEIGHT * quantity;
         List<Float> weights = calculateWeights(totalWeight);
 
-        List<String> responses = new ArrayList<>();
         float totalFreightCost = 0.0f;
+        int estimateDays = 0;
         HttpClient client = HttpClient.newHttpClient();
+
 
         for (float weight : weights) {
             String json = """
-            {
-                "postalSender": "87200000",
-                "postalReceiver": "%s",
-                "length": "15",
-                "height": "15",
-                "width": "15",
-                "weight": "%s",
-                "productValue": 200
-            }
-            """.formatted(cep, String.valueOf(weight));
+                    {
+                        "postalSender": "87200000",
+                        "postalReceiver": "%s",
+                        "length": "15",
+                        "height": "15",
+                        "width": "15",
+                        "weight": "%s",
+                        "productValue": 200
+                    }
+                    """.formatted(cep, String.valueOf(weight));
 
             HttpRequest request = HttpRequest.newBuilder()
                     .header("Content-Type", "application/json")
@@ -47,7 +48,8 @@ public class FreightService {
             try {
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
                 System.out.println(response.body());
-                responses.add(response.body());
+
+                estimateDays = parseEstimativeDays(response.body());
 
                 float freightCost = parseFreightCost(response.body());
                 totalFreightCost += freightCost;
@@ -58,11 +60,11 @@ public class FreightService {
         }
 
         String totalFreightCostJson = """
-        {
-            "totalFreightCost": %s,
-            "responses": %s
-        }
-        """.formatted(String.valueOf(totalFreightCost), responses);
+                {
+                    "totalFreightCost": %s,
+                    "estimateDays": %s
+                }
+                """.formatted(String.valueOf(totalFreightCost), estimateDays);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -91,7 +93,7 @@ public class FreightService {
             } else if (jsonArray.length() > 0) {
                 jsonObject = jsonArray.getJSONObject(0);
             } else {
-                throw new ErrorWhileGettingFreightException(); // ou outro tratamento apropriado
+                throw new ErrorWhileGettingFreightException();
             }
 
             return jsonObject.getFloat("defaultValue");
@@ -100,4 +102,22 @@ public class FreightService {
         }
     }
 
+    private int parseEstimativeDays(String responseBody) {
+        try {
+            org.json.JSONArray jsonArray = new org.json.JSONArray(responseBody);
+            org.json.JSONObject jsonObject;
+
+            if (jsonArray.length() > 1) {
+                jsonObject = jsonArray.getJSONObject(1);
+            } else if (jsonArray.length() > 0) {
+                jsonObject = jsonArray.getJSONObject(0);
+            } else {
+                throw new ErrorWhileGettingFreightException();
+            }
+
+            return jsonObject.getInt("estimateDays");
+        } catch (Exception e) {
+            throw new ErrorWhileGettingFreightException();
+        }
+    }
 }
