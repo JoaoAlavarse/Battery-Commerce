@@ -35,7 +35,7 @@ public class CardService {
                     encryptService.encrypt(data.expirationDate()), encryptService.encrypt(data.cvv()), encryptService.encrypt(flag),
                     userService.findById(data.userId()), data.main());
             CardEntity newCard = repository.save(card);
-            return new CardResponseDTO(makeCardNumberResponse(newCard.getCardNumber()));
+            return new CardResponseDTO(makeCardNumberResponse(newCard.getCardNumber()), newCard.getFlag());
         } catch (Exception e){
             throw new ErrorWhileSavingCardException();
         }
@@ -79,7 +79,7 @@ public class CardService {
         List<CardResponseDTO> list = new ArrayList<>();
         try {
             this.repository.findByUser(this.userService.findById(userId)).forEach(cardEntity -> {
-                list.add(new CardResponseDTO(this.makeCardNumberResponse(cardEntity.getCardNumber())));
+                list.add(new CardResponseDTO(this.encryptService.decrypt(this.makeCardNumberResponse(cardEntity.getCardNumber())), this.encryptService.decrypt(cardEntity.getFlag())));
             });
             return list;
         } catch (Exception e){
