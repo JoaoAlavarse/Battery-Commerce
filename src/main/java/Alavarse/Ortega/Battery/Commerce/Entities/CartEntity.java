@@ -48,6 +48,10 @@ public class CartEntity {
     @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)
     private Set<CartBatteryEntity> batteries = new HashSet<>();
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "cart")
+    private SaleEntity sale;
+
 
     public CartEntity(UserEntity user) {
         this.creationDate = LocalDate.now();

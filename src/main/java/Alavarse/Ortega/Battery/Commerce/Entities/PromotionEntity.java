@@ -54,6 +54,10 @@ public class PromotionEntity {
     @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY)
     private List<CartEntity> carts;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY)
+    private List<SaleEntity> sales;
+
     public PromotionEntity(LocalDate expirationDate, Integer percentage, String code) {
         this.expirationDate = expirationDate;
         this.startDate = LocalDate.now();
