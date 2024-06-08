@@ -30,9 +30,8 @@ public class CardController {
     }
 
     @PutMapping("/{cardId}")
-    public ResponseEntity<HttpStatus> update(@PathVariable String cardId, @RequestBody @Valid UpdateCardDTO data){
-        this.service.updateCard(data, cardId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<CardResponseDTO> update(@PathVariable String cardId, @RequestBody @Valid UpdateCardDTO data){
+        return ResponseEntity.ok().body(this.service.updateCard(data, cardId));
     }
 
     @DeleteMapping("/{cardId}")
