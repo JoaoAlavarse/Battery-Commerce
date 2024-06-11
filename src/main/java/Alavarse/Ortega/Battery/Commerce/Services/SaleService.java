@@ -1,10 +1,7 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
 import Alavarse.Ortega.Battery.Commerce.DTOs.SaleDTO;
-import Alavarse.Ortega.Battery.Commerce.Entities.AddressEntity;
-import Alavarse.Ortega.Battery.Commerce.Entities.CartEntity;
-import Alavarse.Ortega.Battery.Commerce.Entities.SaleEntity;
-import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
+import Alavarse.Ortega.Battery.Commerce.Entities.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,13 +18,23 @@ public class SaleService {
     private CartService cartService;
     @Autowired
     private AddressService addressService;
+    @Autowired
+    private PromotionService promotionService;
+    @Autowired
+    private DeliveryService deliveryService;
 
     public SaleEntity create(SaleDTO data){
         UserEntity user = userService.findById(data.userId());
         CartEntity cart = cartService.getById(data.cartId());
         AddressEntity address = addressService.getById(data.addressId());
-        return this.repository.save(new SaleEntity(user, cart, data.value(), data.freightValue(), address.getAddress(), address.getNumber(),
-                address.getNeighborhood(), address.getComplement(), address.getCity(), address.getState(), address.getCEP()));
+        PromotionEntity promotion = null;
+        if (!data.promotionId().isBlank()){
+            promotion = promotionService.getById(data.promotionId());
+        }
+        SaleEntity sale =  this.repository.save(new SaleEntity(data.value(), data.freightValue(), user, cart, promotion));
+        this.deliveryService.create(address.getAddress(), address.getNumber(), address.getNeighborhood(), address.getComplement(),
+                address.getCity(), address.getCity(), address.getCEP(), sale);
+        return sale;
     }
 
     public List<SaleEntity> getByUser(String userId){

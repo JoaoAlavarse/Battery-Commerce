@@ -29,53 +29,28 @@ public class SaleEntity {
     private BigDecimal value;
     @Column(nullable = false)
     private BigDecimal freightValue;
-    @Column(nullable = false)
-    @JsonIgnore
-    private String address;
-    @Column(nullable = false)
-    @JsonIgnore
-    private String number;
-    @Column(nullable = false)
-    @JsonIgnore
-    private String neighborhood;
-    @Column(nullable = true)
-    @JsonIgnore
-    private String complement;
-    @Column(nullable = false)
-    @JsonIgnore
-    private String city;
-    @Column(nullable = false)
-    @JsonIgnore
-    private String state;
-    @Column(nullable = false)
-    @JsonIgnore
-    private String CEP;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId", nullable = false)
     private UserEntity user;
 
     @OneToOne
-    @JoinColumn(name = "cartId")
+    @JoinColumn(name = "cartId", nullable = false)
     private CartEntity cart;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "promotionId")
     private PromotionEntity promotion;
 
-    public SaleEntity(UserEntity user, CartEntity cart, BigDecimal value, BigDecimal freightValue,
-                      String address, String number, String neighborhood, String complement, String city, String state, String CEP) {
+    @OneToOne(mappedBy = "sale")
+    private DeliveryEntity delivery;
+
+    public SaleEntity(BigDecimal value, BigDecimal freightValue, UserEntity user, CartEntity cart, PromotionEntity promotion) {
         this.creationDate = LocalDate.now();
-        this.user = user;
-        this.cart = cart;
         this.value = value;
         this.freightValue = freightValue;
-        this.address = address;
-        this.number = number;
-        this.neighborhood = neighborhood;
-        this.complement = complement;
-        this.city = city;
-        this.state = state;
-        this.CEP = CEP;
+        this.user = user;
+        this.cart = cart;
+        this.promotion = promotion;
     }
 }

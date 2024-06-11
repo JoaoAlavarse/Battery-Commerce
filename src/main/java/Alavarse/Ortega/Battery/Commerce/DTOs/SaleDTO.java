@@ -13,5 +13,6 @@ public record SaleDTO(
         @NotNull @Min(1) BigDecimal freightValue,
         @NotBlank String addressId,
         @NotBlank String userId,
-        @NotBlank String cartId){
+        @NotBlank String cartId,
+        @NotBlank String promotionId){
 }
