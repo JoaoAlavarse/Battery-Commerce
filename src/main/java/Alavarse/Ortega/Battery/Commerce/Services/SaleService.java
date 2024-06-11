@@ -33,11 +33,15 @@ public class SaleService {
         }
         SaleEntity sale =  this.repository.save(new SaleEntity(data.value(), data.freightValue(), user, cart, promotion));
         this.deliveryService.create(address.getAddress(), address.getNumber(), address.getNeighborhood(), address.getComplement(),
-                address.getCity(), address.getCity(), address.getCEP(), sale);
+                address.getCity(), address.getCity(), address.getCEP(), sale, user);
         return sale;
     }
 
     public List<SaleEntity> getByUser(String userId){
         return this.repository.findByUser(this.userService.findById(userId));
+    }
+
+    public List<SaleEntity> getAll(){
+        return this.repository.findAll();
     }
 }

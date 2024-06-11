@@ -26,4 +26,9 @@ public class SaleController {
         return ResponseEntity.ok().body(this.service.getByUser(userId));
     }
 
+    @GetMapping
+    public ResponseEntity<List<SaleEntity>> getAll(){
+        return ResponseEntity.ok().body(this.service.getAll());
+    }
+
 }
