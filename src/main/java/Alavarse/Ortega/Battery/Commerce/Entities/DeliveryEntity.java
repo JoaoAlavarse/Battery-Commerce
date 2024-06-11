@@ -3,6 +3,7 @@ package Alavarse.Ortega.Battery.Commerce.Entities;
 import Alavarse.Ortega.Battery.Commerce.Enums.DeliveryStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.catalina.User;
 
 @Entity
 @Table(name = "delivery")
@@ -32,12 +33,18 @@ public class DeliveryEntity {
     private String state;
     @Column(nullable = false)
     private String CEP;
+    @Column(nullable = true)
+    private String trackingCode;
 
     @OneToOne
     @JoinColumn(name = "cartId", nullable = false)
     private SaleEntity sale;
 
-    public DeliveryEntity(String address, String number, String neighborhood, String complement, String city, String state, String CEP, SaleEntity sale) {
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
+
+    public DeliveryEntity(String address, String number, String neighborhood, String complement, String city, String state, String CEP, SaleEntity sale, UserEntity user) {
         this.status = DeliveryStatus.CONFIRMANDO;
         this.address = address;
         this.number = number;
@@ -47,5 +54,6 @@ public class DeliveryEntity {
         this.state = state;
         this.CEP = CEP;
         this.sale = sale;
+        this.user = user;
     }
 }

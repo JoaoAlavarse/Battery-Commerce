@@ -1,6 +1,7 @@
 package Alavarse.Ortega.Battery.Commerce.Entities;
 
 import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateUserDTO;
+import Alavarse.Ortega.Battery.Commerce.Enums.DeliveryStatus;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserRole;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -45,6 +46,10 @@ public class UserEntity implements UserDetails {
     @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<AddressEntity> address;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<DeliveryStatus> deliveries;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
