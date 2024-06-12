@@ -1,8 +1,12 @@
 package Alavarse.Ortega.Battery.Commerce.Entities;
 
 import Alavarse.Ortega.Battery.Commerce.Enums.DeliveryStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "delivery")
@@ -34,6 +38,9 @@ public class DeliveryEntity {
     private String CEP;
     @Column(nullable = true)
     private String trackingCode;
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate creationDate;
 
     @OneToOne
     @JoinColumn(name = "cartId", nullable = false)
@@ -44,6 +51,7 @@ public class DeliveryEntity {
     private UserEntity user;
 
     public DeliveryEntity(String address, String number, String neighborhood, String complement, String city, String state, String CEP, SaleEntity sale, UserEntity user) {
+        this.creationDate = LocalDate.now();
         this.status = DeliveryStatus.CONFIRMADO;
         this.address = address;
         this.number = number;
