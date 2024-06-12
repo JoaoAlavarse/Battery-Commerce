@@ -1,6 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
-import Alavarse.Ortega.Battery.Commerce.Exceptions.Freight.ErrorWhileGettingFreightException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.FreightExceptions.ErrorWhileGettingFreightException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
