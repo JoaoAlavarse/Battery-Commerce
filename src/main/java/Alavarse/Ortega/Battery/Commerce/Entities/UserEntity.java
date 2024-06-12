@@ -49,7 +49,7 @@ public class UserEntity implements UserDetails {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<DeliveryStatus> deliveries;
+    private List<DeliveryEntity> deliveries;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
