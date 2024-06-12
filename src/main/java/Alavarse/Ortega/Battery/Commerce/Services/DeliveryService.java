@@ -5,6 +5,7 @@ import Alavarse.Ortega.Battery.Commerce.Entities.SaleEntity;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.DeliveryStatus;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.DeliveryExceptions.*;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.NoSuchReportTypeException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.DeliveryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,5 +77,19 @@ public class DeliveryService {
         } catch (Exception e){
             throw new ErrorWhileSavingDeliveryException();
         }
+    }
+
+    public List<DeliveryEntity> getReportData(String report){
+        return switch (report){
+            case "delivery-confirmed" -> this.repository.findByStatus("CONFIRMADO");
+            case "delivery-preparing" -> this.repository.findByStatus("PREPARANDO");
+            case "delivery-transporting" -> this.repository.findByStatus("TRANSITO");
+            case "delivery-delivered" -> this.repository.findByStatus("ENTREGUE");
+            case "delivery-validity-1" -> this.repository.findByDate(1);
+            case "delivery-validity-3" -> this.repository.findByDate(3);
+            case "delivery-validity-6" -> this.repository.findByDate(6);
+            case "delivery-validity-over-6" -> this.repository.findByOverDate();
+            default -> throw new NoSuchReportTypeException();
+        };
     }
 }

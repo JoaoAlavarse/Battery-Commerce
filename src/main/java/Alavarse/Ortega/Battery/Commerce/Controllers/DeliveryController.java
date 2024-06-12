@@ -34,4 +34,9 @@ public class DeliveryController {
     public ResponseEntity<DeliveryEntity> updateStatus(@PathVariable String deliveryId, @PathVariable DeliveryStatus status){
         return ResponseEntity.ok().body(this.service.updateStatus(deliveryId, status));
     }
+
+    @GetMapping("/report/{report}")
+    public ResponseEntity<List<DeliveryEntity>> getReportData(@PathVariable String report){
+        return ResponseEntity.ok().body(this.service.getReportData(report));
+    }
 }
