@@ -5,7 +5,8 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.CardExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.CartExceptions.*;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.Freight.ErrorWhileGettingFreightException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.DeliveryExceptions.*;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.FreightExceptions.ErrorWhileGettingFreightException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -341,6 +342,36 @@ public class RestExceptionHandler  {
 
     @ExceptionHandler(ErrorWhileSavingCardException.class)
     private ResponseEntity<ExceptionHandlerMessage> errorSavingCard(ErrorWhileSavingCardException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ChangeFinalizedDeliveryStatusException.class)
+    private ResponseEntity<ExceptionHandlerMessage> changeFinalizedDeliveryStatus(ChangeFinalizedDeliveryStatusException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage(), "status");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ReversedStatusException.class)
+    private ResponseEntity<ExceptionHandlerMessage> reversedDeliveryStatus(ReversedStatusException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "status");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+    @ExceptionHandler(SameStatusException.class)
+    private ResponseEntity<ExceptionHandlerMessage> sameDeliveryStatus(SameStatusException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "status");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileSavingDeliveryException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorSavingDelivery(ErrorWhileSavingDeliveryException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileGettingDeliveriesException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorWhileGettingDeliveries(ErrorWhileGettingDeliveriesException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }
