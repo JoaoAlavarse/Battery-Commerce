@@ -1,4 +1,4 @@
-package Alavarse.Ortega.Battery.Commerce.Exceptions.Freight;
+package Alavarse.Ortega.Battery.Commerce.Exceptions.FreightExceptions;
 
 public class ErrorWhileGettingFreightException extends RuntimeException{
     public ErrorWhileGettingFreightException() {
