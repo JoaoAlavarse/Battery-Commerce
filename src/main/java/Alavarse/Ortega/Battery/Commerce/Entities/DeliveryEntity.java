@@ -3,7 +3,6 @@ package Alavarse.Ortega.Battery.Commerce.Entities;
 import Alavarse.Ortega.Battery.Commerce.Enums.DeliveryStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.catalina.User;
 
 @Entity
 @Table(name = "delivery")
@@ -45,7 +44,7 @@ public class DeliveryEntity {
     private UserEntity user;
 
     public DeliveryEntity(String address, String number, String neighborhood, String complement, String city, String state, String CEP, SaleEntity sale, UserEntity user) {
-        this.status = DeliveryStatus.CONFIRMANDO;
+        this.status = DeliveryStatus.CONFIRMADO;
         this.address = address;
         this.number = number;
         this.neighborhood = neighborhood;

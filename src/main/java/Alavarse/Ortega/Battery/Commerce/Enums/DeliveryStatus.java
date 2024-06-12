@@ -1,12 +1,10 @@
 package Alavarse.Ortega.Battery.Commerce.Enums;
 
 public enum DeliveryStatus {
-    CONFIRMANDO("confirmando"),
     CONFIRMADO("confirmado"),
     PREPARANDO("preparando"),
     TRANSITO("transito"),
-    ENTREGUE("entregue"),
-    CANCELADO("cancelado");
+    ENTREGUE("entregue");
 
     private final String status;
 

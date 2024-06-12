@@ -1,7 +1,7 @@
 package Alavarse.Ortega.Battery.Commerce.Controllers;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateDeliveryDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.DeliveryEntity;
+import Alavarse.Ortega.Battery.Commerce.Enums.DeliveryStatus;
 import Alavarse.Ortega.Battery.Commerce.Services.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +25,13 @@ public class DeliveryController {
         return ResponseEntity.ok().body(this.service.getByUser(userId));
     }
 
-    @PutMapping("/{deliveryId}")
-    public ResponseEntity<DeliveryEntity> update(@PathVariable String deliveryId, @RequestBody UpdateDeliveryDTO data){
-        return ResponseEntity.ok().body(this.service.update(deliveryId, data));
+    @PutMapping("/{deliveryId}/code/{code}")
+    public ResponseEntity<DeliveryEntity> updateTrackingCode(@PathVariable String deliveryId, @PathVariable String code){
+        return ResponseEntity.ok().body(this.service.updateTrackingCode(deliveryId, code));
+    }
+
+    @PutMapping("/{deliveryId}/status/{status}")
+    public ResponseEntity<DeliveryEntity> updateStatus(@PathVariable String deliveryId, @PathVariable DeliveryStatus status){
+        return ResponseEntity.ok().body(this.service.updateStatus(deliveryId, status));
     }
 }
