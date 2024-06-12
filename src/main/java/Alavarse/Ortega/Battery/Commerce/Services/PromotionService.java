@@ -5,6 +5,7 @@ import Alavarse.Ortega.Battery.Commerce.DTOs.PromotionDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.PromotionEntity;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.PromotionStatus;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.NoSuchReportTypeException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.PromotionRepository;
 import org.springframework.beans.BeanUtils;
@@ -37,7 +38,7 @@ public class PromotionService {
             case "promotion-percentage-50" -> this.repository.findByPercentage(30, 50);
             case "promotion-percentage-over-50" -> this.repository.findByPercentage(50, 100);
             case "promotion-clear" -> this.repository.findAll();
-            default -> throw new RuntimeException("VO NADA");
+            default -> throw new NoSuchReportTypeException();
         };
     }
 

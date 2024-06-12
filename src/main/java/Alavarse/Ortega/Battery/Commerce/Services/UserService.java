@@ -6,6 +6,7 @@ import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserRole;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserStatus;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.NoSuchReportTypeException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -71,7 +72,7 @@ public class UserService {
             case "user-user" -> this.repository.findAllUsers();
             case "user-admin" -> this.repository.findAllAdmins();
             case "user-clear" -> this.repository.findAll();
-            default -> throw new ErrorGettingUserReportData();
+            default -> throw new NoSuchReportTypeException();
         };
     }
 

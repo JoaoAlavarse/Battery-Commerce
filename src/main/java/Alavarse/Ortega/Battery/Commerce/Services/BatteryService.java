@@ -7,6 +7,7 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.BatteryAlre
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.BatteryNotFoundException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileGettingBatteryException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.ErrorWhileSavingBatteryException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.NoSuchReportTypeException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.BatteryRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +112,7 @@ public class BatteryService {
             case "battery-quantity-500" -> this.repository.findByQuantity(250, 500);
             case "battery-quantity-over-500" -> this.repository.findByQuantity(500, 10000);
             case "battery-clear" -> this.repository.findAll();
-            default -> throw new RuntimeException("VO NADA");
+            default -> throw new NoSuchReportTypeException();
         };
     }
 

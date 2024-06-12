@@ -7,6 +7,7 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.CardExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.CartExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.DeliveryExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.FreightExceptions.ErrorWhileGettingFreightException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.NoSuchReportTypeException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -376,4 +377,9 @@ public class RestExceptionHandler  {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }
 
+    @ExceptionHandler(NoSuchReportTypeException.class)
+    private ResponseEntity<ExceptionHandlerMessage> noSuchReportType(NoSuchReportTypeException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "report");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
 }
