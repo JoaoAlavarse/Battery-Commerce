@@ -25,7 +25,8 @@ public interface PromotionRepository extends JpaRepository<PromotionEntity, Stri
     @Query(value = "SELECT * FROM promotion p WHERE p.percentage BETWEEN :start AND :end", nativeQuery = true)
     List<PromotionEntity> findByPercentage(@Param("start") int start, @Param("end") int end);
 
-    @Query(value = "SELECT * FROM promotion p WHERE p.expiration_date BETWEEN CURRENT_DATE AND (CURRENT_DATE + :end * INTERVAL '1 month')", nativeQuery = true)    List<PromotionEntity> findByDate(@Param("end") int end);
+    @Query(value = "SELECT * FROM promotion p WHERE p.expiration_date BETWEEN CURRENT_DATE AND (CURRENT_DATE + :end * INTERVAL '1 month')", nativeQuery = true)
+    List<PromotionEntity> findByDate(@Param("end") int end);
 
     @Query(value = "SELECT * FROM promotion p WHERE p.expiration_date > CURRENT_DATE", nativeQuery = true)
     List<PromotionEntity> findByOverDate();
