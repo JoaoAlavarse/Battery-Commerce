@@ -35,7 +35,7 @@ public class CardService {
                     encryptService.encrypt(data.expirationDate()), encryptService.encrypt(data.cvv()), encryptService.encrypt(flag),
                     userService.findById(data.userId()), data.main());
             CardEntity newCard = repository.save(card);
-            return new CardResponseDTO(newCard.getCardId(), (newCard.getCardNumber()), newCard.getFlag(), newCard.getCardOwner(), newCard.getExpirationDate());
+            return new CardResponseDTO(newCard.getCardId(), makeCardNumberResponse(newCard.getCardNumber()), flag, data.cardOwner(), data.expirationDate());
         } catch (Exception e){
             throw new ErrorWhileSavingCardException();
         }
