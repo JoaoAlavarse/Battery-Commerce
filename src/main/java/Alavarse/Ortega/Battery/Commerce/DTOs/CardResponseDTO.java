@@ -5,6 +5,7 @@ public record CardResponseDTO(
         String partialCard,
         String flag,
         String cardOwner,
-        String expirationDate
+        String expirationDate,
+        Boolean main
 ) {
 }

@@ -35,7 +35,7 @@ public class CardService {
                     encryptService.encrypt(data.expirationDate()), encryptService.encrypt(data.cvv()), encryptService.encrypt(flag),
                     userService.findById(data.userId()), data.main());
             CardEntity newCard = repository.save(card);
-            return new CardResponseDTO(newCard.getCardId(), makeCardNumberResponse(newCard.getCardNumber()), flag, data.cardOwner(), data.expirationDate());
+            return new CardResponseDTO(newCard.getCardId(), makeCardNumberResponse(newCard.getCardNumber()), flag, data.cardOwner(), data.expirationDate(), data.main());
         } catch (Exception e){
             throw new ErrorWhileSavingCardException();
         }
@@ -80,7 +80,7 @@ public class CardService {
         try {
             this.repository.findByUser(this.userService.findById(userId)).forEach(cardEntity -> {
                 list.add(new CardResponseDTO(cardEntity.getCardId(), this.makeCardNumberResponse(cardEntity.getCardNumber()), this.encryptService.decrypt(cardEntity.getFlag()),
-                        this.encryptService.decrypt(cardEntity.getCardOwner()), this.encryptService.decrypt(cardEntity.getExpirationDate())));
+                        this.encryptService.decrypt(cardEntity.getCardOwner()), this.encryptService.decrypt(cardEntity.getExpirationDate()), cardEntity.getMain()));
             });
             return list;
         } catch (Exception e){
@@ -96,7 +96,7 @@ public class CardService {
             card.setExpirationDate(this.encryptService.encrypt(data.expirationDate()));
             repository.save(card);
             return new CardResponseDTO(card.getCardId(), this.makeCardNumberResponse(card.getCardNumber()), this.encryptService.decrypt(card.getFlag()),
-                    this.encryptService.decrypt(card.getCardOwner()), this.encryptService.decrypt(card.getExpirationDate()));
+                    this.encryptService.decrypt(card.getCardOwner()), this.encryptService.decrypt(card.getExpirationDate()), card.getMain());
         } catch (Exception e){
             throw new ErrorWhileSavingCardException();
         }
