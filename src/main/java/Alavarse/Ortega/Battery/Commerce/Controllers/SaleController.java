@@ -31,4 +31,7 @@ public class SaleController {
         return ResponseEntity.ok().body(this.service.getAll());
     }
 
+    @GetMapping("/report/{report}")
+    public ResponseEntity<List<SaleEntity>> getReportData(@PathVariable String report){return ResponseEntity.ok().body(this.service.getReportData(report));}
+
 }
