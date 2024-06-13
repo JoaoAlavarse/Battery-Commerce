@@ -35,7 +35,7 @@ public class CardService {
                     encryptService.encrypt(data.expirationDate()), encryptService.encrypt(data.cvv()), encryptService.encrypt(flag),
                     userService.findById(data.userId()), data.main());
             CardEntity newCard = repository.save(card);
-            return new CardResponseDTO(makeCardNumberResponse(newCard.getCardNumber()), newCard.getFlag(), newCard.getCardOwner(), newCard.getExpirationDate());
+            return new CardResponseDTO(newCard.getCardId(), (newCard.getCardNumber()), newCard.getFlag(), newCard.getCardOwner(), newCard.getExpirationDate());
         } catch (Exception e){
             throw new ErrorWhileSavingCardException();
         }
@@ -79,7 +79,7 @@ public class CardService {
         List<CardResponseDTO> list = new ArrayList<>();
         try {
             this.repository.findByUser(this.userService.findById(userId)).forEach(cardEntity -> {
-                list.add(new CardResponseDTO(this.makeCardNumberResponse(cardEntity.getCardNumber()), this.encryptService.decrypt(cardEntity.getFlag()),
+                list.add(new CardResponseDTO(cardEntity.getCardId(), this.makeCardNumberResponse(cardEntity.getCardNumber()), this.encryptService.decrypt(cardEntity.getFlag()),
                         this.encryptService.decrypt(cardEntity.getCardOwner()), this.encryptService.decrypt(cardEntity.getExpirationDate())));
             });
             return list;
@@ -95,7 +95,7 @@ public class CardService {
             card.setCardOwner(this.encryptService.encrypt(data.cardOwner()));
             card.setExpirationDate(this.encryptService.encrypt(data.expirationDate()));
             repository.save(card);
-            return new CardResponseDTO(this.makeCardNumberResponse(card.getCardNumber()), this.encryptService.decrypt(card.getFlag()),
+            return new CardResponseDTO(card.getCardId(), this.makeCardNumberResponse(card.getCardNumber()), this.encryptService.decrypt(card.getFlag()),
                     this.encryptService.decrypt(card.getCardOwner()), this.encryptService.decrypt(card.getExpirationDate()));
         } catch (Exception e){
             throw new ErrorWhileSavingCardException();
@@ -186,6 +186,4 @@ public class CardService {
             throw new ExpiredCardException();
         }
     }
-
-
 }
