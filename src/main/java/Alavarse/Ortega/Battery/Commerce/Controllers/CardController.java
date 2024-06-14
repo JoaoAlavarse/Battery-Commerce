@@ -40,7 +40,7 @@ public class CardController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/main/{id}")
+    @PutMapping("/main/{cardId}")
     public ResponseEntity<HttpStatus> setMainTrue(@PathVariable String cardId){
         this.service.setCardMainTrue(cardId);
         return ResponseEntity.noContent().build();
