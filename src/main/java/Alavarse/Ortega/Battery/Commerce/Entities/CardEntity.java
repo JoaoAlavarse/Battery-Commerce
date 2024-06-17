@@ -21,6 +21,8 @@ public class CardEntity {
     @Column(nullable = false)
     private String cardOwner;
     @Column(nullable = false)
+    private String ownerDocument;
+    @Column(nullable = false)
     private String expirationDate;
     @Column(nullable = false)
     private String cvv;
@@ -34,9 +36,10 @@ public class CardEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    public CardEntity(String cardNumber, String cardOwner, String expirationDate, String cvv, String flag, UserEntity user, Boolean main) {
+    public CardEntity(String cardNumber, String cardOwner, String ownerDocument, String expirationDate, String cvv, String flag, UserEntity user, Boolean main) {
         this.cardNumber = cardNumber;
         this.cardOwner = cardOwner;
+        this.ownerDocument = ownerDocument;
         this.expirationDate = expirationDate;
         this.cvv = cvv;
         this.flag = flag;

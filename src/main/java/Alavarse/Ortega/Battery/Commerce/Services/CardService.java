@@ -30,9 +30,10 @@ public class CardService {
         validateCardNumber(data.cardNumber());
         String flag = getCardType(data.cardNumber());
         validateDate(data.expirationDate());
+        userService.verifyDocument(data.ownerDocument());
         try{
             CardEntity card = new CardEntity(encryptService.encrypt(data.cardNumber()), encryptService.encrypt(data.cardOwner()),
-                    encryptService.encrypt(data.expirationDate()), encryptService.encrypt(data.cvv()), encryptService.encrypt(flag),
+                    encryptService.encrypt(data.ownerDocument()), encryptService.encrypt(data.expirationDate()), encryptService.encrypt(data.cvv()), encryptService.encrypt(flag),
                     userService.findById(data.userId()), data.main());
             CardEntity newCard = repository.save(card);
             return new CardResponseDTO(newCard.getCardId(), makeCardNumberResponse(newCard.getCardNumber()), flag, data.cardOwner(), data.expirationDate(), data.main());
