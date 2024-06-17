@@ -11,12 +11,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import static Alavarse.Ortega.Battery.Commerce.Constants.AgilePayConstants.*;
+
 @Service
 public class UtilsService {
-    private static final String URI = "https://sandbox.tecno.mobi/api/v1/";
-    private static final String AGILE_EMAIL = "macdavismotos418@gmail.com";
-    private static final String AGILE_PASSWORD = "felipe88535581";
-    private static final String AGILE_EMPRESA_IDPK = "5397";
 
     @Autowired
     private UtilsRepository repository;
@@ -31,12 +29,10 @@ public class UtilsService {
                 }
                 """.formatted(AGILE_EMAIL, AGILE_PASSWORD);
 
-        System.out.println("json" + json);
-
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
-                .uri(java.net.URI.create(URI + "Login/Logar"))
+                .uri(java.net.URI.create(AGILE_URI + "Login/Logar"))
                 .build();
 
         try{
@@ -57,5 +53,9 @@ public class UtilsService {
             e.printStackTrace();
             throw new RuntimeException("alhjkbfoulashdbf");
         }
+    }
+
+    public UtilsEntity getByKey(String key){
+        return this.repository.getByKey(key).orElseThrow(RuntimeException::new);
     }
 }
