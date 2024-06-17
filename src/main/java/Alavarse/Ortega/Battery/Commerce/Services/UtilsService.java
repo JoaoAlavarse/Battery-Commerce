@@ -28,7 +28,6 @@ public class UtilsService {
                     "senha": "%s"
                 }
                 """.formatted(AGILE_EMAIL, AGILE_PASSWORD);
-
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))

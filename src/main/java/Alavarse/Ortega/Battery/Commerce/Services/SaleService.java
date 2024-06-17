@@ -29,7 +29,7 @@ public class SaleService {
         CartEntity cart = cartService.getById(data.cartId());
         AddressEntity address = addressService.getById(data.addressId());
         PromotionEntity promotion = null;
-        if (!data.promotionId().isBlank()){
+        if (data.promotionId() != null && !data.promotionId().isBlank()){
             promotion = promotionService.getById(data.promotionId());
         }
         SaleEntity sale =  this.repository.save(new SaleEntity(data.value(), data.freightValue(), user, cart, promotion));

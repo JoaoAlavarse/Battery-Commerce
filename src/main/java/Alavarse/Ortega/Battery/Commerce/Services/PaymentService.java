@@ -32,38 +32,59 @@ public class PaymentService {
     private UtilsService utilsService;
 
     public String createPix(PaymentPixRequestDTO pixData){
-        UtilsEntity utils = this.utilsService.getByKey("agileToken");
+        UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
+
+        System.out.println(utils.getValue());
 
         String json = """
                 {
                     "fmp_descricao": "%s",
-                    "fmp_valor": %s,
-                    "fmp_taxa": 3.25
+                    "fmp_valor": %s
                 }
                 """.formatted(pixData.fmp_description(), pixData.fmp_value());
 
+        System.out.println(json);
+
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .header("Authorization", utils.getValue())
+                .header("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MTg2NjQ1NDgsImV4cCI6MTcxODc0Mzc0OCwiaXNzIjoiQWxmYSBTaXN0ZW1hcyIsImFpcyI6Ik1lcmN1cmlvIEFQSSIsInVzdV9pZHBrIjoiNTQzIiwidXN1X25vbWUiOiJtYWNkYXZpcyIsInRpcG9fYWNlc3NvIjoiVXN1XHUwMEUxcmlvIiwiZW1haWwiOiJtYWNkYXZpc21vdG9zNDE4QGdtYWlsLmNvbSIsInNpc3RlbWFfaWRwayI6NjQsImVtcHJlc2FzIjpbNTM5N119.p4aKlRfEp9OP0jZ57GfigNn0le-8TU8O4h8sgfMyMG0")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .uri(URI.create(AGILE_URI + "Pix/Instantaneo?empresa_idpk=" + AGILE_EMPRESA_IDPK))
                 .build();
+        System.out.println("teste " + AGILE_URI + "Pix/Instantaneo?empresa_idpk=" + AGILE_EMPRESA_IDPK);
+
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("response" + response.body() + response.statusCode());
+            if (response.statusCode() == 200) {
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(response.body());
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(response.body());
 
-            String fmp_idpk = jsonNode.get("fmp_idpk").asText();
+                JsonNode registrosArray = jsonNode.get("registros");
 
-            SaleEntity sale = this.saleService.create(pixData.saleData());
-            PaymentEntity payment = new PaymentEntity(fmp_idpk, "Pix", PaymentStatus.PENDENTE, sale);
-            this.repository.save(payment);
-            System.out.println("Response" + response.body());
-            return response.body();
+                System.out.println("node " + jsonNode);
+                System.out.println("array " + registrosArray);
+
+
+                JsonNode firstRegistro = registrosArray.get(0);
+
+                System.out.println("1 " + firstRegistro);
+                String fmp_idpk = firstRegistro.get("fmp_idpk").asText();
+
+                System.out.println("fmp " + fmp_idpk);
+
+                SaleEntity sale = this.saleService.create(pixData.saleData());
+                PaymentEntity payment = new PaymentEntity(fmp_idpk, "Pix", PaymentStatus.PENDENTE, sale);
+                this.repository.save(payment);
+                System.out.println("Response" + response.body());
+                return response.body();
+            }
+            throw new RuntimeException();
         } catch (Exception e){
+            e.printStackTrace();
             throw new RuntimeException();
         }
     }
