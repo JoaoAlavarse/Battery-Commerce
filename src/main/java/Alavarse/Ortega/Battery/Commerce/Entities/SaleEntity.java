@@ -45,6 +45,10 @@ public class SaleEntity {
     @OneToOne(mappedBy = "sale")
     private DeliveryEntity delivery;
 
+    @OneToOne
+    @JoinColumn(name = "paymentId", nullable = false)
+    private PaymentEntity payment;
+
     public SaleEntity(BigDecimal value, BigDecimal freightValue, UserEntity user, CartEntity cart, PromotionEntity promotion) {
         this.creationDate = LocalDate.now();
         this.value = value;
