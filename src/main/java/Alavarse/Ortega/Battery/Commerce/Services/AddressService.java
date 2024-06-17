@@ -1,7 +1,7 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.AddressDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateAddressDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Address.AddressDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Address.UpdateAddressDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.AddressEntity;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AddressExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.AddressRepository;

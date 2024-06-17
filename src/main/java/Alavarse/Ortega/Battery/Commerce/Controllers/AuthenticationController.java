@@ -1,9 +1,9 @@
 package Alavarse.Ortega.Battery.Commerce.Controllers;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.AuthenticationDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.LoginResponseDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.RegisterDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.VerifyRegisterDataDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Authentication.AuthenticationDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Authentication.LoginResponseDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Authentication.RegisterDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Authentication.VerifyRegisterDataDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Repositories.UserRepository;
 import Alavarse.Ortega.Battery.Commerce.Services.AuthorizationService;

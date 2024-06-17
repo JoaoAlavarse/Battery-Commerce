@@ -1,10 +1,10 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
 import Alavarse.Ortega.Battery.Commerce.Constants.AuthConstants;
-import Alavarse.Ortega.Battery.Commerce.DTOs.AuthenticationDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.LoginResponseDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.RegisterDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.VerifyRegisterDataDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Authentication.AuthenticationDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Authentication.LoginResponseDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Authentication.RegisterDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Authentication.VerifyRegisterDataDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserRole;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.AuthExceptions.*;
@@ -21,9 +21,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class AuthorizationService implements UserDetailsService{
