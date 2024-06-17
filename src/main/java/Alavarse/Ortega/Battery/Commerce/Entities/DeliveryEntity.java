@@ -52,7 +52,7 @@ public class DeliveryEntity {
 
     public DeliveryEntity(String address, String number, String neighborhood, String complement, String city, String state, String CEP, SaleEntity sale, UserEntity user) {
         this.creationDate = LocalDate.now();
-        this.status = DeliveryStatus.CONFIRMADO;
+        this.status = DeliveryStatus.AGUARDANDO;
         this.address = address;
         this.number = number;
         this.neighborhood = neighborhood;
