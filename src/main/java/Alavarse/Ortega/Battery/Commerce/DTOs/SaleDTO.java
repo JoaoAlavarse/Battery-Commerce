@@ -14,5 +14,5 @@ public record SaleDTO(
         @NotBlank String addressId,
         @NotBlank String userId,
         @NotBlank String cartId,
-        @NotBlank String promotionId){
+        String promotionId){
 }

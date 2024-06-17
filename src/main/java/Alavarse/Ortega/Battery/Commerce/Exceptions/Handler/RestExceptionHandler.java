@@ -289,7 +289,7 @@ public class RestExceptionHandler  {
 
     @ExceptionHandler(ErrorWhileGettingFreightException.class)
     private ResponseEntity<ExceptionHandlerMessage> errorGettingFreight(ErrorWhileGettingFreightException exception){
-        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), "freight");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }
 
