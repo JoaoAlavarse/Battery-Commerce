@@ -1,6 +1,5 @@
-package Alavarse.Ortega.Battery.Commerce.DTOs;
+package Alavarse.Ortega.Battery.Commerce.DTOs.User;
 
-import Alavarse.Ortega.Battery.Commerce.Enums.UserStatus;
 import jakarta.validation.constraints.NotBlank;
 
 public record UpdateUserDTO(

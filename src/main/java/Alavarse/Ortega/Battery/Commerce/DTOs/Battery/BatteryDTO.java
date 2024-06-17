@@ -1,4 +1,4 @@
-package Alavarse.Ortega.Battery.Commerce.DTOs;
+package Alavarse.Ortega.Battery.Commerce.DTOs.Battery;
 
 import Alavarse.Ortega.Battery.Commerce.Enums.BatteryStatus;
 import jakarta.validation.constraints.Min;

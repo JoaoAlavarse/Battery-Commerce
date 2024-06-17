@@ -1,4 +1,4 @@
-package Alavarse.Ortega.Battery.Commerce.DTOs;
+package Alavarse.Ortega.Battery.Commerce.DTOs.Promotion;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

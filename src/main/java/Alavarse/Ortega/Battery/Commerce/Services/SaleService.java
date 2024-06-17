@@ -1,6 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.SaleDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Sale.SaleDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.NoSuchReportTypeException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.SaleRepository;

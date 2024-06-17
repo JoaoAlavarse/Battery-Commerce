@@ -1,4 +1,4 @@
-package Alavarse.Ortega.Battery.Commerce.DTOs;
+package Alavarse.Ortega.Battery.Commerce.DTOs.Card;
 
 import jakarta.validation.constraints.NotBlank;
 

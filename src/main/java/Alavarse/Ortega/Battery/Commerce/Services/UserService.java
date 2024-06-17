@@ -1,7 +1,7 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
 import Alavarse.Ortega.Battery.Commerce.Constants.AuthConstants;
-import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateUserDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.User.UpdateUserDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserRole;
 import Alavarse.Ortega.Battery.Commerce.Enums.UserStatus;

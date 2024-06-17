@@ -1,7 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Controllers;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.PasswordDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateUserDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.User.UpdateUserDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Services.UserService;
 import jakarta.validation.Valid;

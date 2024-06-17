@@ -1,6 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.DiscountDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Promotion.DiscountDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.*;
 import Alavarse.Ortega.Battery.Commerce.Enums.CartStatus;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.CartExceptions.*;

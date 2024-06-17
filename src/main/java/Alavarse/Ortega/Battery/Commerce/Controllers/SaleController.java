@@ -1,6 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Controllers;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.SaleDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Sale.SaleDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.SaleEntity;
 import Alavarse.Ortega.Battery.Commerce.Services.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.BatteryDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Battery.BatteryDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.BatteryEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.BatteryStatus;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.BatteryExceptions.BatteryAlreadyExistsException;

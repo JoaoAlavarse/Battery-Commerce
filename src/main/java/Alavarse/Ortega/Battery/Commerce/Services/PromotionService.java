@@ -1,7 +1,7 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.DiscountDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.PromotionDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Promotion.DiscountDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Promotion.PromotionDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.PromotionEntity;
 import Alavarse.Ortega.Battery.Commerce.Entities.UserEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.PromotionStatus;

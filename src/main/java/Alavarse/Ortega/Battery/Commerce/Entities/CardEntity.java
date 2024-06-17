@@ -1,6 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Entities;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.CardDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Card.CardDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;

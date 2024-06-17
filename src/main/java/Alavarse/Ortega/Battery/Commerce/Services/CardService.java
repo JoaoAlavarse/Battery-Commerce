@@ -1,8 +1,8 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.CardDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.CardResponseDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.UpdateCardDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Card.CardDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Card.CardResponseDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Card.UpdateCardDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.CardEntity;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.CardExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Repositories.CardRepository;

@@ -1,6 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Controllers;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.BatteryDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Battery.BatteryDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.BatteryEntity;
 import Alavarse.Ortega.Battery.Commerce.Services.BatteryService;
 import jakarta.validation.Valid;
@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
