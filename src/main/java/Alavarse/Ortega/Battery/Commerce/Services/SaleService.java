@@ -3,6 +3,8 @@ package Alavarse.Ortega.Battery.Commerce.Services;
 import Alavarse.Ortega.Battery.Commerce.DTOs.Sale.SaleDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.NoSuchReportTypeException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.SaleExceptions.ErrorWhileGettingSaleException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.SaleExceptions.ErrorWhileSavingSaleException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,15 @@ public class SaleService {
         if (data.promotionId() != null && !data.promotionId().isBlank()){
             promotion = promotionService.getById(data.promotionId());
         }
-        SaleEntity sale =  this.repository.save(new SaleEntity(data.value(), data.freightValue(), user, cart, promotion, payment));
+
+        SaleEntity sale = null;
+
+        try {
+            sale = this.repository.save(new SaleEntity(data.value(), data.freightValue(), user, cart, promotion, payment));
+        } catch (Exception e){
+            throw new ErrorWhileSavingSaleException();
+        }
+
         this.deliveryService.create(address.getAddress(), address.getNumber(), address.getNeighborhood(), address.getComplement(),
                 address.getCity(), address.getState(), address.getCEP(), sale, user);
 
@@ -40,11 +50,19 @@ public class SaleService {
     }
 
     public List<SaleEntity> getByUser(String userId){
-        return this.repository.findByUser(this.userService.findById(userId));
+        try {
+            return this.repository.findByUser(this.userService.findById(userId));
+        } catch (Exception e){
+            throw new ErrorWhileGettingSaleException();
+        }
     }
 
     public List<SaleEntity> getAll(){
-        return this.repository.findAll();
+        try {
+            return this.repository.findAll();
+        } catch (Exception e){
+            throw new ErrorWhileGettingSaleException();
+        }
     }
 
     public List<SaleEntity> getReportData(String report){
