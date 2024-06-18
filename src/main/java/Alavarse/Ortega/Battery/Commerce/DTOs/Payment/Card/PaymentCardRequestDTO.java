@@ -5,9 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 
 public record PaymentCardRequestDTO(
     @NotBlank String fmc_description,
-    @NotBlank String fmc_user_name,
-    @NotBlank String fmc_user_document,
-    @NotBlank String value,
     @NotBlank String cardId,
     SaleDTO saleData
 ) {

@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 
 public record PaymentPixRequestDTO(
         @NotBlank String fmp_description,
-        @NotBlank String fmp_value,
         SaleDTO saleData
 ) {
 }

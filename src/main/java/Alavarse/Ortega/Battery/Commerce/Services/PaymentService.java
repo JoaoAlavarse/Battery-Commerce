@@ -45,17 +45,21 @@ public class PaymentService {
     private UserService userService;
     @Autowired
     private AddressService addressService;
+    @Autowired
+    private CartService cartService;
+
 
     public ResponseEntity<String> createPix(PaymentPixRequestDTO pixData){
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
+        CartEntity cart = this.cartService.getById(pixData.saleData().cartId());
 
         String json = """
                 {
                     "fmp_descricao": "%s",
                     "fmp_valor": %s
                 }
-                """.formatted(pixData.fmp_description(), pixData.fmp_value());
+                """.formatted(pixData.fmp_description(), cart.getTotalValue().add(pixData.saleData().freightValue()));
 
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
@@ -93,6 +97,7 @@ public class PaymentService {
     public ResponseEntity<String> createCard(PaymentCardRequestDTO cardData){
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
+        CartEntity cart = this.cartService.getById(cardData.saleData().cartId());
 
         String json = """
                 {
@@ -102,7 +107,7 @@ public class PaymentService {
                     "fmc_qtde_parcelas": "1",
                     "fmc_valor": "%s"
                 }
-                """.formatted(cardData.fmc_description(), cardData.fmc_user_name(), cardData.fmc_user_document(), cardData.value());
+                """.formatted(cardData.fmc_description(), cart.getUser().getName(), cart.getUser().getDocument(), cart.getTotalValue().add(cardData.saleData().freightValue()));
 
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
@@ -195,11 +200,15 @@ public class PaymentService {
     public ResponseEntity<String> createTicket(PaymentTicketRequestDTO ticketData){
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate date = LocalDate.now().plusDays(3);
         String convertedDate = date.format(formatter);
+
         UserEntity user = this.userService.findById(ticketData.saleData().userId());
         AddressEntity address = this.addressService.getById(ticketData.saleData().addressId());
+        CartEntity cart = this.cartService.getById(ticketData.saleData().cartId());
+
         String json = """
                 {
                     "fmb_sacado_nome": "%s",
@@ -214,7 +223,7 @@ public class PaymentService {
                     "fmb_vencimento": "%S"
                 }
                 """.formatted(user.getName(), user.getDocument(), address.getAddress(), address.getNumber(), address.getNeighborhood(),
-                        address.getCEP(), address.getCity(), address.getState(), ticketData.saleData().value(), convertedDate);
+                        address.getCEP(), address.getCity(), address.getState(), cart.getTotalValue().add(ticketData.saleData().freightValue()), convertedDate);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
@@ -246,4 +255,5 @@ public class PaymentService {
             throw new UnableToCreateTicketPaymentException();
         }
     }
+
 }
