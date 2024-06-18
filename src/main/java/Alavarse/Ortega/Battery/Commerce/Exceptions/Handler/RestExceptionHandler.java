@@ -8,7 +8,9 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.CartExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.DeliveryExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.FreightExceptions.ErrorWhileGettingFreightException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.NoSuchReportTypeException;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.UnableToMakeCardPaymentException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card.UnableToCreateCardPaymentException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card.UnableToMakeCardPaymentException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.ErrorWhileGettingPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -386,6 +388,18 @@ public class RestExceptionHandler  {
 
     @ExceptionHandler(UnableToMakeCardPaymentException.class)
     private ResponseEntity<ExceptionHandlerMessage> unableToMakeCardPayment(UnableToMakeCardPaymentException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(UnableToCreateCardPaymentException.class)
+    private ResponseEntity<ExceptionHandlerMessage> unableToCreateCardPayment(UnableToCreateCardPaymentException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(ErrorWhileGettingPaymentException.class)
+    private ResponseEntity<ExceptionHandlerMessage> errorGettingPayment(ErrorWhileGettingPaymentException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }

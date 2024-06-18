@@ -2,13 +2,11 @@ package Alavarse.Ortega.Battery.Commerce.Services;
 
 import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.PaymentCardRequestDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.PaymentPixRequestDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.Sale.SaleDTO;
-import Alavarse.Ortega.Battery.Commerce.Entities.CardEntity;
-import Alavarse.Ortega.Battery.Commerce.Entities.PaymentEntity;
-import Alavarse.Ortega.Battery.Commerce.Entities.SaleEntity;
-import Alavarse.Ortega.Battery.Commerce.Entities.UtilsEntity;
+import Alavarse.Ortega.Battery.Commerce.Entities.*;
+import Alavarse.Ortega.Battery.Commerce.Enums.DeliveryStatus;
 import Alavarse.Ortega.Battery.Commerce.Enums.PaymentStatus;
-import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.UnableToMakeCardPaymentException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card.UnableToCreateCardPaymentException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card.UnableToMakeCardPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.PaymentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -120,7 +118,7 @@ public class PaymentService {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-                throw new UnableToMakeCardPaymentException();
+                throw new UnableToCreateCardPaymentException();
             }
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(response.body());
@@ -140,7 +138,7 @@ public class PaymentService {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(response.body());
         } catch (Exception e){
-            throw new UnableToMakeCardPaymentException();
+            throw new UnableToCreateCardPaymentException();
         }
     }
 
@@ -179,8 +177,22 @@ public class PaymentService {
             if (response.statusCode() != 200) {
                 throw new UnableToMakeCardPaymentException();
             }
+
+            updateDeliveryStatus(fmc_idpk);
+
+
         } catch (Exception e){
             throw new UnableToMakeCardPaymentException();
         }
+    }
+
+    public PaymentEntity getById(String idpk){
+        return this.repository.findById(idpk).orElseThrow(RuntimeException::new);
+    }
+
+    public void updateDeliveryStatus(String idpk){
+        PaymentEntity payment = this.getById(idpk);
+        DeliveryEntity delivery = payment.getSale().getDelivery();
+        deliveryService.updateStatus(delivery.getDeliveryId(), DeliveryStatus.CONFIRMADO);
     }
 }
