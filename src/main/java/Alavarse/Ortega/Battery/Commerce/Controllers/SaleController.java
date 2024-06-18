@@ -16,11 +16,6 @@ public class SaleController {
     @Autowired
     private SaleService service;
 
-    @PostMapping
-    public ResponseEntity<SaleEntity> create(@RequestBody SaleDTO data){
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.create(data));
-    }
-
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<SaleEntity>> getByUser(@PathVariable String userId){
         return ResponseEntity.ok().body(this.service.getByUser(userId));
