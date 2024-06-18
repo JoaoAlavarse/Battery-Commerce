@@ -12,6 +12,7 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card.Unable
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card.UnableToMakeCardPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.ErrorWhileGettingPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Pix.UnableToCreatePixPaymentException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Ticket.UnableToCreateTicketPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -407,6 +408,12 @@ public class RestExceptionHandler  {
 
     @ExceptionHandler(UnableToCreatePixPaymentException.class)
     private ResponseEntity<ExceptionHandlerMessage> unableToCreatePixPayment(UnableToCreatePixPaymentException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
+    }
+
+    @ExceptionHandler(UnableToCreateTicketPaymentException.class)
+    private ResponseEntity<ExceptionHandlerMessage> unableToCreateTicketPayment(UnableToCreateTicketPaymentException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }
