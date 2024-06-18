@@ -42,6 +42,15 @@ public class CardService {
         }
     }
 
+    public CardEntity getById(String cardId){
+        CardEntity card = this.repository.findById(cardId).orElseThrow(RuntimeException::new);
+        CardEntity newCard = new CardEntity(this.encryptService.decrypt(card.getCardNumber()),
+                this.encryptService.decrypt(card.getCardOwner()), this.encryptService.decrypt(card.getOwnerDocument()),
+                this.encryptService.decrypt(card.getExpirationDate()), this.encryptService.decrypt(card.getCvv()),
+                this.encryptService.decrypt(card.getFlag()), card.getUser(), card.getMain());
+        return newCard;
+    }
+
     private String makeCardNumberResponse(String encryptedCardNumber){
         String decryptedCardNumber = encryptService.decrypt(encryptedCardNumber);
         return decryptedCardNumber.substring(decryptedCardNumber.length() - 4);
