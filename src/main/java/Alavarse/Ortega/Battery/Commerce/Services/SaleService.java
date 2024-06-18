@@ -24,7 +24,7 @@ public class SaleService {
     @Autowired
     private DeliveryService deliveryService;
 
-    public SaleEntity create(SaleDTO data){
+    public SaleEntity create(SaleDTO data, PaymentEntity payment){
         UserEntity user = userService.findById(data.userId());
         CartEntity cart = cartService.getById(data.cartId());
         AddressEntity address = addressService.getById(data.addressId());
@@ -32,9 +32,10 @@ public class SaleService {
         if (data.promotionId() != null && !data.promotionId().isBlank()){
             promotion = promotionService.getById(data.promotionId());
         }
-        SaleEntity sale =  this.repository.save(new SaleEntity(data.value(), data.freightValue(), user, cart, promotion));
+        SaleEntity sale =  this.repository.save(new SaleEntity(data.value(), data.freightValue(), user, cart, promotion, payment));
         this.deliveryService.create(address.getAddress(), address.getNumber(), address.getNeighborhood(), address.getComplement(),
-                address.getCity(), address.getCity(), address.getCEP(), sale, user);
+                address.getCity(), address.getState(), address.getCEP(), sale, user);
+
         return sale;
     }
 
