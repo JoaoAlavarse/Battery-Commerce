@@ -49,12 +49,13 @@ public class SaleEntity {
     @JoinColumn(name = "paymentId", nullable = false)
     private PaymentEntity payment;
 
-    public SaleEntity(BigDecimal value, BigDecimal freightValue, UserEntity user, CartEntity cart, PromotionEntity promotion) {
+    public SaleEntity(BigDecimal value, BigDecimal freightValue, UserEntity user, CartEntity cart, PromotionEntity promotion, PaymentEntity payment) {
         this.creationDate = LocalDate.now();
         this.value = value;
         this.freightValue = freightValue;
         this.user = user;
         this.cart = cart;
         this.promotion = promotion;
+        this.payment = payment;
     }
 }
