@@ -24,6 +24,6 @@ public class PaymentController {
 
     @PostMapping("/card")
     public ResponseEntity<String> createCard(@RequestBody PaymentCardRequestDTO cardData){
-        return ResponseEntity.ok().body(this.service.createCard(cardData));
+        return this.service.createCard(cardData);
     }
 }

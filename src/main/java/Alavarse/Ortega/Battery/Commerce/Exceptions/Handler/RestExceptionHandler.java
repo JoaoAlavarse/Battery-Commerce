@@ -8,6 +8,7 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.CartExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.DeliveryExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.FreightExceptions.ErrorWhileGettingFreightException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.NoSuchReportTypeException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.UnableToMakeCardPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PromotionExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.UserExceptions.*;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -381,5 +382,11 @@ public class RestExceptionHandler  {
     private ResponseEntity<ExceptionHandlerMessage> noSuchReportType(NoSuchReportTypeException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), "report");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
+    }
+
+    @ExceptionHandler(UnableToMakeCardPaymentException.class)
+    private ResponseEntity<ExceptionHandlerMessage> unableToMakeCardPayment(UnableToMakeCardPaymentException exception){
+        ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }
 }

@@ -8,10 +8,14 @@ import Alavarse.Ortega.Battery.Commerce.Entities.PaymentEntity;
 import Alavarse.Ortega.Battery.Commerce.Entities.SaleEntity;
 import Alavarse.Ortega.Battery.Commerce.Entities.UtilsEntity;
 import Alavarse.Ortega.Battery.Commerce.Enums.PaymentStatus;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.UnableToMakeCardPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.PaymentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -92,7 +96,7 @@ public class PaymentService {
         }
     }
 
-    public String createCard(PaymentCardRequestDTO cardData){
+    public ResponseEntity<String> createCard(PaymentCardRequestDTO cardData){
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
 
@@ -115,29 +119,28 @@ public class PaymentService {
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == 200) {
-
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode jsonNode = objectMapper.readTree(response.body());
-
-                JsonNode registrosArray = jsonNode.get("registros");
-
-                JsonNode firstRegistro = registrosArray.get(0);
-
-                String fmc_idpk = firstRegistro.get("fmc_idpk").asText();
-
-
-                PaymentEntity payment = new PaymentEntity(fmc_idpk, "Cartao", PaymentStatus.PENDENTE);
-                this.repository.save(payment);
-                SaleEntity sale = this.saleService.create(cardData.saleData(), payment);
-
-                this.repository.save(payment);
-                payCard(fmc_idpk, cardData.cardId());
-            return response.body();
+            if (response.statusCode() != 200) {
+                throw new UnableToMakeCardPaymentException();
             }
-           throw new RuntimeException();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(response.body());
+
+            JsonNode registrosArray = jsonNode.get("registros");
+
+            JsonNode firstRegistro = registrosArray.get(0);
+
+            String fmc_idpk = firstRegistro.get("fmc_idpk").asText();
+
+
+            PaymentEntity payment = new PaymentEntity(fmc_idpk, "Cartao", PaymentStatus.PENDENTE);
+            this.repository.save(payment);
+            this.saleService.create(cardData.saleData(), payment);
+            payCard(fmc_idpk, cardData.cardId());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(response.body());
         } catch (Exception e){
-            throw new RuntimeException();
+            throw new UnableToMakeCardPaymentException();
         }
     }
 
@@ -174,10 +177,10 @@ public class PaymentService {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-                throw new RuntimeException();
+                throw new UnableToMakeCardPaymentException();
             }
         } catch (Exception e){
-            throw new RuntimeException();
+            throw new UnableToMakeCardPaymentException();
         }
     }
 }
