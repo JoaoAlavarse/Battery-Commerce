@@ -16,14 +16,17 @@ public class PaymentEntity {
     private String paymentId;
     @Column(nullable = false)
     private String description;
+    @Column(nullable = true)
+    private String url;
     @Column(nullable = false)
     private PaymentStatus status;
 
     @OneToOne(mappedBy = "payment")
     private SaleEntity sale;
 
-    public PaymentEntity(String paymentId, String description, PaymentStatus status) {
+    public PaymentEntity(String paymentId, String url, String description, PaymentStatus status) {
         this.paymentId = paymentId;
+        this.url = url;
         this.description = description;
         this.status = status;
     }

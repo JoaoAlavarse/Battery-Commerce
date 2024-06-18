@@ -75,8 +75,9 @@ public class PaymentService {
                 JsonNode firstRegistro = registrosArray.get(0);
 
                 String fmp_idpk = firstRegistro.get("fmp_idpk").asText();
+                String fmp_link_qrcode = firstRegistro.get("fmp_link_qrcode").asText();
 
-                PaymentEntity payment = new PaymentEntity(fmp_idpk, "Pix", PaymentStatus.PENDENTE);
+                PaymentEntity payment = new PaymentEntity(fmp_idpk, fmp_link_qrcode, "Pix", PaymentStatus.PENDENTE);
                 this.repository.save(payment);
                 this.saleService.create(pixData.saleData(), payment);
                 return ResponseEntity.status(HttpStatus.OK)
@@ -125,7 +126,7 @@ public class PaymentService {
             String fmc_idpk = firstRegistro.get("fmc_idpk").asText();
 
 
-            PaymentEntity payment = new PaymentEntity(fmc_idpk, "Cartao", PaymentStatus.PENDENTE);
+            PaymentEntity payment = new PaymentEntity(fmc_idpk, null, "Cartao", PaymentStatus.PENDENTE);
             this.repository.save(payment);
             this.saleService.create(cardData.saleData(), payment);
             payCard(fmc_idpk, cardData.cardId());
@@ -233,8 +234,9 @@ public class PaymentService {
             JsonNode firstRegistro = registrosArray.get(0);
 
             String fmb_idpk = firstRegistro.get("fmb_idpk").asText();
+            String fmb_link_url = firstRegistro.get("fmb_link_url").asText();
 
-            PaymentEntity payment = new PaymentEntity(fmb_idpk, "Boleto", PaymentStatus.PENDENTE);
+            PaymentEntity payment = new PaymentEntity(fmb_idpk, fmb_link_url ,"Boleto", PaymentStatus.PENDENTE);
             this.repository.save(payment);
             this.saleService.create(ticketData.saleData(), payment);
 
