@@ -51,7 +51,14 @@ public class SaleService {
 
     public List<SaleEntity> getByUser(String userId){
         try {
-            return this.repository.findByUser(this.userService.findById(userId));
+            List<SaleEntity> list = this.repository.findByUser(this.userService.findById(userId));
+            if (!list.isEmpty()) {
+                for (SaleEntity sale : list) {
+                    sale.setValue(sale.getCart().getTotalValue());
+                    repository.save(sale);
+                }
+            }
+            return list;
         } catch (Exception e){
             throw new ErrorWhileGettingSaleException();
         }
@@ -59,8 +66,31 @@ public class SaleService {
 
     public List<SaleEntity> getAll(){
         try {
-            return this.repository.findAll();
+            List<SaleEntity> list = this.repository.findAll();
+            if (!list.isEmpty()) {
+                for (SaleEntity sale : list) {
+                    sale.setValue(sale.getCart().getTotalValue());
+                    repository.save(sale);
+                }
+            }
+            return list;
         } catch (Exception e){
+            throw new ErrorWhileGettingSaleException();
+        }
+    }
+
+    public List<SaleEntity> getNoPaymentSales(String userId){
+        try{
+            List<SaleEntity> list = this.repository.findNoPaymentSales(userId);
+            if (!list.isEmpty()) {
+                for (SaleEntity sale : list) {
+                    sale.setValue(sale.getCart().getTotalValue());
+                    repository.save(sale);
+                }
+            }
+            return list;
+        } catch (Exception e){
+            e.printStackTrace();
             throw new ErrorWhileGettingSaleException();
         }
     }

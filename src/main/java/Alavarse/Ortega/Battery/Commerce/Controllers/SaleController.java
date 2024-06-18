@@ -21,6 +21,11 @@ public class SaleController {
         return ResponseEntity.ok().body(this.service.getByUser(userId));
     }
 
+    @GetMapping("/no-payment/user/{userId}")
+    public ResponseEntity<List<SaleEntity>> getNoPaymentSales(@PathVariable String userId){
+        return ResponseEntity.ok().body(this.service.getNoPaymentSales(userId));
+    }
+
     @GetMapping
     public ResponseEntity<List<SaleEntity>> getAll(){
         return ResponseEntity.ok().body(this.service.getAll());
