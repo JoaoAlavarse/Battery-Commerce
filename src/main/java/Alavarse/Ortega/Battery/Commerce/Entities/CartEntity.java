@@ -36,6 +36,9 @@ public class CartEntity {
     @Column(nullable = false)
     private BigDecimal totalValue;
 
+    @Column(nullable = true)
+    private Integer itemsQuantity;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -54,6 +57,7 @@ public class CartEntity {
 
 
     public CartEntity(UserEntity user) {
+        this.itemsQuantity = 0;
         this.creationDate = LocalDate.now();
         this.user = user;
         this.status = CartStatus.OPENED;

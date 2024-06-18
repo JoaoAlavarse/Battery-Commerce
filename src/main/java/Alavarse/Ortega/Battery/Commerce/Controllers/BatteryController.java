@@ -58,8 +58,7 @@ public class BatteryController {
 
     @PostMapping(value = "/list")
     public ResponseEntity<List<BatteryEntity>> getByList(@RequestBody String[] idList){
-        System.out.println("VO NADA");
-        return  ResponseEntity.ok().body(this.service.getByList(idList));
+        return ResponseEntity.ok().body(this.service.getByList(idList));
     }
 
     @GetMapping("/report/{report}")

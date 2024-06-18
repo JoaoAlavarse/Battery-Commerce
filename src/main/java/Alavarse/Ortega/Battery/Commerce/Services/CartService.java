@@ -40,6 +40,7 @@ public class CartService {
         try {
             BigDecimal newValue = this.getTotalValue(cart.getCartId());
             cart.setTotalValue(newValue);
+            cart.setItemsQuantity(this.getTotalItems(cart));
             return repository.save(cart);
         } catch (Exception e){
             throw new ErrorWhileSavingCartException();
@@ -51,6 +52,7 @@ public class CartService {
             List<CartEntity> list = repository.findAll();
             list.forEach(cart -> {
                 cart.setTotalValue(this.getTotalValue(cart.getCartId()));
+                cart.setItemsQuantity(this.getTotalItems(cart));
             });
             return list;
         } catch (Exception e){
@@ -91,6 +93,7 @@ public class CartService {
             cartBatteryRepository.save(cartBatteryEntity);
             cart.getBatteries().add(cartBatteryEntity);
             cart.setTotalValue(this.getTotalValue(id));
+            cart.setItemsQuantity(this.getTotalItems(cart));
             return repository.save(cart);
         } catch (Exception e){
             throw new ErrorWhileSavingCartException();
@@ -110,6 +113,7 @@ public class CartService {
 
         CartEntity cart = cartBatteryEntity.getCart();
         cart.setTotalValue(this.getTotalValue(cartId));
+        cart.setItemsQuantity(this.getTotalItems(cart));
 
         return repository.save(cart);
     }
@@ -136,6 +140,7 @@ public class CartService {
         }
 
         cart.setTotalValue(this.getTotalValue(id));
+        cart.setItemsQuantity(this.getTotalItems(cart));
         try {
             return repository.save(cart);
         } catch (Exception e) {
@@ -154,6 +159,7 @@ public class CartService {
         try {
             BigDecimal newValue = this.getTotalValue(cart.getCartId());
             cart.setTotalValue(newValue);
+            cart.setItemsQuantity(this.getTotalItems(cart));
             return repository.save(cart);
         } catch (Exception e){
             throw new ErrorWhileGettingCartException();
@@ -175,6 +181,7 @@ public class CartService {
             }
             BigDecimal promotionValue = promotionService.getDiscountValue(cart.getPromotion().getCode(), new DiscountDTO(cart.getUser().getUserId(), cart.getTotalValue()));
             cart.setTotalValue(promotionValue);
+            cart.setItemsQuantity(this.getTotalItems(cart));
             repository.save(cart);
             return cart.getTotalValue();
         } catch (Exception e){
@@ -204,5 +211,13 @@ public class CartService {
         } catch (Exception e){
             throw new ErrorWhileAddingPromotionException();
         }
+    }
+
+    public Integer getTotalItems(CartEntity cart){
+        Integer totalItems = 0;
+        for (CartBatteryEntity cartBattery : cart.getBatteries()){
+            totalItems += cartBattery.getQuantity();
+        }
+        return totalItems;
     }
 }
