@@ -38,7 +38,7 @@ public class SaleService {
         SaleEntity sale = null;
 
         try {
-            sale = this.repository.save(new SaleEntity(data.value(), data.freightValue(), user, cart, promotion, payment));
+            sale = this.repository.save(new SaleEntity(cart.getTotalValue().add(data.freightValue()), data.freightValue(), user, cart, promotion, payment));
         } catch (Exception e){
             throw new ErrorWhileSavingSaleException();
         }
