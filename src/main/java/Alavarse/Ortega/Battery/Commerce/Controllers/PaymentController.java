@@ -1,7 +1,8 @@
 package Alavarse.Ortega.Battery.Commerce.Controllers;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.PaymentCardRequestDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.PaymentPixRequestDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.Card.PaymentCardRequestDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.Pix.PaymentPixRequestDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.Ticket.PaymentTicketRequestDTO;
 import Alavarse.Ortega.Battery.Commerce.Services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +25,10 @@ public class PaymentController {
     @PostMapping("/card")
     public ResponseEntity<String> createCard(@RequestBody PaymentCardRequestDTO cardData){
         return this.service.createCard(cardData);
+    }
+
+    @PostMapping("/ticket")
+    public ResponseEntity<String> createTicket(@RequestBody PaymentTicketRequestDTO ticketData){
+        return this.service.createTicket(ticketData);
     }
 }

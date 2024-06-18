@@ -1,13 +1,15 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
-import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.PaymentCardRequestDTO;
-import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.PaymentPixRequestDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.Card.PaymentCardRequestDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.Pix.PaymentPixRequestDTO;
+import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.Ticket.PaymentTicketRequestDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.*;
 import Alavarse.Ortega.Battery.Commerce.Enums.DeliveryStatus;
 import Alavarse.Ortega.Battery.Commerce.Enums.PaymentStatus;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card.UnableToCreateCardPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card.UnableToMakeCardPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Pix.UnableToCreatePixPaymentException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Ticket.UnableToCreateTicketPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.PaymentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +23,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static Alavarse.Ortega.Battery.Commerce.Constants.AgilePayConstants.AGILE_EMPRESA_IDPK;
 import static Alavarse.Ortega.Battery.Commerce.Constants.AgilePayConstants.AGILE_URI;
@@ -37,6 +41,10 @@ public class PaymentService {
     private UtilsService utilsService;
     @Autowired
     private CardService cardService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AddressService addressService;
 
     public ResponseEntity<String> createPix(PaymentPixRequestDTO pixData){
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
@@ -181,5 +189,59 @@ public class PaymentService {
         PaymentEntity payment = this.getById(idpk);
         DeliveryEntity delivery = payment.getSale().getDelivery();
         deliveryService.updateStatus(delivery.getDeliveryId(), DeliveryStatus.CONFIRMADO);
+    }
+
+    public ResponseEntity<String> createTicket(PaymentTicketRequestDTO ticketData){
+        UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
+        HttpClient client = HttpClient.newHttpClient();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate date = LocalDate.now().plusDays(3);
+        String convertedDate = date.format(formatter);
+        UserEntity user = this.userService.findById(ticketData.saleData().userId());
+        AddressEntity address = this.addressService.getById(ticketData.saleData().addressId());
+        String json = """
+                {
+                    "fmb_sacado_nome": "%s",
+                    "fmb_sacado_cnpj_cpf": "%s",
+                    "fmb_sacado_endereco": "%s",
+                    "fmb_sacado_endereco_numero": "%s",
+                    "fmb_sacado_bairro": "%s",
+                    "fmb_sacado_cep": "%s",
+                    "fmb_sacado_cidade": "%s",
+                    "fmb_sacado_uf": "%s",
+                    "fmb_valor": "%s",
+                    "fmb_vencimento": "%S"
+                }
+                """.formatted(user.getName(), user.getDocument(), address.getAddress(), address.getNumber(), address.getNeighborhood(),
+                        address.getCEP(), address.getCity(), address.getState(), ticketData.saleData().value(), convertedDate);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + utils.getValue())
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .uri(URI.create(AGILE_URI + "Boleto/Inserir?empresa_idpk=" + AGILE_EMPRESA_IDPK))
+                .build();
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                throw new UnableToCreateTicketPaymentException();
+            }
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(response.body());
+            JsonNode registrosArray = jsonNode.get("registros");
+            JsonNode firstRegistro = registrosArray.get(0);
+
+            String fmb_idpk = firstRegistro.get("fmb_idpk").asText();
+
+            PaymentEntity payment = new PaymentEntity(fmb_idpk, "Boleto", PaymentStatus.PENDENTE);
+            this.repository.save(payment);
+            this.saleService.create(ticketData.saleData(), payment);
+
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(response.body());
+
+        } catch (Exception e){
+            throw new UnableToCreateTicketPaymentException();
+        }
     }
 }
