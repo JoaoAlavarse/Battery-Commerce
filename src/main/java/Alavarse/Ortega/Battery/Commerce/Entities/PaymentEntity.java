@@ -21,4 +21,10 @@ public class PaymentEntity {
 
     @OneToOne(mappedBy = "payment")
     private SaleEntity sale;
+
+    public PaymentEntity(String paymentId, String description, PaymentStatus status) {
+        this.paymentId = paymentId;
+        this.description = description;
+        this.status = status;
+    }
 }
