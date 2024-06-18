@@ -51,7 +51,7 @@ public class PaymentService {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MTg3MTMzODEsImV4cCI6MTcxODc5MjU4MSwiaXNzIjoiQWxmYSBTaXN0ZW1hcyIsImFpcyI6Ik1lcmN1cmlvIEFQSSIsInVzdV9pZHBrIjoiNTQzIiwidXN1X25vbWUiOiJtYWNkYXZpcyIsInRpcG9fYWNlc3NvIjoiVXN1XHUwMEUxcmlvIiwiZW1haWwiOiJtYWNkYXZpc21vdG9zNDE4QGdtYWlsLmNvbSIsInNpc3RlbWFfaWRwayI6NjQsImVtcHJlc2FzIjpbNTM5N119.2w-8GGTCknyq85qdVQEa2NT5o8Zls621OYin2V-IFzw")
+                .header("Authorization", "Bearer " + utils.getValue())
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .uri(URI.create(AGILE_URI + "Pix/Instantaneo?empresa_idpk=" + AGILE_EMPRESA_IDPK))
                 .build();
