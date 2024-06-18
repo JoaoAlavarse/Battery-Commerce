@@ -119,10 +119,6 @@ public class UserService {
         verifyDocumentSize(document);
         document = document.replaceAll("[^0-9]", "");
 
-        if (this.repository.findByDocument(document).isPresent()){
-            throw new DocumentAlreadyExistsException();
-        }
-
         ArrayList<String> invalidDocuments = new ArrayList<>(Arrays.asList("11111111111", "22222222222",
                 "33333333333", "44444444444", "55555555555",
                 "66666666666", "77777777777", "88888888888",
@@ -166,5 +162,9 @@ public class UserService {
         }
     }
 
-
+    public void findByDocument(String document){
+        if (this.repository.findByDocument(document).isPresent()){
+            throw new DocumentAlreadyExistsException();
+        }
+    }
 }

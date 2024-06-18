@@ -57,6 +57,7 @@ public class AuthorizationService implements UserDetailsService{
         if (this.repository.findByEmail(data.email()) != null){
             throw new EmailAlreadyExistsException();
         }
+        this.service.findByDocument(data.document());
 
         this.service.verifyEmail(data.email());
         verifyPassword(data.password(), data.confirmPassword());
