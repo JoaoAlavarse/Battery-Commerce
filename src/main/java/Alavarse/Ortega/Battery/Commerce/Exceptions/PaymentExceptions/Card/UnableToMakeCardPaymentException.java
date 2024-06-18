@@ -1,4 +1,4 @@
-package Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions;
+package Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card;
 
 public class UnableToMakeCardPaymentException extends RuntimeException{
     public UnableToMakeCardPaymentException() {
