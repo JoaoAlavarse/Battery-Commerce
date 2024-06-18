@@ -1,6 +1,7 @@
 package Alavarse.Ortega.Battery.Commerce.Entities;
 
 import Alavarse.Ortega.Battery.Commerce.Enums.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,8 +20,10 @@ public class PaymentEntity {
     @Column(nullable = true)
     private String url;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "payment")
     private SaleEntity sale;
 

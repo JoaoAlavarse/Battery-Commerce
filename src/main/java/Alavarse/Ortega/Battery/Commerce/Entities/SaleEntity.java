@@ -42,6 +42,7 @@ public class SaleEntity {
     @JoinColumn(name = "promotionId")
     private PromotionEntity promotion;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "sale")
     private DeliveryEntity delivery;
 
