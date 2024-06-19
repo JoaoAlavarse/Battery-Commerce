@@ -43,7 +43,7 @@ public class DeliveryEntity {
     private LocalDate creationDate;
 
     @OneToOne
-    @JoinColumn(name = "cartId", nullable = false)
+    @JoinColumn(name = "saleId", nullable = false)
     private SaleEntity sale;
 
     @ManyToOne

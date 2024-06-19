@@ -8,6 +8,7 @@ import Alavarse.Ortega.Battery.Commerce.Enums.DeliveryStatus;
 import Alavarse.Ortega.Battery.Commerce.Enums.PaymentStatus;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card.UnableToCreateCardPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card.UnableToMakeCardPaymentException;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.ErrorWhileGettingPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Pix.UnableToCreatePixPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Ticket.UnableToCreateTicketPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.PaymentRepository;
@@ -179,6 +180,9 @@ public class PaymentService {
                 throw new UnableToMakeCardPaymentException();
             }
 
+            PaymentEntity payment = this.repository.findById(fmc_idpk).orElseThrow(ErrorWhileGettingPaymentException::new);
+            payment.setStatus(PaymentStatus.PAGO);
+            this.repository.save(payment);
             updateDeliveryStatus(fmc_idpk);
 
 
@@ -187,13 +191,8 @@ public class PaymentService {
         }
     }
 
-    public PaymentEntity getById(String idpk){
-        return this.repository.findById(idpk).orElseThrow(RuntimeException::new);
-    }
-
     public void updateDeliveryStatus(String idpk){
-        PaymentEntity payment = this.getById(idpk);
-        DeliveryEntity delivery = payment.getSale().getDelivery();
+        DeliveryEntity delivery = this.deliveryService.getByPaymentId(idpk);
         deliveryService.updateStatus(delivery.getDeliveryId(), DeliveryStatus.CONFIRMADO);
     }
 

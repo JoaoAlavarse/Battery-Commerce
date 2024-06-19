@@ -47,6 +47,11 @@ public class DeliveryService {
         return this.repository.findById(deliveryId).orElseThrow(ErrorWhileGettingDeliveriesException::new);
     }
 
+    public DeliveryEntity getByPaymentId(String paymentId) {
+        return this.repository.findByPaymentId(paymentId);
+    }
+
+
     public DeliveryEntity updateTrackingCode(String deliveryId, String code) {
         DeliveryEntity delivery = this.getById(deliveryId);
         try {
