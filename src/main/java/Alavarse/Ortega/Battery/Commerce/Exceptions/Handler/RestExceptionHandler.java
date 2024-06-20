@@ -235,8 +235,8 @@ public class RestExceptionHandler  {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(handlerMessage);
     }
 
-    @ExceptionHandler(InsufficientBatteriesToAddException.class)
-    private ResponseEntity<ExceptionHandlerMessage> insufficientBatteriesToAdd(InsufficientBatteriesToAddException exception){
+    @ExceptionHandler(InsufficientBatteriesException.class)
+    private ResponseEntity<ExceptionHandlerMessage> insufficientBatteriesToAdd(InsufficientBatteriesException exception){
         ExceptionHandlerMessage handlerMessage = new ExceptionHandlerMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handlerMessage);
     }

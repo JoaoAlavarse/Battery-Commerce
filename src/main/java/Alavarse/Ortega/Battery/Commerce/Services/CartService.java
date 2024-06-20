@@ -80,7 +80,7 @@ public class CartService {
         BatteryEntity battery = batteryService.getById(batteryId);
 
         if (battery.getQuantity() < quantity){
-            throw new InsufficientBatteriesToAddException(battery.getQuantity());
+            throw new InsufficientBatteriesException(battery.getQuantity(), battery.getName());
         }
 
         boolean exists = cart.getBatteries().stream().anyMatch(cartBatteryEntity -> cartBatteryEntity.getBattery().getBatteryId().equals(batteryId));
@@ -105,7 +105,7 @@ public class CartService {
         BatteryEntity battery = cartBatteryEntity.getBattery();
 
         if (battery.getQuantity() < quantity) {
-            throw new InsufficientBatteriesToAddException(battery.getQuantity());
+            throw new InsufficientBatteriesException(battery.getQuantity(), battery.getName());
         }
 
         cartBatteryEntity.setQuantity(quantity);
