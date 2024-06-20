@@ -82,9 +82,6 @@ public class PromotionService {
 
     public BigDecimal getDiscountValue(String code, DiscountDTO data){
         PromotionEntity promotion = repository.findByCode(code).orElseThrow(PromotionNotFoundException::new);
-        if (hasPromotionBeenUsed(data.userId(), code)){
-            throw new PromotionAlreadyBeenUsedException();
-        }
         if (promotion.getStatus().equals(PromotionStatus.EXPIRED) || promotion.getStatus().equals(PromotionStatus.INACTIVE)){
             throw new InvalidPromotionException();
         }
@@ -108,10 +105,12 @@ public class PromotionService {
         }
     }
 
-    public boolean hasPromotionBeenUsed(String userId, String promotionCode){
+    public void hasPromotionBeenUsed(String userId, String promotionCode){
         UserEntity user = userService.findById(userId);
         PromotionEntity promotion = getByCode(promotionCode);
-        return user.getUsedPromotions().contains(promotion);
+        if (user.getUsedPromotions().contains(promotion)){
+            throw new PromotionAlreadyBeenUsedException();
+        }
     }
 
     public boolean setPromotionUsed(String userId, String promotionCode){

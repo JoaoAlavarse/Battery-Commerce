@@ -148,10 +148,11 @@ public class CartService {
         }
     }
 
-    public CartEntity closeCart(String id){
+    public void closeCart(String id){
         CartEntity cart = this.getById(id);
         cart.setStatus(CartStatus.CLOSED);
-        return repository.save(cart);
+        this.repository.save(cart);
+        this.repository.save(new CartEntity(cart.getUser()));
     }
 
     public CartEntity getByUser(String userId){
@@ -202,9 +203,10 @@ public class CartService {
     }
 
     public CartEntity addPromotion(String id, String promotionCode){
-        try {
             CartEntity cart = this.getById(id);
             PromotionEntity promotion = promotionService.getByCode(promotionCode);
+            this.promotionService.hasPromotionBeenUsed(cart.getUser().getUserId(), promotionCode);
+        try {
             cart.setPromotion(promotion);
             this.getTotalValue(id);
             return repository.save(cart);
