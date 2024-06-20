@@ -6,6 +6,7 @@ import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.Ticket.PaymentTicketRequest
 import Alavarse.Ortega.Battery.Commerce.Entities.*;
 import Alavarse.Ortega.Battery.Commerce.Enums.DeliveryStatus;
 import Alavarse.Ortega.Battery.Commerce.Enums.PaymentStatus;
+import Alavarse.Ortega.Battery.Commerce.Exceptions.CartExceptions.InsufficientBatteriesException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card.UnableToCreateCardPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Card.UnableToMakeCardPaymentException;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.ErrorWhileGettingPaymentException;
@@ -48,12 +49,20 @@ public class PaymentService {
     private AddressService addressService;
     @Autowired
     private CartService cartService;
+    @Autowired
+    private BatteryService batteryService;
 
 
     public ResponseEntity<String> createPix(PaymentPixRequestDTO pixData){
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
         CartEntity cart = this.cartService.getById(pixData.saleData().cartId());
+
+        cart.getBatteries().forEach(cartBatteryEntity -> {
+            if(cartBatteryEntity.getBattery().getQuantity() < cartBatteryEntity.getQuantity()){
+                throw new InsufficientBatteriesException(cartBatteryEntity.getQuantity(), cartBatteryEntity.getBattery().getName());
+            }
+        });
 
         String json = """
                 {
@@ -85,6 +94,9 @@ public class PaymentService {
                 PaymentEntity payment = new PaymentEntity(fmp_idpk, fmp_link_qrcode, "Pix", PaymentStatus.PENDENTE);
                 this.repository.save(payment);
                 this.saleService.create(pixData.saleData(), payment);
+                cart.getBatteries().forEach(cartBatteryEntity -> {
+                    this.batteryService.updateQuantity(cartBatteryEntity.getBattery().getBatteryId(), cartBatteryEntity.getBattery().getQuantity() - cartBatteryEntity.getQuantity());
+                });
                 return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(response.body());
@@ -99,6 +111,12 @@ public class PaymentService {
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
         CartEntity cart = this.cartService.getById(cardData.saleData().cartId());
+
+        cart.getBatteries().forEach(cartBatteryEntity -> {
+            if(cartBatteryEntity.getBattery().getQuantity() < cartBatteryEntity.getQuantity()){
+                throw new InsufficientBatteriesException(cartBatteryEntity.getQuantity(), cartBatteryEntity.getBattery().getName());
+            }
+        });
 
         String json = """
                 {
@@ -135,6 +153,9 @@ public class PaymentService {
             PaymentEntity payment = new PaymentEntity(fmc_idpk, null, "Cartao", PaymentStatus.PENDENTE);
             this.repository.save(payment);
             this.saleService.create(cardData.saleData(), payment);
+            cart.getBatteries().forEach(cartBatteryEntity -> {
+                this.batteryService.updateQuantity(cartBatteryEntity.getBattery().getBatteryId(), cartBatteryEntity.getBattery().getQuantity() - cartBatteryEntity.getQuantity());
+            });
             payCard(fmc_idpk, cardData.cardId());
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -210,6 +231,12 @@ public class PaymentService {
         AddressEntity address = this.addressService.getById(ticketData.saleData().addressId());
         CartEntity cart = this.cartService.getById(ticketData.saleData().cartId());
 
+        cart.getBatteries().forEach(cartBatteryEntity -> {
+            if(cartBatteryEntity.getBattery().getQuantity() < cartBatteryEntity.getQuantity()){
+                throw new InsufficientBatteriesException(cartBatteryEntity.getQuantity(), cartBatteryEntity.getBattery().getName());
+            }
+        });
+
         String json = """
                 {
                     "fmb_sacado_nome": "%s",
@@ -249,7 +276,9 @@ public class PaymentService {
             PaymentEntity payment = new PaymentEntity(fmb_idpk, fmb_link_url ,"Boleto", PaymentStatus.PENDENTE);
             this.repository.save(payment);
             this.saleService.create(ticketData.saleData(), payment);
-
+            cart.getBatteries().forEach(cartBatteryEntity -> {
+                this.batteryService.updateQuantity(cartBatteryEntity.getBattery().getBatteryId(), cartBatteryEntity.getBattery().getQuantity() - cartBatteryEntity.getQuantity());
+            });
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(response.body());
 
         } catch (Exception e){
