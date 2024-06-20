@@ -33,19 +33,20 @@ public class SaleService {
         PromotionEntity promotion = null;
         if (data.promotionId() != null && !data.promotionId().isBlank()){
             promotion = promotionService.getById(data.promotionId());
+            promotionService.hasPromotionBeenUsed(user.getUserId(), promotion.getCode());
         }
 
         SaleEntity sale = null;
 
         try {
             sale = this.repository.save(new SaleEntity(cart.getTotalValue().add(data.freightValue()), data.freightValue(), user, cart, promotion, payment));
+            this.cartService.closeCart(cart.getCartId());
         } catch (Exception e){
             throw new ErrorWhileSavingSaleException();
         }
 
         this.deliveryService.create(address.getAddress(), address.getNumber(), address.getNeighborhood(), address.getComplement(),
                 address.getCity(), address.getState(), address.getCEP(), sale, user);
-
         return sale;
     }
 
