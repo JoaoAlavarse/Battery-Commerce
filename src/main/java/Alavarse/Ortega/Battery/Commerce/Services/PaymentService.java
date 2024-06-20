@@ -144,7 +144,7 @@ public class PaymentService {
         }
     }
 
-    public void payCard(String fmc_idpk, String cardId){
+    public ResponseEntity<String> payCard(String fmc_idpk, String cardId){
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
         CardEntity card = this.cardService.getById(cardId);
@@ -184,7 +184,9 @@ public class PaymentService {
             payment.setStatus(PaymentStatus.PAGO);
             this.repository.save(payment);
             updateDeliveryStatus(fmc_idpk);
-
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(response.body());
 
         } catch (Exception e){
             throw new UnableToMakeCardPaymentException();
