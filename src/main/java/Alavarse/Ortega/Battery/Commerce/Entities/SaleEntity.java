@@ -29,6 +29,8 @@ public class SaleEntity {
     private BigDecimal value;
     @Column(nullable = false)
     private BigDecimal freightValue;
+    @Column(nullable = false)
+    private String code;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId", nullable = false)
@@ -52,6 +54,7 @@ public class SaleEntity {
 
     public SaleEntity(BigDecimal value, BigDecimal freightValue, UserEntity user, CartEntity cart, PromotionEntity promotion, PaymentEntity payment) {
         this.creationDate = LocalDate.now();
+        this.code = String.format("%015d", Math.abs(java.util.UUID.randomUUID().getMostSignificantBits()) % 1000000000000000L);
         this.value = value;
         this.freightValue = freightValue;
         this.user = user;
