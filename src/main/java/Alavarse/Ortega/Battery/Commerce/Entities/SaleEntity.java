@@ -29,7 +29,7 @@ public class SaleEntity {
     private BigDecimal value;
     @Column(nullable = false)
     private BigDecimal freightValue;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String code;
 
     @ManyToOne(fetch = FetchType.EAGER)
