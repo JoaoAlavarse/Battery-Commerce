@@ -31,7 +31,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/battery/list").permitAll()
                         .requestMatchers(HttpMethod.GET, "/freight/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/promotion/**").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

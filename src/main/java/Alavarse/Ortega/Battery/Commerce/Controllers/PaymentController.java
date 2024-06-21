@@ -34,4 +34,9 @@ public class PaymentController {
     public ResponseEntity<String> payCard(@PathVariable String idpk, @PathVariable String id){
         return this.service.payCard(idpk, id);
     }
+
+    @PostMapping("/receive")
+    public void teste(@RequestBody Object dada){
+        System.out.println(dada.toString());
+    }
 }
