@@ -94,6 +94,7 @@ public class DeliveryService {
             case "delivery-validity-3" -> this.repository.findByDate(3);
             case "delivery-validity-6" -> this.repository.findByDate(6);
             case "delivery-validity-over-6" -> this.repository.findByOverDate();
+            case "delivery-clear" -> this.repository.findAll();
             default -> throw new NoSuchReportTypeException();
         };
     }
