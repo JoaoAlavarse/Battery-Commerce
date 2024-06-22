@@ -10,6 +10,7 @@ import Alavarse.Ortega.Battery.Commerce.Repositories.DeliveryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -90,10 +91,10 @@ public class DeliveryService {
             case "delivery-preparing" -> this.repository.findByStatus("PREPARANDO");
             case "delivery-transporting" -> this.repository.findByStatus("TRANSITO");
             case "delivery-delivered" -> this.repository.findByStatus("ENTREGUE");
-            case "delivery-validity-1" -> this.repository.findByDate(1);
-            case "delivery-validity-3" -> this.repository.findByDate(3);
-            case "delivery-validity-6" -> this.repository.findByDate(6);
-            case "delivery-validity-over-6" -> this.repository.findByOverDate();
+            case "delivery-creation-1" -> this.repository.findByDate(LocalDate.now().minusMonths(1));
+            case "delivery-creation-3" -> this.repository.findByDate(LocalDate.now().minusMonths(3));
+            case "delivery-creation-6" -> this.repository.findByDate(LocalDate.now().minusMonths(6));
+            case "delivery-creation-over-6" -> this.repository.findByDate(LocalDate.now().minusMonths(7));
             case "delivery-clear" -> this.repository.findAll();
             default -> throw new NoSuchReportTypeException();
         };

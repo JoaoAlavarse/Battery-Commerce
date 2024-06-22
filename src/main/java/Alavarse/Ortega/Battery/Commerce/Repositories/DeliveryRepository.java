@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -17,11 +18,8 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, String
     @Query(value = "SELECT * FROM delivery d WHERE d.status = :status", nativeQuery = true)
     List<DeliveryEntity> findByStatus(@Param("status") String status);
 
-    @Query(value = "SELECT * FROM delivery d WHERE d.creation_date BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL :start MONTH) AND CURRENT_DATE", nativeQuery = true)
-    List<DeliveryEntity> findByDate(@Param("start") int start);
-
-    @Query(value = "SELECT * FROM delivery d WHERE d.creation_date < DATE_SUB(CURRENT_DATE, INTERVAL 6 MONTH)", nativeQuery = true)
-    List<DeliveryEntity> findByOverDate();
+    @Query(value = "SELECT * FROM delivery d WHERE d.creation_date < :start", nativeQuery = true)
+    List<DeliveryEntity> findByDate(@Param("start") LocalDate start);
 
     @Query(value = "SELECT d.* FROM delivery d LEFT JOIN sale s ON s.sale_id = d.sale_id LEFT JOIN payment p ON p.payment_id = s.payment_id WHERE p.payment_id = :paymentId", nativeQuery = true)
     DeliveryEntity findByPaymentId(@Param("paymentId") String paymentId);
