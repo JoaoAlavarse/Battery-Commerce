@@ -9,6 +9,7 @@ import Alavarse.Ortega.Battery.Commerce.Repositories.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -102,10 +103,10 @@ public class SaleService {
             case "sale-value-500" -> this.repository.findByPrice(250, 500);
             case "sale-value-1000" -> this.repository.findByPrice(500, 1000);
             case "sale-value-over-1000" -> this.repository.findByPrice(1000, 10000);
-            case "sale-validity-1" -> this.repository.findByDate(1);
-            case "sale-validity-3" -> this.repository.findByDate(3);
-            case "sale-validity-6" -> this.repository.findByDate(6);
-            case "sale-validity-over-6" -> this.repository.findByOverDate();
+            case "sale-creation-1" -> this.repository.findByDate(LocalDate.now().minusMonths(1));
+            case "sale-creation-3" -> this.repository.findByDate(LocalDate.now().minusMonths(3));
+            case "sale-creation-6" -> this.repository.findByDate(LocalDate.now().minusMonths(6));
+            case "sale-creation-over-6" -> this.repository.findByDate(LocalDate.now().minusMonths(7));
             case "sale-clear" -> this.repository.findAll();
             default -> throw new NoSuchReportTypeException();
         };
