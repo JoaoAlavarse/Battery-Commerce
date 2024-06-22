@@ -2,6 +2,7 @@ package Alavarse.Ortega.Battery.Commerce.Entities;
 
 import Alavarse.Ortega.Battery.Commerce.Enums.DeliveryStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -46,6 +47,7 @@ public class DeliveryEntity {
     @JoinColumn(name = "saleId", nullable = false)
     private SaleEntity sale;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
