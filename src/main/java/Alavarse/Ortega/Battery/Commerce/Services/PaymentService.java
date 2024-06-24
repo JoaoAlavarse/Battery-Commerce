@@ -1,5 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
+import Alavarse.Ortega.Battery.Commerce.DTOs.Freight.FreightResponseDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.Card.PaymentCardRequestDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.Pix.PaymentPixRequestDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.Payment.Ticket.PaymentTicketRequestDTO;
@@ -51,12 +52,15 @@ public class PaymentService {
     private CartService cartService;
     @Autowired
     private BatteryService batteryService;
+    @Autowired
+    private FreightService freightService;
 
 
     public ResponseEntity<String> createPix(PaymentPixRequestDTO pixData){
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
         CartEntity cart = this.cartService.getById(pixData.saleData().cartId());
+        FreightResponseDTO freight = this.freightService.getFreightInfo(pixData.saleData().cep(), cartService.getTotalItems(cart));
 
         cart.getBatteries().forEach(cartBatteryEntity -> {
             if(cartBatteryEntity.getBattery().getQuantity() < cartBatteryEntity.getQuantity()){
@@ -69,7 +73,7 @@ public class PaymentService {
                     "fmp_descricao": "%s",
                     "fmp_valor": %s
                 }
-                """.formatted(pixData.fmp_description(), cart.getTotalValue().add(pixData.saleData().freightValue()));
+                """.formatted(pixData.fmp_description(), cart.getTotalValue().add(freight.totalFreightCost()));
 
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
@@ -111,6 +115,7 @@ public class PaymentService {
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
         CartEntity cart = this.cartService.getById(cardData.saleData().cartId());
+        FreightResponseDTO freight = this.freightService.getFreightInfo(cardData.saleData().cep(), cartService.getTotalItems(cart));
 
         cart.getBatteries().forEach(cartBatteryEntity -> {
             if(cartBatteryEntity.getBattery().getQuantity() < cartBatteryEntity.getQuantity()){
@@ -126,7 +131,7 @@ public class PaymentService {
                     "fmc_qtde_parcelas": "1",
                     "fmc_valor": "%s"
                 }
-                """.formatted(cardData.fmc_description(), cart.getUser().getName(), cart.getUser().getDocument(), cart.getTotalValue().add(cardData.saleData().freightValue()));
+                """.formatted(cardData.fmc_description(), cart.getUser().getName(), cart.getUser().getDocument(), cart.getTotalValue().add(freight.totalFreightCost()));
 
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
@@ -230,6 +235,7 @@ public class PaymentService {
         UserEntity user = this.userService.findById(ticketData.saleData().userId());
         AddressEntity address = this.addressService.getById(ticketData.saleData().addressId());
         CartEntity cart = this.cartService.getById(ticketData.saleData().cartId());
+        FreightResponseDTO freight = this.freightService.getFreightInfo(ticketData.saleData().cep(), cartService.getTotalItems(cart));
 
         cart.getBatteries().forEach(cartBatteryEntity -> {
             if(cartBatteryEntity.getBattery().getQuantity() < cartBatteryEntity.getQuantity()){
@@ -251,7 +257,7 @@ public class PaymentService {
                     "fmb_vencimento": "%S"
                 }
                 """.formatted(user.getName(), user.getDocument(), address.getAddress(), address.getNumber(), address.getNeighborhood(),
-                        address.getCEP(), address.getCity(), address.getState(), cart.getTotalValue().add(ticketData.saleData().freightValue()), convertedDate);
+                        address.getCEP(), address.getCity(), address.getState(), cart.getTotalValue().add(freight.totalFreightCost()), convertedDate);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")

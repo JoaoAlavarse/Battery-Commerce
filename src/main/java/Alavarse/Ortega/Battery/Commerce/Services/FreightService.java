@@ -1,11 +1,14 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
+import Alavarse.Ortega.Battery.Commerce.DTOs.Freight.FreightResponseDTO;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.FreightExceptions.ErrorWhileGettingFreightException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -18,7 +21,7 @@ public class FreightService {
     private static final float DEFAULT_WEIGHT = 2.4f;
     private static final float MAX_WEIGHT = 10.0f;
 
-    public ResponseEntity<String> getFreightInfo(String cep, int quantity) {
+    public FreightResponseDTO getFreightInfo(String cep, int quantity) {
         float totalWeight = DEFAULT_WEIGHT * quantity;
         List<Float> weights = calculateWeights(totalWeight);
 
@@ -59,16 +62,7 @@ public class FreightService {
             }
         }
 
-        String totalFreightCostJson = """
-                {
-                    "totalFreightCost": %s,
-                    "estimateDays": %s
-                }
-                """.formatted(String.valueOf(totalFreightCost), estimateDays);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(totalFreightCostJson);
+        return new FreightResponseDTO(BigDecimal.valueOf(totalFreightCost), estimateDays);
     }
 
     private List<Float> calculateWeights(float totalWeight) {
