@@ -87,6 +87,7 @@ public class DeliveryService {
 
     public List<DeliveryEntity> getReportData(String report){
         return switch (report){
+            case "delivery-waiting" -> this.repository.findByStatus("AGUARDANDO");
             case "delivery-confirmed" -> this.repository.findByStatus("CONFIRMADO");
             case "delivery-preparing" -> this.repository.findByStatus("PREPARANDO");
             case "delivery-transporting" -> this.repository.findByStatus("TRANSITO");
