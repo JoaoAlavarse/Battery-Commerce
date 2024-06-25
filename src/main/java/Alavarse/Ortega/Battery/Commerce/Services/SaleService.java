@@ -1,5 +1,6 @@
 package Alavarse.Ortega.Battery.Commerce.Services;
 
+import Alavarse.Ortega.Battery.Commerce.DTOs.Freight.FreightResponseDTO;
 import Alavarse.Ortega.Battery.Commerce.DTOs.Sale.SaleDTO;
 import Alavarse.Ortega.Battery.Commerce.Entities.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.NoSuchReportTypeException;
@@ -26,11 +27,14 @@ public class SaleService {
     private PromotionService promotionService;
     @Autowired
     private DeliveryService deliveryService;
+    @Autowired
+    private FreightService freightService;
 
     public SaleEntity create(SaleDTO data, PaymentEntity payment){
         UserEntity user = userService.findById(data.userId());
         CartEntity cart = cartService.getById(data.cartId());
         AddressEntity address = addressService.getById(data.addressId());
+        FreightResponseDTO freight = this.freightService.getFreightInfo(data.cep(), cartService.getTotalItems(cart));
         PromotionEntity promotion = null;
         if (data.promotionId() != null && !data.promotionId().isBlank()){
             promotion = promotionService.getById(data.promotionId());
@@ -40,7 +44,7 @@ public class SaleService {
         SaleEntity sale = null;
 
         try {
-            sale = this.repository.save(new SaleEntity(cart.getTotalValue().add(data.freightValue()), data.freightValue(), user, cart, promotion, payment));
+            sale = this.repository.save(new SaleEntity(cart.getTotalValue().add(freight.totalFreightCost()), freight.totalFreightCost(), user, cart, promotion, payment));
             this.cartService.closeCart(cart.getCartId());
         } catch (Exception e){
             throw new ErrorWhileSavingSaleException();
