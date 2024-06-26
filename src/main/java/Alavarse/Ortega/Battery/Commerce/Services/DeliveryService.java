@@ -8,6 +8,7 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.DeliveryExceptions.*;
 import Alavarse.Ortega.Battery.Commerce.Exceptions.NoSuchReportTypeException;
 import Alavarse.Ortega.Battery.Commerce.Repositories.DeliveryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,7 +31,8 @@ public class DeliveryService {
 
     public List<DeliveryEntity> getByUser(String userId) {
         try {
-            return this.repository.findByUser(this.userService.findById(userId));
+            Sort sort = Sort.by(Sort.Direction.ASC, "sale.code");
+            return this.repository.findByUser(this.userService.findById(userId), sort);
         } catch (Exception e) {
             throw new ErrorWhileGettingDeliveriesException();
         }
