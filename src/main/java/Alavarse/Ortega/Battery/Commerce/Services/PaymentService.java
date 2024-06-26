@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.RoundingMode;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -73,7 +74,7 @@ public class PaymentService {
                     "fmp_descricao": "%s",
                     "fmp_valor": %s
                 }
-                """.formatted(pixData.fmp_description(), cart.getTotalValue().add(freight.totalFreightCost()));
+                """.formatted(pixData.fmp_description(), cart.getTotalValue().add(freight.totalFreightCost()).setScale(2, RoundingMode.HALF_UP));
 
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
@@ -131,7 +132,7 @@ public class PaymentService {
                     "fmc_qtde_parcelas": "1",
                     "fmc_valor": "%s"
                 }
-                """.formatted(cardData.fmc_description(), cart.getUser().getName(), cart.getUser().getDocument(), cart.getTotalValue().add(freight.totalFreightCost()));
+                """.formatted(cardData.fmc_description(), cart.getUser().getName(), cart.getUser().getDocument(), cart.getTotalValue().add(freight.totalFreightCost()).setScale(2, RoundingMode.HALF_UP));
 
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
@@ -257,7 +258,7 @@ public class PaymentService {
                     "fmb_vencimento": "%S"
                 }
                 """.formatted(user.getName(), user.getDocument(), address.getAddress(), address.getNumber(), address.getNeighborhood(),
-                        address.getCEP(), address.getCity(), address.getState(), cart.getTotalValue().add(freight.totalFreightCost()), convertedDate);
+                        address.getCEP(), address.getCity(), address.getState(), cart.getTotalValue().add(freight.totalFreightCost()).setScale(2, RoundingMode.HALF_UP), convertedDate);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
