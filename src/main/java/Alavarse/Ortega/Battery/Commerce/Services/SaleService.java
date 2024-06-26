@@ -44,7 +44,9 @@ public class SaleService {
         SaleEntity sale = null;
 
         try {
-            sale = this.repository.save(new SaleEntity(cart.getTotalValue().add(freight.totalFreightCost()), freight.totalFreightCost(), user, cart, promotion, payment));
+            Long currentQuantity = this.repository.getCodeQuantity() + 1;
+            String code = String.format("%015d", currentQuantity);
+            sale = this.repository.save(new SaleEntity(code, cart.getTotalValue().add(freight.totalFreightCost()), freight.totalFreightCost(), user, cart, promotion, payment));
             this.cartService.closeCart(cart.getCartId());
         } catch (Exception e){
             throw new ErrorWhileSavingSaleException();

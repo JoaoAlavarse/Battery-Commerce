@@ -21,4 +21,7 @@ public interface SaleRepository extends JpaRepository<SaleEntity, String> {
     @Query(value = "SELECT s.*, p.payment_id as payment_id_alias FROM public.sale s INNER JOIN payment p ON p.payment_id = s.payment_id WHERE p.status = 'PENDENTE' AND s.user_id = :userId", nativeQuery = true)
     List<SaleEntity> findNoPaymentSales(@Param("userId") String userId);
 
+    @Query(value = "SELECT COUNT(*) FROM sale", nativeQuery = true)
+    Long getCodeQuantity();
+
 }

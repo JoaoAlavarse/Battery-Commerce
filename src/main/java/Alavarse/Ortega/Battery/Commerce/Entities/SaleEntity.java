@@ -52,9 +52,9 @@ public class SaleEntity {
     @JoinColumn(name = "paymentId", nullable = false)
     private PaymentEntity payment;
 
-    public SaleEntity(BigDecimal value, BigDecimal freightValue, UserEntity user, CartEntity cart, PromotionEntity promotion, PaymentEntity payment) {
+    public SaleEntity(String code, BigDecimal value, BigDecimal freightValue, UserEntity user, CartEntity cart, PromotionEntity promotion, PaymentEntity payment) {
         this.creationDate = LocalDate.now();
-        this.code = String.format("%015d", Math.abs(java.util.UUID.randomUUID().getMostSignificantBits()) % 1000000000000000L);
+        this.code = code;
         this.value = value;
         this.freightValue = freightValue;
         this.user = user;
