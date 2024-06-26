@@ -16,6 +16,7 @@ import Alavarse.Ortega.Battery.Commerce.Exceptions.PaymentExceptions.Ticket.Unab
 import Alavarse.Ortega.Battery.Commerce.Repositories.PaymentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -57,7 +58,7 @@ public class PaymentService {
     private FreightService freightService;
 
 
-    public ResponseEntity<String> createPix(PaymentPixRequestDTO pixData){
+    public ResponseEntity<ObjectNode> createPix(PaymentPixRequestDTO pixData){
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
         CartEntity cart = this.cartService.getById(pixData.saleData().cartId());
@@ -98,13 +99,17 @@ public class PaymentService {
 
                 PaymentEntity payment = new PaymentEntity(fmp_idpk, fmp_link_qrcode, "Pix", PaymentStatus.PENDENTE);
                 this.repository.save(payment);
-                this.saleService.create(pixData.saleData(), payment);
+                SaleEntity sale = this.saleService.create(pixData.saleData(), payment);
                 cart.getBatteries().forEach(cartBatteryEntity -> {
                     this.batteryService.updateQuantity(cartBatteryEntity.getBattery().getBatteryId(), cartBatteryEntity.getBattery().getQuantity() - cartBatteryEntity.getQuantity());
                 });
+
+                ObjectNode responseNode = (ObjectNode) objectMapper.readTree(response.body());
+                responseNode.put("saleCode", sale.getCode());
+
                 return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(response.body());
+                    .body(responseNode);
             }
             throw new UnableToCreatePixPaymentException();
         } catch (Exception e){
@@ -112,7 +117,7 @@ public class PaymentService {
         }
     }
 
-    public ResponseEntity<String> createCard(PaymentCardRequestDTO cardData){
+    public ResponseEntity<ObjectNode> createCard(PaymentCardRequestDTO cardData){
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
         CartEntity cart = this.cartService.getById(cardData.saleData().cartId());
@@ -158,14 +163,18 @@ public class PaymentService {
 
             PaymentEntity payment = new PaymentEntity(fmc_idpk, null, "Cartao", PaymentStatus.PENDENTE);
             this.repository.save(payment);
-            this.saleService.create(cardData.saleData(), payment);
+            SaleEntity sale = this.saleService.create(cardData.saleData(), payment);
             cart.getBatteries().forEach(cartBatteryEntity -> {
                 this.batteryService.updateQuantity(cartBatteryEntity.getBattery().getBatteryId(), cartBatteryEntity.getBattery().getQuantity() - cartBatteryEntity.getQuantity());
             });
             payCard(fmc_idpk, cardData.cardId());
+
+            ObjectNode responseNode = (ObjectNode) objectMapper.readTree(response.body());
+            responseNode.put("saleCode", sale.getCode());
+
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(response.body());
+                    .body(responseNode);
         } catch (Exception e){
             throw new UnableToCreateCardPaymentException();
         }
@@ -225,7 +234,7 @@ public class PaymentService {
         deliveryService.updateStatus(delivery.getDeliveryId(), DeliveryStatus.CONFIRMADO);
     }
 
-    public ResponseEntity<String> createTicket(PaymentTicketRequestDTO ticketData){
+    public ResponseEntity<ObjectNode> createTicket(PaymentTicketRequestDTO ticketData){
         UtilsEntity utils = this.utilsService.getByKey("tokenAgile");
         HttpClient client = HttpClient.newHttpClient();
 
@@ -282,11 +291,15 @@ public class PaymentService {
 
             PaymentEntity payment = new PaymentEntity(fmb_idpk, fmb_link_url ,"Boleto", PaymentStatus.PENDENTE);
             this.repository.save(payment);
-            this.saleService.create(ticketData.saleData(), payment);
+            SaleEntity sale = this.saleService.create(ticketData.saleData(), payment);
             cart.getBatteries().forEach(cartBatteryEntity -> {
                 this.batteryService.updateQuantity(cartBatteryEntity.getBattery().getBatteryId(), cartBatteryEntity.getBattery().getQuantity() - cartBatteryEntity.getQuantity());
             });
-            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(response.body());
+
+            ObjectNode responseNode = (ObjectNode) objectMapper.readTree(response.body());
+            responseNode.put("saleCode", sale.getCode());
+
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(responseNode);
 
         } catch (Exception e){
             throw new UnableToCreateTicketPaymentException();
