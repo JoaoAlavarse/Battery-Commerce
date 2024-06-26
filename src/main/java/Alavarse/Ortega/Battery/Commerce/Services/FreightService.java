@@ -33,7 +33,7 @@ public class FreightService {
         for (float weight : weights) {
             String json = """
                     {
-                        "postalSender": "87200000",
+                        "postalSender": "87205076",
                         "postalReceiver": "%s",
                         "length": "15",
                         "height": "15",
