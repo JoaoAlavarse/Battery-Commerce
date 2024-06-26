@@ -18,7 +18,7 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, String
     @Query(value = "SELECT * FROM delivery d WHERE d.status = :status", nativeQuery = true)
     List<DeliveryEntity> findByStatus(@Param("status") String status);
 
-    @Query(value = "SELECT * FROM delivery d WHERE d.creation_date < :start", nativeQuery = true)
+    @Query(value = "SELECT * FROM delivery d WHERE d.creation_date > :start", nativeQuery = true)
     List<DeliveryEntity> findByDate(@Param("start") LocalDate start);
 
     @Query(value = "SELECT d.* FROM delivery d LEFT JOIN sale s ON s.sale_id = d.sale_id LEFT JOIN payment p ON p.payment_id = s.payment_id WHERE p.payment_id = :paymentId", nativeQuery = true)

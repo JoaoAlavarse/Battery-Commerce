@@ -12,7 +12,7 @@ import java.util.List;
 public interface SaleRepository extends JpaRepository<SaleEntity, String> {
     List<SaleEntity> findByUser(UserEntity user);
 
-    @Query(value = "SELECT * FROM sale s WHERE s.creation_date < :start", nativeQuery = true)
+    @Query(value = "SELECT * FROM sale s WHERE s.creation_date > :start", nativeQuery = true)
     List<SaleEntity> findByDate(@Param("start") LocalDate start);
 
     @Query(value = "SELECT * FROM sale s WHERE s.value BETWEEN :start AND :end", nativeQuery = true)
