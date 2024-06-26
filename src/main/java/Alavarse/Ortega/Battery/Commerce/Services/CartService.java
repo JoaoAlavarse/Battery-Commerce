@@ -197,7 +197,6 @@ public class CartService {
             repository.save(cart);
             return cart.getTotalValue();
         } catch (Exception e) {
-        } catch (Exception e) {
             e.printStackTrace();
             throw new ErrorWhileCalculatingCartTotalValueException();
         }
